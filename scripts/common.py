@@ -500,9 +500,9 @@ def evaluate_regression_models(
         model_name="E2", variant="raw", arm_tag="sanity"
     )
 
-    # Arm 8: E_X (RBF on <X_i> only, raw, gamma = c/n, tag "sanity")
+    # Arm 8: E_X (RBF on <X_i> only, raw, gamma = c/(2n), tag "sanity")
     tune_and_score_rbf(
-        X_x_train, X_x_test, gamma_grid=float(n),
+        X_x_train, X_x_test, gamma_grid=2.0 * n,
         model_name="E_X", variant="raw", arm_tag="sanity"
     )
 

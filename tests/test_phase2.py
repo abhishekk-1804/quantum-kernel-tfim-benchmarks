@@ -159,6 +159,39 @@ class TestPqk1EqualsExEquivalence:
         diff = float(np.max(np.abs(pred_pqk - pred_ex)))
         assert diff < 1e-6, f"PQK-1 != E_X: diff = {diff:.3e}"
 
+    def test_prediction_level_identity_make_split(self):
+        """Verify on T1 split that SVR(precomputed, PQK-1(gamma)) == SVR(rbf, E_X(gamma/2))."""
+        n = 8
+        tr_states, tr_y, te_states, te_y, _ = make_split("t1", n=n, N=20, seed=0)
+        gamma = 1.0
+        gamma_rbf = gamma / 2.0
+        C = 10.0
+
+        # Precomputed PQK-1
+        rdms_train = [[one_rdm(p, n, k) for k in range(n)] for p in tr_states]
+        rdms_test = [[one_rdm(p, n, k) for k in range(n)] for p in te_states]
+        K_tr = pqk_gram(rdms_train, gamma=gamma)
+        
+        K_te = np.zeros((len(te_states), len(tr_states)))
+        for i in range(len(te_states)):
+            for j in range(len(tr_states)):
+                d2 = sum(float(np.real(np.trace((rdms_test[i][k] - rdms_train[j][k]).conj().T @ (rdms_test[i][k] - rdms_train[j][k])))) for k in range(n))
+                K_te[i, j] = np.exp(-gamma * d2)
+
+        svr_pqk = SVR(kernel="precomputed", C=C, epsilon=0.1)
+        svr_pqk.fit(K_tr, tr_y)
+        pred_pqk = svr_pqk.predict(K_te)
+
+        # RBF on <X> features
+        X_tr = np.array([expect_x(p, n) for p in tr_states])
+        X_te = np.array([expect_x(p, n) for p in te_states])
+        svr_ex = SVR(kernel="rbf", C=C, gamma=gamma_rbf, epsilon=0.1)
+        svr_ex.fit(X_tr, tr_y)
+        pred_ex = svr_ex.predict(X_te)
+
+        max_diff = float(np.max(np.abs(pred_pqk - pred_ex)))
+        assert max_diff < 1e-6, f"Mismatch: {max_diff:.4e}"
+
 
 class TestCustomPairsSupport:
     """Verify custom pairs support for 2D lattices."""
