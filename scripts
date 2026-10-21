@@ -1,0 +1,227 @@
+import os
+import time
+import numpy as np
+from scipy import sparse
+from scipy.sparse.linalg import eigsh
+from sklearn.svm import SVC
+from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
+
+# Ensure output directories exist
+os.makedirs("figures", exist_ok=True)
+os.makedirs("data", exist_ok=True)
+
+# -------------------------------------------------------------
+# 1. Physical Operators & Hamiltonian Construction
+# -------------------------------------------------------------
+I2 = sparse.eye(2, dtype=complex, format='csr')
+X = sparse.csr_matrix([[0, 1], [1, 0]], dtype=complex)
+Z = sparse.csr_matrix([[1, 0], [0, -1]], dtype=complex)
+
+def build_tfim(n_qubits, g, J=1.0):
+    """Constructs 1D TFIM Hamiltonian with periodic boundary conditions."""
+    H = sparse.csr_matrix((2**n_qubits, 2**n_qubits), dtype=complex)
+    for i in range(n_qubits):
+        term = [I2] * n_qubits
+        term[i] = Z
+        term[(i + 1) % n_qubits] = Z
+        op = term[0]
+        for m in term[1:]:
+            op = sparse.kron(op, m, format='csr')
+        H -= J * op
+    for i in range(n_qubits):
+        term = [I2] * n_qubits
+        term[i] = X
+        op = term[0]
+        for m in term[1:]:
+            op = sparse.kron(op, m, format='csr')
+        H -= g * op
+    return H
+
+def get_ground_state(H):
+    evals, evecs = eigsh(H, k=1, which='SA')
+    return evecs[:, 0]
+
+def compute_1rdm(psi, n_qubits, target_q):
+    """Extracts 2x2 single-site reduced density matrix."""
+    t = psi.reshape([2] * n_qubits)
+    t = np.moveaxis(t, target_q, 0)
+    t = t.reshape((2, -1))
+    return np.dot(t, t.conj().T)
+
+def compute_2point_correlator(psi, n_qubits, i, j):
+    """Computes <psi| Z_i Z_j |psi> for rigorous classical feature baseline."""
+    term = [I2] * n_qubits
+    term[i] = Z
+    term[j] = Z
+    op = term[0]
+    for m in term[1:]:
+        op = sparse.kron(op, m, format='csr')
+    exp_val = np.vdot(psi, op.dot(psi))
+    return np.real(exp_val)
+
+# -------------------------------------------------------------
+# 2. Experiment A: System Size Scaling (Qubit Concentration)
+# -------------------------------------------------------------
+def run_scaling_experiment(qubit_sizes=[4, 6, 8, 10], n_samples=30):
+    print("\n" + "="*60)
+    print("STAGE 1: Qubit Scaling & Concentration Sweep")
+    print("="*60)
+    
+    g_vals = np.logspace(-1, 1, n_samples)
+    fq_variances = []
+    pq_variances = []
+    
+    for n in qubit_sizes:
+        t0 = time.time()
+        print(f"[*] Simulating n = {n} qubits ({2**n} Hilbert space dimension)...")
+        states = []
+        rdms_list = []
+        
+        for g in g_vals:
+            H = build_tfim(n, g=g, J=1.0)
+            psi = get_ground_state(H)
+            states.append(psi)
+            rdms_list.append([compute_1rdm(psi, n, q) for q in range(n)])
+            
+        # Compute Gram Matrices
+        K_FQ = np.zeros((n_samples, n_samples))
+        K_PQ = np.zeros((n_samples, n_samples))
+        gamma = 1.0
+        
+        for i in range(n_samples):
+            for j in range(n_samples):
+                # Fidelity Kernel
+                K_FQ[i, j] = np.abs(np.vdot(states[i], states[j]))**2
+                # Projected Kernel
+                dist_sq = sum(np.sum(np.abs(rdms_list[i][k] - rdms_list[j][k])**2) for k in range(n))
+                K_PQ[i, j] = np.exp(-gamma * dist_sq)
+                
+        off_diag = ~np.eye(n_samples, dtype=bool)
+        v_fq = np.var(K_FQ[off_diag])
+        v_pq = np.var(K_PQ[off_diag])
+        
+        fq_variances.append(v_fq)
+        pq_variances.append(v_pq)
+        print(f"    Done in {time.time()-t0:.2f}s | FQ Var: {v_fq:.5e} | PQK Var: {v_pq:.5e}")
+        
+    # Plot Scaling Curve
+    plt.figure(figsize=(7, 4.5))
+    plt.plot(qubit_sizes, fq_variances, 'o--', label='Fidelity Kernel (FQ)', color='tab:blue', linewidth=2)
+    plt.plot(qubit_sizes, pq_variances, 's-', label='Projected Kernel (PQK)', color='tab:green', linewidth=2)
+    plt.yscale('log')
+    plt.xlabel('System Size (Qubits $n$)', fontsize=11)
+    plt.ylabel('Off-Diagonal Variance (Log Scale)', fontsize=11)
+    plt.title('Kernel Concentration vs System Size (1D TFIM)', fontsize=12)
+    plt.legend()
+    plt.grid(True, which="both", ls="--", alpha=0.5)
+    plt.tight_layout()
+    plt.savefig('figures/scaling_concentration.png', dpi=300)
+    print("[+] Plot saved: figures/scaling_concentration.png")
+    
+    return qubit_sizes, fq_variances, pq_variances
+
+# -------------------------------------------------------------
+# 3. Experiment B: Fair Classical Baseline (1-pt vs 2-pt)
+# -------------------------------------------------------------
+def run_correlator_benchmark(n_qubits=8, n_samples=40):
+    print("\n" + "="*60)
+    print("STAGE 2: Sample Efficiency with 2-Point Correlators")
+    print("="*60)
+    
+    g_vals = np.logspace(-1, 1, n_samples)
+    states, rdms_list, labels = [], [], []
+    features_1pt, features_2pt = [], []
+    
+    print(f"[*] Generating dataset for n = {n_qubits} qubits...")
+    for g in g_vals:
+        H = build_tfim(n_qubits, g=g, J=1.0)
+        psi = get_ground_state(H)
+        states.append(psi)
+        
+        rdms = [compute_1rdm(psi, n_qubits, q) for q in range(n_qubits)]
+        rdms_list.append(rdms)
+        labels.append(-1 if g < 1.0 else 1)
+        
+        # 1-point Pauli-Z expectations
+        f1 = [np.real(np.trace(Z.toarray() @ rdms[q])) for q in range(n_qubits)]
+        features_1pt.append(f1)
+        
+        # 2-point nearest-neighbor correlators <Z_i Z_{i+1}>
+        f2 = [compute_2point_correlator(psi, n_qubits, i, (i + 1) % n_qubits) for i in range(n_qubits)]
+        features_2pt.append(f1 + f2)  # Combined 1-pt and 2-pt features
+        
+    y = np.array(labels)
+    X_1pt = np.array(features_1pt)
+    X_2pt = np.array(features_2pt)
+    
+    # Build PQK Gram Matrix
+    K_PQ = np.zeros((n_samples, n_samples))
+    gamma = 1.0
+    for i in range(n_samples):
+        for j in range(n_samples):
+            dist_sq = sum(np.sum(np.abs(rdms_list[i][k] - rdms_list[j][k])**2) for k in range(n_qubits))
+            K_PQ[i, j] = np.exp(-gamma * dist_sq)
+            
+    # Sample sweeps
+    train_subsets = [6, 10, 16, 24]
+    acc_pq = []
+    acc_rbf_1pt = []
+    acc_rbf_2pt = []
+    
+    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    
+    print(f"{'N_train':<8} | {'PQK Acc':<10} | {'RBF (1-pt)':<12} | {'RBF (1-pt + 2-pt)':<18}")
+    print("-" * 55)
+    
+    for N in train_subsets:
+        pq_s, r1_s, r2_s = [], [], []
+        for train_idx, test_idx in skf.split(K_PQ, y):
+            pos_train = [i for i in train_idx if y[i] == 1]
+            neg_train = [i for i in train_idx if y[i] == -1]
+            sub = np.array(pos_train[:N//2] + neg_train[:N//2])
+            
+            # PQK SVM
+            clf_pq = SVC(kernel='precomputed')
+            clf_pq.fit(K_PQ[np.ix_(sub, sub)], y[sub])
+            pq_s.append(accuracy_score(y[test_idx], clf_pq.predict(K_PQ[np.ix_(test_idx, sub)])))
+            
+            # Classical RBF with 1-point features
+            clf_r1 = SVC(kernel='rbf', gamma='scale')
+            clf_r1.fit(X_1pt[sub], y[sub])
+            r1_s.append(accuracy_score(y[test_idx], clf_r1.predict(X_1pt[test_idx])))
+            
+            # Classical RBF with 1-point + 2-point features
+            clf_r2 = SVC(kernel='rbf', gamma='scale')
+            clf_r2.fit(X_2pt[sub], y[sub])
+            r2_s.append(accuracy_score(y[test_idx], clf_r2.predict(X_2pt[test_idx])))
+            
+        m_pq = np.mean(pq_s)
+        m_r1 = np.mean(r1_s)
+        m_r2 = np.mean(r2_s)
+        
+        acc_pq.append(m_pq)
+        acc_rbf_1pt.append(m_r1)
+        acc_rbf_2pt.append(m_r2)
+        print(f"{N:<8d} | {m_pq:<10.3f} | {m_r1:<12.3f} | {m_r2:<18.3f}")
+        
+    # Plot Benchmark
+    plt.figure(figsize=(7.5, 4.8))
+    plt.plot(train_subsets, acc_pq, 's-', label='Projected Quantum Kernel (PQK)', color='tab:green', linewidth=2)
+    plt.plot(train_subsets, acc_rbf_2pt, '^--', label='Classical RBF (1-pt + 2-pt Correlators)', color='tab:orange', linewidth=2)
+    plt.plot(train_subsets, acc_rbf_1pt, 'x:', label='Classical RBF (1-pt only)', color='tab:red', alpha=0.7)
+    plt.xlabel('Training Set Size ($N$)', fontsize=11)
+    plt.ylabel('Test Accuracy', fontsize=11)
+    plt.title(f'Sample Efficiency with Rigorous Baselines ($n={n_qubits}$ Qubits)', fontsize=12)
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.savefig('figures/correlator_benchmark.png', dpi=300)
+    print("[+] Plot saved: figures/correlator_benchmark.png")
+
+if __name__ == "__main__":
+    t_start = time.time()
+    run_scaling_experiment(qubit_sizes=[4, 6, 8, 10], n_samples=30)
+    run_correlator_benchmark(n_qubits=8, n_samples=40)
+    print(f"\n[SUCCESS] Entire benchmark suite completed in {time.time()-t_start:.1f}s.")
