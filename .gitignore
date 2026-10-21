@@ -1,4 +1,4 @@
-﻿__pycache__/
+__pycache__/
 *.py[cod]
 *.class
 *.log
@@ -9,4 +9,6 @@ paper/*.aux
 paper/*.log
 paper/*.out
 paper/*.toc
+paper/*.bbl
+paper/*.blg
 paper/*.synctex.gz
