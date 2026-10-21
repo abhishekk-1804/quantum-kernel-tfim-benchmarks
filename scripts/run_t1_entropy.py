@@ -24,9 +24,9 @@ from common import (
 )
 
 
-def run_t1(seeds, quick=False, out_csv=None):
+def run_t1(seeds, quick=False, out_csv=None, grid_version="grid_v2"):
     if out_csv is None:
-        out_csv = os.path.join("results", "t1_entropy.csv")
+        out_csv = os.path.join("results", "t1_entropy_gridv2.csv" if grid_version == "grid_v2" else "t1_entropy.csv")
 
     write_run_meta()
 
@@ -36,7 +36,7 @@ def run_t1(seeds, quick=False, out_csv=None):
     else:
         n_train_list = [10, 20, 40, 80, 160]
 
-    print(f"=== Starting T1 Entropy Benchmark (Seeds: {seeds}, N_train: {n_train_list}) ===")
+    print(f"=== Starting T1 Entropy Benchmark ({grid_version}, Seeds: {seeds}, N_train: {n_train_list}) ===")
     total_rows = 0
     t_start = time.time()
 
@@ -57,6 +57,7 @@ def run_t1(seeds, quick=False, out_csv=None):
                 train_targets=train_targets,
                 test_states=test_states,
                 test_targets=test_targets,
+                grid_version=grid_version,
             )
             write_csv_rows(out_csv, rows)
             total_rows += len(rows)

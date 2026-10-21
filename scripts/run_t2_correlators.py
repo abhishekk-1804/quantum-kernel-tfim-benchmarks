@@ -25,9 +25,9 @@ from common import (
 )
 
 
-def run_t2(seeds, quick=False, out_csv=None):
+def run_t2(seeds, quick=False, out_csv=None, grid_version="grid_v2"):
     if out_csv is None:
-        out_csv = os.path.join("results", "t2_correlators.csv")
+        out_csv = os.path.join("results", "t2_correlators_gridv2.csv" if grid_version == "grid_v2" else "t2_correlators.csv")
 
     write_run_meta()
 
@@ -37,7 +37,7 @@ def run_t2(seeds, quick=False, out_csv=None):
     else:
         n_train_list = [10, 20, 40, 80, 160]
 
-    print(f"=== Starting T2 Correlators Benchmark (Seeds: {seeds}, N_train: {n_train_list}) ===")
+    print(f"=== Starting T2 Correlators Benchmark ({grid_version}, Seeds: {seeds}, N_train: {n_train_list}) ===")
     total_rows = 0
     t_start = time.time()
 
@@ -59,6 +59,7 @@ def run_t2(seeds, quick=False, out_csv=None):
                 train_targets=tr_targets_a,
                 test_states=te_states_a,
                 test_targets=te_targets_a,
+                grid_version=grid_version,
             )
             write_csv_rows(out_csv, rows_a)
             total_rows += len(rows_a)
@@ -78,6 +79,7 @@ def run_t2(seeds, quick=False, out_csv=None):
                 train_targets=tr_targets_b,
                 test_states=te_states_b,
                 test_targets=te_targets_b,
+                grid_version=grid_version,
             )
             write_csv_rows(out_csv, rows_b)
             total_rows += len(rows_b)

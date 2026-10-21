@@ -57,10 +57,16 @@ from kernels import (
 # 20 seeds standard
 SEEDS = list(range(20))
 
-# Hyperparameter search grids
+# Hyperparameter search grids (v1 baseline)
 C_GRID = [0.1, 1.0, 10.0, 100.0]
 C_FACTORS = [0.1, 0.3, 1.0, 3.0, 10.0]
 ALPHA_GRID = np.logspace(-4, 2, 7)
+
+# Widened hyperparameter search grids (grid_v2)
+C_GRID_V2 = np.logspace(-2, 4, 7)
+C_FACTORS_V2 = np.logspace(-2, 2, 9)
+C_FACTORS_STD_V2 = np.logspace(-3, 2, 11)
+ALPHA_GRID_V2 = np.logspace(-8, 2, 11)
 
 
 def get_parser(description: str = "") -> argparse.ArgumentParser:
@@ -277,6 +283,7 @@ def evaluate_regression_models(
     test_states: np.ndarray,
     test_targets: np.ndarray,
     pairs: Any = None,
+    grid_version: str = "grid_v2",
 ) -> List[Dict[str, Any]]:
     """
     Fit and evaluate all regression model arms per protocol:
@@ -285,6 +292,17 @@ def evaluate_regression_models(
     - Record R2 and MAE in original physical units.
     """
     results = []
+
+    if grid_version == "grid_v2":
+        C_search = C_GRID_V2
+        c_search = C_FACTORS_V2
+        c_std_search = C_FACTORS_STD_V2
+        alpha_search = ALPHA_GRID_V2
+    else:
+        C_search = C_GRID
+        c_search = C_FACTORS
+        c_std_search = C_FACTORS
+        alpha_search = ALPHA_GRID
 
     # Target statistics from TRAIN only
     y_mean = float(np.mean(train_targets))
@@ -299,7 +317,7 @@ def evaluate_regression_models(
     mae_base = float(mean_absolute_error(test_targets, y_pred_base))
     for metric, val in [("r2", r2_base), ("mae", mae_base)]:
         results.append({
-            "task": task, "target": target, "tag": tag, "n": n, "N_train": N_train,
+            "task": task, "target": target, "tag": tag, "grid": grid_version, "n": n, "N_train": N_train,
             "seed": seed, "model": "baseline_mean", "variant": "none",
             "metric": metric, "value": val, "best_params": "{}", "fit_seconds": 0.0,
         })
@@ -344,13 +362,15 @@ def evaluate_regression_models(
     K_fq_test = (test_states @ train_states.T) ** 2
 
     # Helper: tune SVR with precomputed kernel or RBF
-    def tune_and_score_rbf(X_tr, X_te, gamma_grid, model_name, variant, arm_tag):
+    def tune_and_score_rbf(X_tr, X_te, gamma_grid, model_name, variant, arm_tag, c_factors=None, epsilon=0.1):
+        if c_factors is None:
+            c_factors = c_search
         t0 = time.time()
         best_cv = -np.inf
-        best_C, best_c = C_GRID[0], C_FACTORS[0]
+        best_C, best_c = C_search[0], c_factors[0]
 
-        for C in C_GRID:
-            for c_val in C_FACTORS:
+        for C in C_search:
+            for c_val in c_factors:
                 gamma = c_val / gamma_grid
                 fold_scores = []
                 for tr_idx, val_idx in kf.split(X_tr):
@@ -360,7 +380,7 @@ def evaluate_regression_models(
                     if f_s < 1e-12: f_s = 1.0
                     f_y_tr_z = (f_y_tr - f_m) / f_s
 
-                    clf = SVR(kernel="rbf", C=C, gamma=gamma, epsilon=0.1)
+                    clf = SVR(kernel="rbf", C=C, gamma=gamma, epsilon=epsilon)
                     clf.fit(X_tr[tr_idx], f_y_tr_z)
                     pred_z = clf.predict(X_tr[val_idx])
                     pred = pred_z * f_s + f_m
@@ -371,7 +391,7 @@ def evaluate_regression_models(
                     best_C, best_c = C, c_val
 
         best_gamma = best_c / gamma_grid
-        clf_final = SVR(kernel="rbf", C=best_C, gamma=best_gamma, epsilon=0.1)
+        clf_final = SVR(kernel="rbf", C=best_C, gamma=best_gamma, epsilon=epsilon)
         clf_final.fit(X_tr, y_train_z)
         pred_z = clf_final.predict(X_te)
         pred = pred_z * y_std + y_mean
@@ -379,35 +399,34 @@ def evaluate_regression_models(
 
         r2 = float(r2_score(test_targets, pred))
         mae = float(mean_absolute_error(test_targets, pred))
-        b_params = json.dumps({"C": best_C, "c": best_c, "gamma": float(best_gamma)})
+        b_params = json.dumps({"C": float(best_C), "c": float(best_c), "gamma": float(best_gamma), "epsilon": float(epsilon)})
 
         for m_name, val in [("r2", r2), ("mae", mae)]:
             results.append({
-                "task": task, "target": target, "tag": arm_tag, "n": n, "N_train": N_train,
+                "task": task, "target": target, "tag": arm_tag, "grid": grid_version, "n": n, "N_train": N_train,
                 "seed": seed, "model": model_name, "variant": variant,
                 "metric": m_name, "value": val, "best_params": b_params, "fit_seconds": fit_sec,
             })
 
     # Arm 1: PQK-1 (== RBF on <X>)
-    # By proven identity: K^PQ1(gamma=c/n) == RBF(X, gamma'=c/(2n))
-    # We tune and run ONCE as requested
     tune_and_score_rbf(
         X_x_train, X_x_test, gamma_grid=2.0 * n,
-        model_name="PQK-1 (== RBF on <X>)", variant="none", arm_tag=tag
+        model_name="PQK-1 (== RBF on <X>)", variant="none", arm_tag=tag,
+        c_factors=c_search, epsilon=0.1
     )
 
     # Arm 2: PQK-2nn
-    # By proven identity: K^PQ2(gamma=c/n) == RBF(2pt_pauli_nn, gamma'=c/(4n))
     tune_and_score_rbf(
         X_e2_train, X_e2_test, gamma_grid=4.0 * n,
-        model_name="PQK-2nn", variant="none", arm_tag=tag
+        model_name="PQK-2nn", variant="none", arm_tag=tag,
+        c_factors=c_search, epsilon=0.1
     )
 
     # Arm 3: FQ (tune C only)
     t0 = time.time()
     best_cv_fq = -np.inf
-    best_C_fq = C_GRID[0]
-    for C in C_GRID:
+    best_C_fq = C_search[0]
+    for C in C_search:
         fold_scores = []
         for tr_idx, val_idx in kf.split(train_states):
             f_y_tr = train_targets[tr_idx]
@@ -436,31 +455,33 @@ def evaluate_regression_models(
 
     r2_fq = float(r2_score(test_targets, pred))
     mae_fq = float(mean_absolute_error(test_targets, pred))
-    b_params_fq = json.dumps({"C": best_C_fq})
+    b_params_fq = json.dumps({"C": float(best_C_fq), "epsilon": 0.1})
     for m_name, val in [("r2", r2_fq), ("mae", mae_fq)]:
         results.append({
-            "task": task, "target": target, "tag": tag, "n": n, "N_train": N_train,
+            "task": task, "target": target, "tag": tag, "grid": grid_version, "n": n, "N_train": N_train,
             "seed": seed, "model": "FQ", "variant": "none",
             "metric": m_name, "value": val, "best_params": b_params_fq, "fit_seconds": fit_sec_fq,
         })
 
     # Arm 4: E (raw) - gamma = c / d_e
     tune_and_score_rbf(
-        X_e_train, X_e_test, gamma_grid=d_e,
-        model_name="E", variant="raw", arm_tag=tag
+        X_e_train, X_e_test, gamma_grid=float(d_e),
+        model_name="E", variant="raw", arm_tag=tag,
+        c_factors=c_search, epsilon=0.1
     )
 
-    # Arm 5: E (std) - gamma = c / d_e
+    # Arm 5: E (std) - gamma = c / d_e with c_std_search
     tune_and_score_rbf(
-        X_e_train_std, X_e_test_std, gamma_grid=d_e,
-        model_name="E", variant="std", arm_tag=tag
+        X_e_train_std, X_e_test_std, gamma_grid=float(d_e),
+        model_name="E", variant="std", arm_tag=tag,
+        c_factors=c_std_search, epsilon=0.1
     )
 
     # Arm 6: F (Ridge on standardized E features)
     t0 = time.time()
     best_cv_ridge = -np.inf
-    best_alpha = ALPHA_GRID[0]
-    for alpha in ALPHA_GRID:
+    best_alpha = alpha_search[0]
+    for alpha in alpha_search:
         fold_scores = []
         for tr_idx, val_idx in kf.split(X_e_train_std):
             f_y_tr = train_targets[tr_idx]
@@ -489,22 +510,44 @@ def evaluate_regression_models(
     b_params_ridge = json.dumps({"alpha": float(best_alpha)})
     for m_name, val in [("r2", r2_ridge), ("mae", mae_ridge)]:
         results.append({
-            "task": task, "target": target, "tag": tag, "n": n, "N_train": N_train,
+            "task": task, "target": target, "tag": tag, "grid": grid_version, "n": n, "N_train": N_train,
             "seed": seed, "model": "F", "variant": "std",
             "metric": m_name, "value": val, "best_params": b_params_ridge, "fit_seconds": fit_sec_ridge,
         })
 
     # Arm 7: E2 (RBF on 2pt_pauli_nn, gamma = c/d_e2, tag "sanity")
     tune_and_score_rbf(
-        X_e2_train, X_e2_test, gamma_grid=d_e2,
-        model_name="E2", variant="raw", arm_tag="sanity"
+        X_e2_train, X_e2_test, gamma_grid=float(d_e2),
+        model_name="E2", variant="raw", arm_tag="sanity",
+        c_factors=c_search, epsilon=0.1
     )
 
     # Arm 8: E_X (RBF on <X_i> only, raw, gamma = c/(2n), tag "sanity")
+    # Strict runtime bandwidth matching assertion
+    gamma_grid_pqk1 = c_search / float(n)
+    gamma_grid_ex = c_search / (2.0 * n)
+    assert np.allclose(gamma_grid_pqk1, 2.0 * gamma_grid_ex, atol=1e-12), "Bandwidth matching assertion failed!"
+
     tune_and_score_rbf(
         X_x_train, X_x_test, gamma_grid=2.0 * n,
-        model_name="E_X", variant="raw", arm_tag="sanity"
+        model_name="E_X", variant="raw", arm_tag="sanity",
+        c_factors=c_search, epsilon=0.1
     )
+
+    # SVR epsilon sensitivity arms (Task 1 only)
+    if task == "T1":
+        # Sensitivity arm 1: PQK-2nn with epsilon = 0.01
+        tune_and_score_rbf(
+            X_e2_train, X_e2_test, gamma_grid=4.0 * n,
+            model_name="PQK-2nn-eps001", variant="none", arm_tag=tag,
+            c_factors=c_search, epsilon=0.01
+        )
+        # Sensitivity arm 2: Classical E (raw) with epsilon = 0.01
+        tune_and_score_rbf(
+            X_e_train, X_e_test, gamma_grid=float(d_e),
+            model_name="E-raw-eps001", variant="raw", arm_tag=tag,
+            c_factors=c_search, epsilon=0.01
+        )
 
     return results
 
@@ -515,7 +558,7 @@ def write_csv_rows(csv_path: str, rows: List[Dict[str, Any]]):
     write_header = not os.path.exists(csv_path) or os.path.getsize(csv_path) == 0
 
     fieldnames = [
-        "task", "target", "tag", "n", "N_train", "seed",
+        "task", "target", "tag", "grid", "n", "N_train", "seed",
         "model", "variant", "metric", "value", "best_params", "fit_seconds"
     ]
     with open(csv_path, "a", newline="", encoding="utf-8") as f:
