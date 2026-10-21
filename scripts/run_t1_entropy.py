@@ -24,9 +24,14 @@ from common import (
 )
 
 
-def run_t1(seeds, quick=False, out_csv=None, grid_version="grid_v2"):
+def run_t1(seeds, quick=False, out_csv=None, grid_version="grid_v3"):
     if out_csv is None:
-        out_csv = os.path.join("results", "t1_entropy_gridv2.csv" if grid_version == "grid_v2" else "t1_entropy.csv")
+        if grid_version == "grid_v3":
+            out_csv = os.path.join("results", "t1_entropy_gridv3.csv")
+        elif grid_version == "grid_v2":
+            out_csv = os.path.join("results", "t1_entropy_gridv2.csv")
+        else:
+            out_csv = os.path.join("results", "t1_entropy.csv")
 
     write_run_meta()
 
@@ -73,4 +78,5 @@ if __name__ == "__main__":
     parser = get_parser(description="Run Task 1 (Entropy Prediction) Benchmark")
     args = parser.parse_args()
     seeds = parse_seeds(args)
-    run_t1(seeds, quick=args.quick, out_csv=args.out)
+    grid_ver = args.grid if hasattr(args, "grid") and args.grid else "grid_v3"
+    run_t1(seeds, quick=args.quick, out_csv=args.out, grid_version=grid_ver)

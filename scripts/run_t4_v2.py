@@ -134,7 +134,7 @@ def evaluate_t4a_classification(
     target = "sq_diff_sign"
     tag = "contained"
 
-    if grid_version == "grid_v2":
+    if grid_version in ("grid_v2", "grid_v3"):
         C_search = C_GRID_V2
         c_search = C_FACTORS_V2
         c_std_search = C_FACTORS_STD_V2
@@ -144,6 +144,11 @@ def evaluate_t4a_classification(
         c_search = C_FACTORS
         c_std_search = C_FACTORS
         alpha_search = ALPHA_GRID
+
+    if grid_version == "grid_v3":
+        epsilon_search = [0.1, 0.03, 0.01, 0.003, 0.001]
+    else:
+        epsilon_search = [0.1]
 
     # Baseline majority
     classes, counts = np.unique(train_labels, return_counts=True)
@@ -334,7 +339,7 @@ def evaluate_t4b_regression(
     target = "half_cut_entropy"
     tag = "not_contained"
 
-    if grid_version == "grid_v2":
+    if grid_version in ("grid_v2", "grid_v3"):
         C_search = C_GRID_V2
         c_search = C_FACTORS_V2
         c_std_search = C_FACTORS_STD_V2
@@ -344,6 +349,11 @@ def evaluate_t4b_regression(
         c_search = C_FACTORS
         c_std_search = C_FACTORS
         alpha_search = ALPHA_GRID
+
+    if grid_version == "grid_v3":
+        epsilon_search = [0.1, 0.03, 0.01, 0.003, 0.001]
+    else:
+        epsilon_search = [0.1]
 
     # Target statistics from TRAIN only
     y_mean = float(np.mean(train_targets))
@@ -389,25 +399,26 @@ def evaluate_t4b_regression(
             c_factors = c_search
         t0 = time.time()
         best_cv = -np.inf
-        best_C, best_c = C_search[0], c_factors[0]
+        best_C, best_c, best_eps = C_search[0], c_factors[0], epsilon_search[0]
 
         for C in C_search:
             for c_val in c_factors:
                 gamma = c_val / gamma_grid
-                fold_scores = []
-                for tr_idx, val_idx in kf.split(X_tr):
-                    svr = SVR(kernel="rbf", C=C, epsilon=0.1, gamma=gamma)
-                    svr.fit(X_tr[tr_idx], y_train_z[tr_idx])
-                    pred_z = svr.predict(X_tr[val_idx])
-                    pred_phys = pred_z * y_std + y_mean
-                    fold_scores.append(r2_score(train_targets[val_idx], pred_phys))
-                mean_r2 = float(np.mean(fold_scores))
-                if mean_r2 > best_cv:
-                    best_cv = mean_r2
-                    best_C, best_c = C, c_val
+                for eps in epsilon_search:
+                    fold_scores = []
+                    for tr_idx, val_idx in kf.split(X_tr):
+                        svr = SVR(kernel="rbf", C=C, epsilon=eps, gamma=gamma)
+                        svr.fit(X_tr[tr_idx], y_train_z[tr_idx])
+                        pred_z = svr.predict(X_tr[val_idx])
+                        pred_phys = pred_z * y_std + y_mean
+                        fold_scores.append(r2_score(train_targets[val_idx], pred_phys))
+                    mean_r2 = float(np.mean(fold_scores))
+                    if mean_r2 > best_cv:
+                        best_cv = mean_r2
+                        best_C, best_c, best_eps = C, c_val, eps
 
         best_gamma = best_c / gamma_grid
-        svr_final = SVR(kernel="rbf", C=best_C, epsilon=0.1, gamma=best_gamma)
+        svr_final = SVR(kernel="rbf", C=best_C, epsilon=best_eps, gamma=best_gamma)
         svr_final.fit(X_tr, y_train_z)
         pred_z = svr_final.predict(X_te)
         pred_phys = pred_z * y_std + y_mean
@@ -415,7 +426,7 @@ def evaluate_t4b_regression(
 
         r2 = float(r2_score(test_targets, pred_phys))
         mae = float(mean_absolute_error(test_targets, pred_phys))
-        b_params = json.dumps({"C": float(best_C), "c": float(best_c), "gamma": float(best_gamma), "epsilon": 0.1})
+        b_params = json.dumps({"C": float(best_C), "c": float(best_c), "gamma": float(best_gamma), "epsilon": float(best_eps)})
 
         for m_name, val in [("r2", r2), ("mae", mae)]:
             results.append({
@@ -433,27 +444,30 @@ def evaluate_t4b_regression(
     t0 = time.time()
     best_cv_fq = -np.inf
     best_C_fq = C_search[0]
+    best_eps_fq = epsilon_search[0]
     for C in C_search:
-        fold_scores = []
-        for tr_idx, val_idx in kf.split(train_states):
-            svr = SVR(kernel="precomputed", C=C, epsilon=0.1)
-            svr.fit(K_fq_train[np.ix_(tr_idx, tr_idx)], y_train_z[tr_idx])
-            pred_z = svr.predict(K_fq_train[np.ix_(val_idx, tr_idx)])
-            pred_phys = pred_z * y_std + y_mean
-            fold_scores.append(r2_score(train_targets[val_idx], pred_phys))
-        mean_r2 = float(np.mean(fold_scores))
-        if mean_r2 > best_cv_fq:
-            best_cv_fq = mean_r2
-            best_C_fq = C
+        for eps in epsilon_search:
+            fold_scores = []
+            for tr_idx, val_idx in kf.split(train_states):
+                svr = SVR(kernel="precomputed", C=C, epsilon=eps)
+                svr.fit(K_fq_train[np.ix_(tr_idx, tr_idx)], y_train_z[tr_idx])
+                pred_z = svr.predict(K_fq_train[np.ix_(val_idx, tr_idx)])
+                pred_phys = pred_z * y_std + y_mean
+                fold_scores.append(r2_score(train_targets[val_idx], pred_phys))
+            mean_r2 = float(np.mean(fold_scores))
+            if mean_r2 > best_cv_fq:
+                best_cv_fq = mean_r2
+                best_C_fq = C
+                best_eps_fq = eps
 
-    svr_fq = SVR(kernel="precomputed", C=best_C_fq, epsilon=0.1)
+    svr_fq = SVR(kernel="precomputed", C=best_C_fq, epsilon=best_eps_fq)
     svr_fq.fit(K_fq_train, y_train_z)
     pred_z = svr_fq.predict(K_fq_test)
     pred_phys = pred_z * y_std + y_mean
     fit_sec_fq = time.time() - t0
     r2_fq = float(r2_score(test_targets, pred_phys))
     mae_fq = float(mean_absolute_error(test_targets, pred_phys))
-    b_params_fq = json.dumps({"C": float(best_C_fq), "epsilon": 0.1})
+    b_params_fq = json.dumps({"C": float(best_C_fq), "epsilon": float(best_eps_fq)})
     for m_name, val in [("r2", r2_fq), ("mae", mae_fq)]:
         results.append({
             "task": task, "target": target, "tag": tag, "grid": grid_version, "n": n, "lattice": lattice_str, "boundary": "open",
@@ -510,9 +524,17 @@ def evaluate_t4b_regression(
     return results
 
 
-def run_t4_v2(seeds, quick=False, out_csv=None, grid_version="grid_v2"):
+def run_t4_v2(seeds, quick=False, out_csv=None, grid_version="grid_v3", run_t4a=None, run_t4b=True):
+    if run_t4a is None:
+        run_t4a = (grid_version != "grid_v3")
+
     if out_csv is None:
-        out_csv = os.path.join("results", "t4_v2_gridv2.csv" if grid_version == "grid_v2" else "t4_v2.csv")
+        if grid_version == "grid_v3":
+            out_csv = os.path.join("results", "t4_v2_gridv3.csv")
+        elif grid_version == "grid_v2":
+            out_csv = os.path.join("results", "t4_v2_gridv2.csv")
+        else:
+            out_csv = os.path.join("results", "t4_v2.csv")
 
     cb_csv = os.path.join("results", "t4_v2_class_balance.csv")
     write_run_meta()
@@ -565,8 +587,9 @@ def run_t4_v2(seeds, quick=False, out_csv=None, grid_version="grid_v2"):
             else:
                 decision = "Balanced classes >= 15%"
 
-            with open(cb_csv, "a", encoding="utf-8") as f_cb:
-                f_cb.write(f"{lattice_str},{seed},{total_samp},{dropped_cnt},{drop_frac:.6f},{n_neel},{n_stripe},{frac_neel:.4f},{frac_stripe:.4f},\"{decision}\"\n")
+            if run_t4a:
+                with open(cb_csv, "a", encoding="utf-8") as f_cb:
+                    f_cb.write(f"{lattice_str},{seed},{total_samp},{dropped_cnt},{drop_frac:.6f},{n_neel},{n_stripe},{frac_neel:.4f},{frac_stripe:.4f},\"{decision}\"\n")
 
             # Training pool: first 80 states
             # Test pool: states 80 to 280 (200 states)
@@ -580,32 +603,34 @@ def run_t4_v2(seeds, quick=False, out_csv=None, grid_version="grid_v2"):
                 train_ents = ents[:N]
 
                 # Evaluate T4a (Classification)
-                rows_a = evaluate_t4a_classification(
-                    lattice_str=lattice_str, n=n, N_train=N, seed=seed,
-                    train_states=train_states, train_labels=train_labels,
-                    test_states=test_states, test_labels=test_labels,
-                    pairs=pairs, grid_version=grid_version
-                )
-                with open(out_csv, "a", newline="", encoding="utf-8") as f:
-                    writer = csv.DictWriter(f, fieldnames=fieldnames)
-                    for r in rows_a:
-                        writer.writerow({k: r.get(k, "") for k in fieldnames})
-                    f.flush()
-                total_rows += len(rows_a)
+                if run_t4a:
+                    rows_a = evaluate_t4a_classification(
+                        lattice_str=lattice_str, n=n, N_train=N, seed=seed,
+                        train_states=train_states, train_labels=train_labels,
+                        test_states=test_states, test_labels=test_labels,
+                        pairs=pairs, grid_version=grid_version
+                    )
+                    with open(out_csv, "a", newline="", encoding="utf-8") as f:
+                        writer = csv.DictWriter(f, fieldnames=fieldnames)
+                        for r in rows_a:
+                            writer.writerow({k: r.get(k, "") for k in fieldnames})
+                        f.flush()
+                    total_rows += len(rows_a)
 
                 # Evaluate T4b (Regression)
-                rows_b = evaluate_t4b_regression(
-                    lattice_str=lattice_str, n=n, N_train=N, seed=seed,
-                    train_states=train_states, train_targets=train_ents,
-                    test_states=test_states, test_targets=test_ents,
-                    pairs=pairs, grid_version=grid_version
-                )
-                with open(out_csv, "a", newline="", encoding="utf-8") as f:
-                    writer = csv.DictWriter(f, fieldnames=fieldnames)
-                    for r in rows_b:
-                        writer.writerow({k: r.get(k, "") for k in fieldnames})
-                    f.flush()
-                total_rows += len(rows_b)
+                if run_t4b:
+                    rows_b = evaluate_t4b_regression(
+                        lattice_str=lattice_str, n=n, N_train=N, seed=seed,
+                        train_states=train_states, train_targets=train_ents,
+                        test_states=test_states, test_targets=test_ents,
+                        pairs=pairs, grid_version=grid_version
+                    )
+                    with open(out_csv, "a", newline="", encoding="utf-8") as f:
+                        writer = csv.DictWriter(f, fieldnames=fieldnames)
+                        for r in rows_b:
+                            writer.writerow({k: r.get(k, "") for k in fieldnames})
+                        f.flush()
+                    total_rows += len(rows_b)
 
         print(f"  [T4 v2] Seed {seed:2d} completed in {time.time() - t_seed:.2f}s (logged {total_rows} rows so far)")
 
@@ -663,8 +688,9 @@ def run_t4_v2(seeds, quick=False, out_csv=None, grid_version="grid_v2"):
             else:
                 decision = "Balanced classes >= 15%"
 
-            with open(cb_csv, "a", encoding="utf-8") as f_cb:
-                f_cb.write(f"{lattice_str},{seed},{total_samp},{dropped_cnt},{drop_frac:.6f},{n_neel},{n_stripe},{frac_neel:.4f},{frac_stripe:.4f},\"{decision}\"\n")
+            if run_t4a:
+                with open(cb_csv, "a", encoding="utf-8") as f_cb:
+                    f_cb.write(f"{lattice_str},{seed},{total_samp},{dropped_cnt},{drop_frac:.6f},{n_neel},{n_stripe},{frac_neel:.4f},{frac_stripe:.4f},\"{decision}\"\n")
 
             # Training pool: first 80 states
             # Test pool: states 80 to 280 (200 states)
@@ -716,4 +742,5 @@ if __name__ == "__main__":
     parser = get_parser(description="Run Task 4 v2 (Frustrated Lattice Redesign) Benchmark")
     args = parser.parse_args()
     seeds = parse_seeds(args)
-    run_t4_v2(seeds, quick=args.quick, out_csv=args.out)
+    grid_ver = args.grid if hasattr(args, "grid") and args.grid else "grid_v3"
+    run_t4_v2(seeds, quick=args.quick, out_csv=args.out, grid_version=grid_ver)

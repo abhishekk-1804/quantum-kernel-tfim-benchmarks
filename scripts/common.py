@@ -68,6 +68,9 @@ C_FACTORS_V2 = np.logspace(-2, 2, 9)
 C_FACTORS_STD_V2 = np.logspace(-3, 2, 11)
 ALPHA_GRID_V2 = np.logspace(-8, 2, 11)
 
+# Systematic epsilon tuning grids (grid_v3)
+EPSILON_GRID_V3 = [0.1, 0.03, 0.01, 0.003, 0.001]
+
 
 def get_parser(description: str = "") -> argparse.ArgumentParser:
     """Standard CLI argument parser for all benchmark scripts."""
@@ -88,6 +91,13 @@ def get_parser(description: str = "") -> argparse.ArgumentParser:
         type=str,
         default=None,
         help="Custom output CSV path.",
+    )
+    parser.add_argument(
+        "--grid",
+        type=str,
+        default=None,
+        choices=["grid_v1", "grid_v2", "grid_v3"],
+        help="Grid version (e.g. 'grid_v2', 'grid_v3').",
     )
     return parser
 
@@ -293,7 +303,7 @@ def evaluate_regression_models(
     """
     results = []
 
-    if grid_version == "grid_v2":
+    if grid_version in ("grid_v2", "grid_v3"):
         C_search = C_GRID_V2
         c_search = C_FACTORS_V2
         c_std_search = C_FACTORS_STD_V2
@@ -303,6 +313,11 @@ def evaluate_regression_models(
         c_search = C_FACTORS
         c_std_search = C_FACTORS
         alpha_search = ALPHA_GRID
+
+    if grid_version == "grid_v3":
+        epsilon_search = EPSILON_GRID_V3
+    else:
+        epsilon_search = [0.1]
 
     # Target statistics from TRAIN only
     y_mean = float(np.mean(train_targets))
@@ -362,36 +377,38 @@ def evaluate_regression_models(
     K_fq_test = (test_states @ train_states.T) ** 2
 
     # Helper: tune SVR with precomputed kernel or RBF
-    def tune_and_score_rbf(X_tr, X_te, gamma_grid, model_name, variant, arm_tag, c_factors=None, epsilon=0.1):
+    def tune_and_score_rbf(X_tr, X_te, gamma_grid, model_name, variant, arm_tag, c_factors=None, epsilon_grid=None):
         if c_factors is None:
             c_factors = c_search
+        eps_list = epsilon_grid if epsilon_grid is not None else epsilon_search
         t0 = time.time()
         best_cv = -np.inf
-        best_C, best_c = C_search[0], c_factors[0]
+        best_C, best_c, best_eps = C_search[0], c_factors[0], eps_list[0]
 
         for C in C_search:
             for c_val in c_factors:
                 gamma = c_val / gamma_grid
-                fold_scores = []
-                for tr_idx, val_idx in kf.split(X_tr):
-                    # Fold z-score
-                    f_y_tr = train_targets[tr_idx]
-                    f_m, f_s = np.mean(f_y_tr), np.std(f_y_tr)
-                    if f_s < 1e-12: f_s = 1.0
-                    f_y_tr_z = (f_y_tr - f_m) / f_s
+                for eps in eps_list:
+                    fold_scores = []
+                    for tr_idx, val_idx in kf.split(X_tr):
+                        # Fold z-score
+                        f_y_tr = train_targets[tr_idx]
+                        f_m, f_s = np.mean(f_y_tr), np.std(f_y_tr)
+                        if f_s < 1e-12: f_s = 1.0
+                        f_y_tr_z = (f_y_tr - f_m) / f_s
 
-                    clf = SVR(kernel="rbf", C=C, gamma=gamma, epsilon=epsilon)
-                    clf.fit(X_tr[tr_idx], f_y_tr_z)
-                    pred_z = clf.predict(X_tr[val_idx])
-                    pred = pred_z * f_s + f_m
-                    fold_scores.append(r2_score(train_targets[val_idx], pred))
-                mean_r2 = float(np.mean(fold_scores))
-                if mean_r2 > best_cv:
-                    best_cv = mean_r2
-                    best_C, best_c = C, c_val
+                        clf = SVR(kernel="rbf", C=C, gamma=gamma, epsilon=eps)
+                        clf.fit(X_tr[tr_idx], f_y_tr_z)
+                        pred_z = clf.predict(X_tr[val_idx])
+                        pred = pred_z * f_s + f_m
+                        fold_scores.append(r2_score(train_targets[val_idx], pred))
+                    mean_r2 = float(np.mean(fold_scores))
+                    if mean_r2 > best_cv:
+                        best_cv = mean_r2
+                        best_C, best_c, best_eps = C, c_val, eps
 
         best_gamma = best_c / gamma_grid
-        clf_final = SVR(kernel="rbf", C=best_C, gamma=best_gamma, epsilon=epsilon)
+        clf_final = SVR(kernel="rbf", C=best_C, gamma=best_gamma, epsilon=best_eps)
         clf_final.fit(X_tr, y_train_z)
         pred_z = clf_final.predict(X_te)
         pred = pred_z * y_std + y_mean
@@ -399,7 +416,7 @@ def evaluate_regression_models(
 
         r2 = float(r2_score(test_targets, pred))
         mae = float(mean_absolute_error(test_targets, pred))
-        b_params = json.dumps({"C": float(best_C), "c": float(best_c), "gamma": float(best_gamma), "epsilon": float(epsilon)})
+        b_params = json.dumps({"C": float(best_C), "c": float(best_c), "gamma": float(best_gamma), "epsilon": float(best_eps)})
 
         for m_name, val in [("r2", r2), ("mae", mae)]:
             results.append({
@@ -412,42 +429,45 @@ def evaluate_regression_models(
     tune_and_score_rbf(
         X_x_train, X_x_test, gamma_grid=2.0 * n,
         model_name="PQK-1 (== RBF on <X>)", variant="none", arm_tag=tag,
-        c_factors=c_search, epsilon=0.1
+        c_factors=c_search,
     )
 
     # Arm 2: PQK-2nn
     tune_and_score_rbf(
         X_e2_train, X_e2_test, gamma_grid=4.0 * n,
         model_name="PQK-2nn", variant="none", arm_tag=tag,
-        c_factors=c_search, epsilon=0.1
+        c_factors=c_search,
     )
 
-    # Arm 3: FQ (tune C only)
+    # Arm 3: FQ (tune C and epsilon)
     t0 = time.time()
     best_cv_fq = -np.inf
     best_C_fq = C_search[0]
+    best_eps_fq = epsilon_search[0]
     for C in C_search:
-        fold_scores = []
-        for tr_idx, val_idx in kf.split(train_states):
-            f_y_tr = train_targets[tr_idx]
-            f_m, f_s = np.mean(f_y_tr), np.std(f_y_tr)
-            if f_s < 1e-12: f_s = 1.0
-            f_y_tr_z = (f_y_tr - f_m) / f_s
+        for eps in epsilon_search:
+            fold_scores = []
+            for tr_idx, val_idx in kf.split(train_states):
+                f_y_tr = train_targets[tr_idx]
+                f_m, f_s = np.mean(f_y_tr), np.std(f_y_tr)
+                if f_s < 1e-12: f_s = 1.0
+                f_y_tr_z = (f_y_tr - f_m) / f_s
 
-            K_fold_tr = K_fq_train[np.ix_(tr_idx, tr_idx)]
-            K_fold_val = K_fq_train[np.ix_(val_idx, tr_idx)]
+                K_fold_tr = K_fq_train[np.ix_(tr_idx, tr_idx)]
+                K_fold_val = K_fq_train[np.ix_(val_idx, tr_idx)]
 
-            clf = SVR(kernel="precomputed", C=C, epsilon=0.1)
-            clf.fit(K_fold_tr, f_y_tr_z)
-            pred_z = clf.predict(K_fold_val)
-            pred = pred_z * f_s + f_m
-            fold_scores.append(r2_score(train_targets[val_idx], pred))
-        mean_r2 = float(np.mean(fold_scores))
-        if mean_r2 > best_cv_fq:
-            best_cv_fq = mean_r2
-            best_C_fq = C
+                clf = SVR(kernel="precomputed", C=C, epsilon=eps)
+                clf.fit(K_fold_tr, f_y_tr_z)
+                pred_z = clf.predict(K_fold_val)
+                pred = pred_z * f_s + f_m
+                fold_scores.append(r2_score(train_targets[val_idx], pred))
+            mean_r2 = float(np.mean(fold_scores))
+            if mean_r2 > best_cv_fq:
+                best_cv_fq = mean_r2
+                best_C_fq = C
+                best_eps_fq = eps
 
-    clf_fq = SVR(kernel="precomputed", C=best_C_fq, epsilon=0.1)
+    clf_fq = SVR(kernel="precomputed", C=best_C_fq, epsilon=best_eps_fq)
     clf_fq.fit(K_fq_train, y_train_z)
     pred_z = clf_fq.predict(K_fq_test)
     pred = pred_z * y_std + y_mean
@@ -455,7 +475,7 @@ def evaluate_regression_models(
 
     r2_fq = float(r2_score(test_targets, pred))
     mae_fq = float(mean_absolute_error(test_targets, pred))
-    b_params_fq = json.dumps({"C": float(best_C_fq), "epsilon": 0.1})
+    b_params_fq = json.dumps({"C": float(best_C_fq), "epsilon": float(best_eps_fq)})
     for m_name, val in [("r2", r2_fq), ("mae", mae_fq)]:
         results.append({
             "task": task, "target": target, "tag": tag, "grid": grid_version, "n": n, "N_train": N_train,
@@ -467,14 +487,14 @@ def evaluate_regression_models(
     tune_and_score_rbf(
         X_e_train, X_e_test, gamma_grid=float(d_e),
         model_name="E", variant="raw", arm_tag=tag,
-        c_factors=c_search, epsilon=0.1
+        c_factors=c_search,
     )
 
     # Arm 5: E (std) - gamma = c / d_e with c_std_search
     tune_and_score_rbf(
         X_e_train_std, X_e_test_std, gamma_grid=float(d_e),
         model_name="E", variant="std", arm_tag=tag,
-        c_factors=c_std_search, epsilon=0.1
+        c_factors=c_std_search,
     )
 
     # Arm 6: F (Ridge on standardized E features)
@@ -519,7 +539,7 @@ def evaluate_regression_models(
     tune_and_score_rbf(
         X_e2_train, X_e2_test, gamma_grid=float(d_e2),
         model_name="E2", variant="raw", arm_tag="sanity",
-        c_factors=c_search, epsilon=0.1
+        c_factors=c_search,
     )
 
     # Arm 8: E_X (RBF on <X_i> only, raw, gamma = c/(2n), tag "sanity")
@@ -531,22 +551,22 @@ def evaluate_regression_models(
     tune_and_score_rbf(
         X_x_train, X_x_test, gamma_grid=2.0 * n,
         model_name="E_X", variant="raw", arm_tag="sanity",
-        c_factors=c_search, epsilon=0.1
+        c_factors=c_search,
     )
 
-    # SVR epsilon sensitivity arms (Task 1 only)
-    if task == "T1":
+    # SVR epsilon sensitivity arms (Task 1, grid_v2 only)
+    if task == "T1" and grid_version == "grid_v2":
         # Sensitivity arm 1: PQK-2nn with epsilon = 0.01
         tune_and_score_rbf(
             X_e2_train, X_e2_test, gamma_grid=4.0 * n,
             model_name="PQK-2nn-eps001", variant="none", arm_tag=tag,
-            c_factors=c_search, epsilon=0.01
+            c_factors=c_search, epsilon_grid=[0.01]
         )
         # Sensitivity arm 2: Classical E (raw) with epsilon = 0.01
         tune_and_score_rbf(
             X_e_train, X_e_test, gamma_grid=float(d_e),
             model_name="E-raw-eps001", variant="raw", arm_tag=tag,
-            c_factors=c_search, epsilon=0.01
+            c_factors=c_search, epsilon_grid=[0.01]
         )
 
     return results
