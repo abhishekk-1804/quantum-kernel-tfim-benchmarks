@@ -12,6 +12,7 @@ qubit 0.
 All Hamiltonians are returned as SciPy CSR sparse matrices.
 """
 
+import functools
 import numpy as np
 import scipy.sparse as sp
 import scipy.sparse.linalg as spla
@@ -23,6 +24,11 @@ _I2 = sp.eye(2, format="csr", dtype=complex)
 _X = sp.csr_matrix(np.array([[0, 1], [1, 0]], dtype=complex))
 _Y = sp.csr_matrix(np.array([[0, -1j], [1j, 0]], dtype=complex))
 _Z = sp.csr_matrix(np.array([[1, 0], [0, -1]], dtype=complex))
+
+# Real-valued Paulis (needed for the purely-real sparse sector path)
+_I2r = sp.eye(2, format="csr", dtype=np.float64)
+_Xr  = sp.csr_matrix(np.array([[0, 1], [1, 0]], dtype=np.float64))
+_Zr  = sp.csr_matrix(np.array([[1, 0], [0, -1]], dtype=np.float64))
 
 
 # ── Low-level helpers ──────────────────────────────────────────────────────────
@@ -42,11 +48,18 @@ def _single_site_op(op, site, n):
 
 def _two_site_op(op_a, site_a, op_b, site_b, n):
     """
-    Embed op_a ⊗ op_b at (site_a, site_b) in an n-qubit Hilbert space.
+    Embed op_a (at site_a) ⊗ op_b (at site_b) in an n-qubit Hilbert space.
+
+    When site_a == site_b the operators are composed at that site:
+        factors[site_a] = op_a @ op_b
+    This correctly handles Z_i² = I and other same-site products.
     """
     factors = [_I2] * n
-    factors[site_a] = op_a
-    factors[site_b] = op_b
+    if site_a == site_b:
+        factors[site_a] = op_a @ op_b
+    else:
+        factors[site_a] = op_a
+        factors[site_b] = op_b
     result = factors[0]
     for f in factors[1:]:
         result = sp.kron(result, f, format="csr")
@@ -225,7 +238,7 @@ def build_frustrated_2d(rows=2, cols=4, g=1.0, J1=-1.0, J2=-0.5):
     return H.tocsr(), nn_bonds, nnn_bonds
 
 
-# ── Parity operator and ground-state solver ────────────────────────────────────
+# ── Sparse parity-sector basis ─────────────────────────────────────────────────
 
 def _build_parity_op(n):
     """
@@ -237,100 +250,174 @@ def _build_parity_op(n):
     return result
 
 
-def ground_state(H, n, sector="even", symmetry_break=0.0):
+@functools.lru_cache(maxsize=16)
+def _build_sector_basis(n, sector="even"):
     """
-    Solve for the ground state of Hamiltonian H.
+    Build a sparse orthonormal basis for the Z_2 parity sector.
+
+    The Z_2 parity operator is P = ⊗_{i=0}^{n-1} X_i, with eigenvalues ±1.
+    The ±1 eigenvectors are the symmetric / antisymmetric superpositions of
+    computational-basis pairs:
+
+        |+⟩_{s,s̄} = (|s⟩ + |s̄⟩) / √2    (even sector, eigenvalue +1)
+        |−⟩_{s,s̄} = (|s⟩ − |s̄⟩) / √2    (odd  sector, eigenvalue −1)
+
+    where s̄ = (2^n − 1) XOR s is the bitwise complement of s (flips all
+    qubits, equivalent to P |s⟩ = |s̄⟩).
+
+    We keep only the representative s < s̄ to avoid double-counting, giving
+    exactly 2^(n−1) basis columns.
+
+    Note
+    ----
+    The basis handles the fixed-point s == s̄ only when n = 0; for n ≥ 1
+    there are no self-symmetric states (s ≠ s̄ always).
 
     Parameters
     ----------
-    H : scipy.sparse.csr_matrix
-        The Hamiltonian (2^n × 2^n).
     n : int
-        Number of qubits.
+    sector : {"even", "odd"}
+
+    Returns
+    -------
+    V : scipy.sparse.csc_matrix, shape (2^n, 2^(n-1)), dtype float64
+        Columns are orthonormal basis vectors for the chosen sector.
+    """
+    dim = 2 ** n
+    flip_mask = dim - 1  # XOR with this to flip all bits
+
+    sign = +1.0 if sector == "even" else -1.0
+    val = 1.0 / np.sqrt(2.0)
+
+    rows_idx = []
+    cols_idx = []
+    data = []
+
+    col = 0
+    for s in range(dim):
+        s_flip = flip_mask ^ s
+        if s < s_flip:
+            rows_idx.append(s)
+            cols_idx.append(col)
+            data.append(val)
+
+            rows_idx.append(s_flip)
+            cols_idx.append(col)
+            data.append(sign * val)
+
+            col += 1
+
+    sector_dim = col  # should be 2^(n-1)
+    V = sp.csc_matrix(
+        (data, (rows_idx, cols_idx)),
+        shape=(dim, sector_dim),
+        dtype=np.float64,
+    )
+    return V
+
+
+def ground_state(H, n, sector="even", symmetry_break=0.0):
+    """
+    Solve for the ground state of Hamiltonian H using sparse parity-sector
+    projection.
+
+    Strategy
+    --------
+    1. If ``symmetry_break > 0``: add a longitudinal pinning field
+       h ∑_i Z_i, bypass parity-sector projection, and diagonalise the full
+       2^n × 2^n sparse Hamiltonian with ``eigsh(k=2)``.
+
+    2. Otherwise: project into the Z_2-parity sector by transforming to the
+       sparse orthonormal sector basis V (shape 2^n × 2^(n-1)) constructed in
+       :func:`_build_sector_basis`.  Compute H_sec = V^T H V sparsely.
+
+       * Sector dimension ≤ 1024 (n ≤ 11): use ``scipy.linalg.eigh`` on the
+         dense sector matrix (exact).
+       * Sector dimension > 1024 (n ≥ 12): use ``scipy.sparse.linalg.eigsh``
+         with k=2 (Lanczos / ARPACK).
+
+    The returned ``gap`` is the **in-sector** gap (energy difference between
+    the two lowest levels within the chosen parity sector).  For the TFIM this
+    equals the true spectral gap (the complementary sector starts higher), but
+    for general Hamiltonians the macroscopic gap to the opposite sector may be
+    exponentially small and is NOT captured here.
+
+    Parameters
+    ----------
+    H : scipy.sparse.csr_matrix, shape (2^n, 2^n)
+    n : int
     sector : {"even", "odd", "full"}
-        Which Z_2 parity sector to project into (ignored when
-        symmetry_break > 0).
+        Parity sector to solve in.  ``"full"`` bypasses projection.
     symmetry_break : float
-        If > 0, add a longitudinal pinning field  h * ∑_i Z_i  and
-        diagonalize the full Hilbert space without projection.
+        Strength of longitudinal pinning field h ∑_i Z_i added before
+        diagonalisation.  When > 0, overrides ``sector``.
 
     Returns
     -------
     E0 : float
-        Ground-state energy.
-    psi : np.ndarray, shape (2^n,)
-        Normalised ground-state vector (real).
+    psi : np.ndarray, shape (2^n,), dtype float64
+        Normalised ground-state vector.
     gap : float
-        Energy gap to the first excited state within the chosen sector
-        (or in the full spectrum when symmetry_break > 0).
+        In-sector energy gap (first excited level minus ground level within the
+        chosen sector).
     """
     dim = 2 ** n
+    H_real = H.real.astype(np.float64)  # TFIM is purely real
 
+    # ── Case 1: symmetry breaking — full-space eigsh ──────────────────────────
     if symmetry_break > 0.0:
-        # Add longitudinal field to break Z_2 symmetry
-        H_full = H.copy().astype(complex)
+        H_full = H_real.copy()
         for i in range(n):
-            Zi = _single_site_op(_Z, i, n)
+            Zi = _single_site_op(_Zr, i, n)
             H_full = H_full + symmetry_break * Zi
         vals, vecs = spla.eigsh(H_full, k=2, which="SA")
         idx = np.argsort(vals)
         E0, E1 = vals[idx[0]], vals[idx[1]]
-        psi = vecs[:, idx[0]].real
+        psi = np.real(vecs[:, idx[0]]).astype(np.float64)
         psi /= np.linalg.norm(psi)
-        gap = float(E1 - E0)
-        return float(E0), psi, gap
+        return float(E0), psi, float(E1 - E0)
 
-    # ── parity-sector projection ─────────────────────────────────────────────
-    # Build parity operator P = ⊗ X_i; eigenvalues ±1.
-    # Projector onto +1 sector: Π+ = (I + P)/2
-    # Projector onto -1 sector: Π- = (I - P)/2
-    P = _build_parity_op(n)
-    I_full = sp.eye(dim, format="csr", dtype=complex)
-
-    if sector == "even":
-        Pi = (I_full + P) / 2.0
-    elif sector == "odd":
-        Pi = (I_full - P) / 2.0
-    else:
-        # No projection — solve full space
-        vals, vecs = spla.eigsh(H.astype(complex), k=2, which="SA")
+    # ── Case 2: full-space solve (sector="full") ──────────────────────────────
+    if sector == "full":
+        vals, vecs = spla.eigsh(H_real, k=2, which="SA")
         idx = np.argsort(vals)
         E0, E1 = vals[idx[0]], vals[idx[1]]
-        psi = vecs[:, idx[0]].real
+        psi = vecs[:, idx[0]].astype(np.float64)
         psi /= np.linalg.norm(psi)
-        gap = float(E1 - E0)
-        return float(E0), psi, gap
+        return float(E0), psi, float(E1 - E0)
 
-    # Project the Hamiltonian: H_proj = Π H Π
-    # We work in the full space but restrict to the sector subspace.
-    # Build the basis of the sector by finding eigenvectors of P with
-    # eigenvalue +1 or -1.
-    # More efficient: form the dense projected matrix only in the sector basis.
-    Pi_dense = Pi.toarray()
-    # Orthonormal basis of the sector
-    eigvals_pi, eigvecs_pi = scipy.linalg.eigh(Pi_dense)
-    # eigvals should be 0 or 1 (projection eigenvalues)
-    tol = 1e-8
-    sector_mask = eigvals_pi > 0.5
-    V = eigvecs_pi[:, sector_mask]  # columns span the sector
+    # ── Case 3: sparse parity-sector projection ───────────────────────────────
+    V = _build_sector_basis(n, sector=sector)   # shape (dim, dim//2), float64
+    sector_dim = V.shape[1]
 
-    # Project H into sector subspace
-    H_dense = H.toarray()
-    H_sector = V.conj().T @ H_dense @ V  # shape (d_sector, d_sector)
-    H_sector = (H_sector + H_sector.conj().T) / 2.0  # enforce Hermiticity
+    # Project: H_sec = V^T H V  (sparse × sparse, stays sparse)
+    HV = H_real @ V                              # shape (dim, sector_dim)
+    H_sec = (V.T @ HV).tocsr()                  # shape (sector_dim, sector_dim)
 
-    # Diagonalise sector Hamiltonian
-    evals, evecs = scipy.linalg.eigh(H_sector)
-    E0 = float(evals[0])
-    gap = float(evals[1] - evals[0]) if len(evals) > 1 else float("inf")
+    # Symmetrise to eliminate any floating-point asymmetry
+    H_sec = (H_sec + H_sec.T) * 0.5
+
+    if sector_dim <= 1024:
+        # Dense exact diagonalisation in sector
+        evals, evecs = scipy.linalg.eigh(H_sec.toarray())
+        E0 = float(evals[0])
+        gap = float(evals[1] - evals[0]) if len(evals) > 1 else float("inf")
+        phi = evecs[:, 0]
+    else:
+        # Sparse iterative diagonalisation
+        vals, vecs = spla.eigsh(H_sec, k=2, which="SA")
+        idx = np.argsort(vals)
+        E0, E1 = float(vals[idx[0]]), float(vals[idx[1]])
+        gap = E1 - E0
+        phi = vecs[:, idx[0]]
+
     assert gap > 1e-9, f"Degenerate ground state in sector (gap={gap:.3e})"
 
-    # Lift back to full space
-    psi_full = V @ evecs[:, 0]
-    psi = psi_full.real
+    # Lift sector solution back to full Hilbert space
+    psi = (V @ phi).astype(np.float64)
     psi /= np.linalg.norm(psi)
 
-    return E0, psi, gap
+    return E0, psi, float(gap)
 
 
 # ── Observables ────────────────────────────────────────────────────────────────
@@ -354,12 +441,10 @@ def expect_zz(psi, n, i, j):
     """
     Compute ⟨ψ| Z_i Z_j |ψ⟩.
 
-    When i == j, Z_i² = I, so the expectation value equals 1 for any
-    normalised state.  This is handled analytically to avoid the overwrite
-    bug in _two_site_op when both site indices are identical.
+    When i == j, Z_i² = I analytically, returning ‖ψ‖² = 1 for any
+    normalised state without constructing the full operator.
     """
     if i == j:
-        # Z_i^2 = I, so <Z_i Z_i> = <I> = ||psi||^2 = 1
         return float(np.real(np.dot(psi.conj(), psi)))
     ZZ = _two_site_op(_Z, i, _Z, j, n)
     return float(np.real(psi.conj() @ ZZ.dot(psi)))

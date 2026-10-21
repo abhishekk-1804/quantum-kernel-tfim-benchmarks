@@ -635,3 +635,428 @@ class TestEdgeCases:
         assert abs(bv_broken[2]) > abs(bv_sym[2]), (
             f"|Z| broken={abs(bv_broken[2]):.4f}, symmetric={abs(bv_sym[2]):.4f}"
         )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Phase 1.5 — Sparse Parity Sector, 2-Local PQK, Mathematical Identity Tests
+# ═══════════════════════════════════════════════════════════════════════════════
+
+import time
+import tracemalloc
+from kernels import two_rdm, pqk_gram_2local
+
+
+class TestMathematicalIdentities:
+    """
+    Mathematical identity and structural proofs for Z_2-even sector states.
+    """
+
+    def test_z2_sector_bloch_z_zero(self):
+        """
+        In the Z_2-even parity sector, ⟨Z_k⟩ = Tr(Z ρ_k) = 0 for all sites k.
+
+        Proof sketch: P = ⊗X_i commutes with H and has eigenvalue +1 on the
+        ground state. Since P Z_k P^{-1} = -Z_k, we have
+        ⟨ψ|Z_k|ψ⟩ = ⟨ψ|P^{-1}P Z_k P^{-1}P|ψ⟩ = -⟨ψ|Z_k|ψ⟩ = 0.
+        """
+        for n, g in [(4, 0.5), (4, 1.0), (6, 1.0)]:
+            H = build_tfim(n, g=g)
+            _, psi, _ = ground_state(H, n, sector="even")
+            for k in range(n):
+                rho = one_rdm(psi, n, k)
+                bv = bloch_vector(rho)
+                assert abs(bv[2]) < 1e-10, (
+                    f"n={n}, g={g}, site {k}: ⟨Z⟩ = {bv[2]:.3e} ≠ 0"
+                )
+
+    def test_z2_sector_bloch_y_zero(self):
+        """
+        For real ground states in the even sector, Tr(Y ρ_k) = 0.
+        """
+        for n, g in [(4, 1.0), (6, 2.0)]:
+            H = build_tfim(n, g=g)
+            _, psi, _ = ground_state(H, n, sector="even")
+            for k in range(n):
+                rho = one_rdm(psi, n, k)
+                bv = bloch_vector(rho)
+                assert abs(bv[1]) < 1e-10, (
+                    f"n={n}, g={g}, site {k}: ⟨Y⟩ = {bv[1]:.3e} ≠ 0"
+                )
+
+    def test_rdm_form_in_even_sector(self):
+        """
+        In the Z_2-even sector, ρ_k = (I + x_k X) / 2.
+        Verify: off-diagonal elements of ρ_k are purely real, diagonal is 1/2,
+        and ρ_k[0,1] = ρ_k[1,0] = x_k/2.
+        """
+        n, g = 4, 1.0
+        H = build_tfim(n, g=g)
+        _, psi, _ = ground_state(H, n, sector="even")
+        for k in range(n):
+            rho = one_rdm(psi, n, k)
+            # Diagonal must equal 1/2
+            assert abs(np.real(rho[0, 0]) - 0.5) < 1e-10
+            assert abs(np.real(rho[1, 1]) - 0.5) < 1e-10
+            # Imaginary parts vanish (real state, no Y component)
+            assert abs(np.imag(rho[0, 1])) < 1e-10
+            assert abs(np.imag(rho[1, 0])) < 1e-10
+            # Off-diagonals equal x_k/2
+            bv = bloch_vector(rho)
+            assert abs(np.real(rho[0, 1]) - bv[0] / 2) < 1e-10
+
+    def test_pqk_equals_rbf_kernel(self):
+        """
+        Verify: pqk_gram(rdms_list, gamma) ≡ rbf_kernel(X_bloch, gamma=gamma/2)
+        within 1e-10.
+
+        Derivation:
+            ‖ρ_k^i - ρ_k^j‖_F² = ½ ‖b_k^i - b_k^j‖²
+        therefore
+            K^PQ(γ) = exp(-γ ∑_k ‖ρ_k^i-ρ_k^j‖_F²)
+                     = exp(-γ/2 · ‖concat(b^i)-concat(b^j)‖²)
+                     = RBF(X, gamma=γ/2).
+        """
+        from sklearn.metrics.pairwise import rbf_kernel as sklearn_rbf
+
+        n = 4
+        g_vals = [0.5, 1.0, 2.0, 4.0]
+        gamma = 3.0
+
+        rdms_list = []
+        bloch_features = []
+        for gv in g_vals:
+            H = build_tfim(n, g=gv)
+            _, psi, _ = ground_state(H, n, sector="even")
+            rdms = [one_rdm(psi, n, k) for k in range(n)]
+            rdms_list.append(rdms)
+            bvs = np.concatenate([bloch_vector(r) for r in rdms])
+            bloch_features.append(bvs)
+
+        K_pqk = pqk_gram(rdms_list, gamma=gamma)
+        X_feat = np.array(bloch_features)
+        K_rbf = sklearn_rbf(X_feat, gamma=gamma / 2.0)
+
+        max_diff = float(np.max(np.abs(K_pqk - K_rbf)))
+        assert max_diff < 1e-10, (
+            f"PQK ≠ RBF: max diff = {max_diff:.3e}"
+        )
+
+
+class TestSparseParitySector:
+    """
+    Verify sparse parity-sector solver against dense reference diagonalisation.
+    """
+
+    def _dense_ground_energy(self, H, n):
+        """Return the exact ground energy via dense diagonalisation."""
+        evals = scipy.linalg.eigh(H.toarray(), eigvals_only=True)
+        return float(evals[0])
+
+    def test_sparse_vs_dense_n6(self):
+        """
+        n=6 periodic TFIM: sparse sector solver energy and state overlap match
+        dense eigh to within 1e-10.
+        """
+        n = 6
+        H = build_tfim(n, g=1.0, J=1.0, boundary="periodic")
+
+        # Sparse sector result
+        E0_sparse, psi_sparse, _ = ground_state(H, n, sector="even")
+
+        # Dense reference
+        H_arr = H.toarray().real
+        evals, evecs = scipy.linalg.eigh(H_arr)
+        E0_dense = float(evals[0])
+        psi_dense = evecs[:, 0].astype(float)
+
+        assert abs(E0_sparse - E0_dense) < 1e-10, (
+            f"n=6 energy: sparse={E0_sparse:.14f}, dense={E0_dense:.14f}"
+        )
+        overlap = abs(float(np.dot(psi_sparse, psi_dense)))
+        assert overlap > 1 - 1e-10, (
+            f"n=6 state overlap={overlap:.12f}, expected > 1-1e-10"
+        )
+
+    def test_sparse_vs_dense_n8(self):
+        """
+        n=8 open TFIM: sparse sector solver energy and state overlap match
+        dense eigh to within 1e-10.
+        """
+        n = 8
+        H = build_tfim(n, g=1.0, J=1.0, boundary="open")
+
+        E0_sparse, psi_sparse, _ = ground_state(H, n, sector="even")
+
+        H_arr = H.toarray().real
+        evals, evecs = scipy.linalg.eigh(H_arr)
+        E0_dense = float(evals[0])
+        psi_dense = evecs[:, 0].astype(float)
+
+        assert abs(E0_sparse - E0_dense) < 1e-10, (
+            f"n=8 energy: sparse={E0_sparse:.14f}, dense={E0_dense:.14f}"
+        )
+        overlap = abs(float(np.dot(psi_sparse, psi_dense)))
+        assert overlap > 1 - 1e-10, (
+            f"n=8 state overlap={overlap:.12f}"
+        )
+
+    def test_sector_basis_is_orthonormal(self):
+        """V^T V = I (sparse sector basis is orthonormal)."""
+        from hamiltonians import _build_sector_basis
+        for n in [4, 6, 8]:
+            V = _build_sector_basis(n, sector="even")
+            VtV = (V.T @ V).toarray()
+            id_ref = np.eye(V.shape[1])
+            assert np.allclose(VtV, id_ref, atol=1e-12), (
+                f"n={n}: V^T V is not identity (max err = "
+                f"{np.max(np.abs(VtV - id_ref)):.3e})"
+            )
+
+    def test_sector_basis_spans_parity_sector(self):
+        """V V^T projects onto the +1 eigenspace of P = ⊗ X_i."""
+        import scipy.sparse as _sp
+        from hamiltonians import _build_sector_basis, _build_parity_op
+        for n in [4, 6]:
+            V = _build_sector_basis(n, sector="even")
+            P = _build_parity_op(n)
+            # For any column v of V, P v = +v
+            V_dense = V.toarray()
+            P_dense = P.toarray().real
+            PV = P_dense @ V_dense
+            diff = np.max(np.abs(PV - V_dense))
+            assert diff < 1e-10, (
+                f"n={n}: P V ≠ V (max diff = {diff:.3e})"
+            )
+
+    def test_two_site_op_same_site_identity(self):
+        """
+        _two_site_op(Z, k, Z, k, n) must equal the identity (Z² = I).
+        After the Phase 1.5 fix this should hold for all sites.
+        """
+        from hamiltonians import _two_site_op, _Z
+        import scipy.sparse as _sp
+        n = 4
+        I_full = _sp.eye(2 ** n, format="csr", dtype=complex)
+        for k in range(n):
+            ZZ_kk = _two_site_op(_Z, k, _Z, k, n)
+            diff = (ZZ_kk - I_full).data
+            max_err = float(np.max(np.abs(diff))) if len(diff) > 0 else 0.0
+            assert max_err < 1e-14, (
+                f"Site {k}: Z_k Z_k ≠ I (max err = {max_err:.3e})"
+            )
+
+
+class TestLargeScalePerformance:
+    """
+    Memory and timing benchmark for n=14 ground-state computation.
+    Asserts completion within 60 s and RAM usage < 4 GB.
+    """
+
+    def test_n14_ground_state_memory_and_time(self):
+        """
+        n=14 open TFIM: sparse sector solver must finish in < 60 s and use
+        < 4 GB of RAM (peak tracemalloc allocation).
+        """
+        n = 14
+
+        tracemalloc.start()
+        t_start = time.time()
+
+        H = build_tfim(n, g=1.0, J=1.0, boundary="open")
+        E0, psi, gap = ground_state(H, n, sector="even")
+
+        elapsed = time.time() - t_start
+        _, peak_bytes = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+
+        peak_gb = peak_bytes / 1e9
+
+        assert elapsed < 60.0, (
+            f"n=14 took {elapsed:.2f}s, expected < 60s"
+        )
+        assert peak_gb < 4.0, (
+            f"n=14 used {peak_gb:.2f} GB peak RAM, expected < 4 GB"
+        )
+        # Sanity: energy should be negative and roughly -n
+        assert E0 < 0.0, f"E0={E0:.4f} should be negative"
+        assert abs(psi @ psi - 1.0) < 1e-7, "psi not normalised"
+        assert gap > 1e-9, f"gap={gap:.3e} too small"
+
+
+class TestFirstOrderPerturbationAsymptotics:
+    """
+    First-order perturbation theory: at g >> J,
+    ⟨Z_i Z_{i+1}⟩ ≈ J/(2g) to leading order.
+    """
+
+    def test_nn_zz_first_order_at_large_g(self):
+        """
+        n=8, J=1, g=20 (open boundary):
+        ⟨Z_i Z_{i+1}⟩ ≈ J/(2g) = 0.025 within 10% relative error for
+        all nearest-neighbour bonds.
+
+        First-order perturbation theory:
+            ⟨0|Z_i Z_{i+1}|0⟩^{(1)} = J/(2g) + O(J/g)^2
+        """
+        n = 8
+        g = 20.0
+        J = 1.0
+        expected = J / (2.0 * g)   # = 0.025
+
+        H = build_tfim(n, g=g, J=J, boundary="open")
+        _, psi, _ = ground_state(H, n, sector="even")
+
+        for i in range(n - 1):
+            zz = expect_zz(psi, n, i, i + 1)
+            rel_err = abs(zz - expected) / expected
+            assert rel_err < 0.10, (
+                f"Bond ({i},{i+1}): ⟨ZZ⟩={zz:.6f}, expected≈{expected:.6f}, "
+                f"rel_err={rel_err*100:.2f}% > 10%"
+            )
+
+    def test_large_g_x_expectation_perturbative(self):
+        """
+        At g=20 (J=1), ⟨X_i⟩ = 1 - J²/(8g²) + O(J/g)^4.
+        For n=8, verify the correction is small: ⟨X_i⟩ > 0.99.
+        """
+        n = 8
+        H = build_tfim(n, g=20.0, J=1.0, boundary="open")
+        _, psi, _ = ground_state(H, n, sector="even")
+        x_vals = expect_x(psi, n)
+        for i, xi in enumerate(x_vals):
+            assert xi > 0.99, (
+                f"g=20: ⟨X_{i}⟩={xi:.6f} < 0.99"
+            )
+
+
+class TestTwoLocalPQK:
+    """
+    Verify the 2-local PQK kernel properties: symmetry, PSD, unit diagonal.
+    """
+
+    @pytest.fixture(scope="class")
+    @classmethod
+    def psi_list_and_n(cls):
+        n = 4
+        g_vals = [0.5, 1.0, 2.0, 4.0]
+        psis = []
+        for gv in g_vals:
+            H = build_tfim(n, g=gv)
+            _, psi, _ = ground_state(H, n, sector="even")
+            psis.append(psi)
+        return psis, n
+
+    def test_pqk2_nn_symmetry(self, psi_list_and_n):
+        """K^{PQ2} (nearest-neighbour) must be symmetric."""
+        psi_list, n = psi_list_and_n
+        K = pqk_gram_2local(psi_list, n, pairs="nn")
+        assert np.allclose(K, K.T, atol=1e-12), "K^PQ2 (nn) is not symmetric"
+
+    def test_pqk2_nn_diagonal_ones(self, psi_list_and_n):
+        """K^{PQ2} diagonal must equal 1.0 (exp(-γ·0) = 1)."""
+        psi_list, n = psi_list_and_n
+        K = pqk_gram_2local(psi_list, n, pairs="nn")
+        assert np.allclose(np.diag(K), 1.0, atol=1e-12), (
+            f"K^PQ2 diagonal: {np.diag(K)}"
+        )
+
+    def test_pqk2_nn_psd(self, psi_list_and_n):
+        """K^{PQ2} (nearest-neighbour) must be positive semi-definite."""
+        psi_list, n = psi_list_and_n
+        K = pqk_gram_2local(psi_list, n, pairs="nn")
+        lmin = float(np.linalg.eigvalsh(K)[0])
+        assert lmin >= -1e-9, f"K^PQ2 (nn) λ_min = {lmin:.3e}"
+
+    def test_pqk2_all_symmetry(self, psi_list_and_n):
+        """K^{PQ2} (all pairs) must be symmetric."""
+        psi_list, n = psi_list_and_n
+        K = pqk_gram_2local(psi_list, n, pairs="all")
+        assert np.allclose(K, K.T, atol=1e-12), "K^PQ2 (all) is not symmetric"
+
+    def test_pqk2_all_diagonal_ones(self, psi_list_and_n):
+        """K^{PQ2} (all pairs) diagonal must equal 1.0."""
+        psi_list, n = psi_list_and_n
+        K = pqk_gram_2local(psi_list, n, pairs="all")
+        assert np.allclose(np.diag(K), 1.0, atol=1e-12)
+
+    def test_pqk2_all_psd(self, psi_list_and_n):
+        """K^{PQ2} (all pairs) must be positive semi-definite."""
+        psi_list, n = psi_list_and_n
+        K = pqk_gram_2local(psi_list, n, pairs="all")
+        lmin = float(np.linalg.eigvalsh(K)[0])
+        assert lmin >= -1e-9, f"K^PQ2 (all) λ_min = {lmin:.3e}"
+
+    def test_two_rdm_trace_one(self, psi_list_and_n):
+        """Tr(ρ_{ij}) = 1 for all 2-site RDMs."""
+        psi_list, n = psi_list_and_n
+        for psi in psi_list:
+            for i in range(n):
+                for j in range(i + 1, n):
+                    rho = two_rdm(psi, n, i, j)
+                    tr = float(np.real(np.trace(rho)))
+                    assert abs(tr - 1.0) < 1e-10, (
+                        f"Tr(ρ_{{{i},{j}}}) = {tr:.12f}"
+                    )
+
+    def test_two_rdm_hermitian(self, psi_list_and_n):
+        """ρ_{ij} must be Hermitian."""
+        psi_list, n = psi_list_and_n
+        for psi in psi_list:
+            for i, j in [(0, 1), (1, 3), (0, 3)]:
+                rho = two_rdm(psi, n, i, j)
+                herm_err = float(np.max(np.abs(rho - rho.conj().T)))
+                assert herm_err < 1e-12, (
+                    f"ρ_{{{i},{j}}} non-Hermitian err = {herm_err:.3e}"
+                )
+
+    def test_two_rdm_psd(self, psi_list_and_n):
+        """ρ_{ij} must be positive semi-definite (λ_min ≥ -1e-10)."""
+        psi_list, n = psi_list_and_n
+        for psi in psi_list:
+            for i in range(n):
+                for j in range(i + 1, n):
+                    rho = two_rdm(psi, n, i, j)
+                    lmin = float(np.linalg.eigvalsh(rho)[0])
+                    assert lmin >= -1e-10, (
+                        f"ρ_{{{i},{j}}} λ_min = {lmin:.3e}"
+                    )
+
+    def test_two_rdm_marginals_consistent_with_one_rdm(self, psi_list_and_n):
+        """
+        Partial trace of ρ_{ij} over site j must equal ρ_i (1-RDM).
+        """
+        psi_list, n = psi_list_and_n
+        for psi in psi_list:
+            for i in range(n):
+                for j in range(i + 1, n):
+                    rho_2 = two_rdm(psi, n, i, j)
+                    # Partial trace over second subsystem (j):
+                    # Reshape ρ_{ij} as (2,2,2,2) with axes (a_i, b_j, a'_i, b'_j)
+                    # Sum over b_j == b'_j (axes 1 and 3)
+                    rho_2_t = rho_2.reshape(2, 2, 2, 2)
+                    rho_i_from_2 = np.einsum("abcb->ac", rho_2_t)
+                    rho_i_direct = one_rdm(psi, n, i)
+                    diff = np.max(np.abs(rho_i_from_2 - rho_i_direct))
+                    assert diff < 1e-10, (
+                        f"ρ_i from Tr_j(ρ_{{ij}}) mismatch: sites ({i},{j}), "
+                        f"max diff = {diff:.3e}"
+                    )
+
+    def test_pqk2_nn_coarser_than_all(self, psi_list_and_n):
+        """
+        NN-pairs PQK uses fewer features than all-pairs PQK, so its entries
+        should differ (unless states are identical up to NN correlations).
+        """
+        psi_list, n = psi_list_and_n
+        K_nn = pqk_gram_2local(psi_list, n, pairs="nn")
+        K_all = pqk_gram_2local(psi_list, n, pairs="all")
+        # They should NOT be identical in general
+        assert not np.allclose(K_nn, K_all), (
+            "K^PQ2(nn) should differ from K^PQ2(all)"
+        )
+
+    def test_pqk2_invalid_pairs_raises(self, psi_list_and_n):
+        """Invalid pairs argument must raise ValueError."""
+        psi_list, n = psi_list_and_n
+        with pytest.raises(ValueError, match="Unknown pairs mode"):
+            pqk_gram_2local(psi_list, n, pairs="diagonal")

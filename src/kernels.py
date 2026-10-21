@@ -17,12 +17,18 @@ from hamiltonians import (
 
 def one_rdm(psi, n, target_q):
     """
-    Compute the 2×2 reduced density matrix ρ_k for qubit `target_q` via
+    Compute the 2×2 reduced density matrix ρ_k for qubit ``target_q`` via
     partial trace over all other qubits.
 
     Qubit convention: qubit 0 is the most significant tensor factor.
 
         ρ_k = Tr_{all j ≠ k}(|ψ⟩⟨ψ|)
+
+    Algorithm
+    ---------
+    Reshape |ψ⟩ into a tensor of shape (2, 2, ..., 2) with one axis per
+    qubit.  Move axis ``target_q`` to position 0, then flatten the remaining
+    n-1 axes to get a (2, 2^{n-1}) matrix M.  The 1-RDM is ρ = M M†.
 
     Parameters
     ----------
@@ -34,16 +40,52 @@ def one_rdm(psi, n, target_q):
     -------
     rho : np.ndarray, shape (2, 2), dtype complex
     """
-    # Reshape to tensor with one axis per qubit
+    psi_t = psi.reshape([2] * n)
+    psi_t = np.moveaxis(psi_t, target_q, 0)
+    psi_mat = psi_t.reshape(2, -1)          # (2, 2^{n-1})
+    rho = psi_mat @ psi_mat.conj().T        # (2, 2)
+    return rho
+
+
+def two_rdm(psi, n, i, j):
+    """
+    Compute the 4×4 two-site reduced density matrix ρ_{ij} by partial trace
+    over all sites except i and j.
+
+    The returned matrix has the tensor-product structure
+        ρ_{ij}[α·2 + β, α'·2 + β'] = ⟨α_i β_j | ρ_{ij} | α'_i β'_j⟩
+
+    so that site i occupies the first (most significant) index and site j the
+    second, consistently with the overall little-endian convention.
+
+    Algorithm
+    ---------
+    1. Reshape |ψ⟩ to shape (2,)*n.
+    2. Move axes i and j to positions 0 and 1 respectively.
+    3. Flatten remaining n-2 axes to get shape (2, 2, 2^{n-2}).
+    4. Reshape to (4, 2^{n-2}) and compute ρ = M M†.
+
+    Parameters
+    ----------
+    psi : np.ndarray, shape (2^n,)
+    n : int
+    i, j : int
+        Site indices (i ≠ j).  Site i becomes the first tensor index.
+
+    Returns
+    -------
+    rho_ij : np.ndarray, shape (4, 4), dtype complex
+    """
+    assert i != j, "two_rdm requires distinct sites i ≠ j"
     psi_t = psi.reshape([2] * n)
 
-    # Move target qubit to axis 0, merge remaining axes
-    # After moveaxis: shape (2, 2^(n-1))
-    psi_t = np.moveaxis(psi_t, target_q, 0)
-    psi_mat = psi_t.reshape(2, -1)  # (2, 2^(n-1))
-
-    rho = psi_mat @ psi_mat.conj().T  # (2, 2)
-    return rho
+    # Move sites i and j to axes 0 and 1 (in that order)
+    psi_t = np.moveaxis(psi_t, [i, j], [0, 1])
+    # Shape is now (2, 2, 2, ..., 2) with n axes, sites i and j first.
+    # Reshape: merge (axis 0, axis 1) → 4, merge remaining → 2^{n-2}
+    psi_mat = psi_t.reshape(4, -1)          # (4, 2^{n-2})
+    rho_ij = psi_mat @ psi_mat.conj().T     # (4, 4)
+    return rho_ij
 
 
 def bloch_vector(rho):
@@ -99,9 +141,23 @@ def fidelity_gram(states):
 
 def pqk_gram(rdms_list, gamma=1.0):
     """
-    Projected quantum kernel (PQK) Gram matrix:
+    Projected quantum kernel (PQK) Gram matrix using 1-RDMs:
 
         K^{PQ}_{ij} = exp(-γ ∑_k ‖ρ_k(i) - ρ_k(j)‖_F²)
+
+    Mathematical identity
+    ---------------------
+    For single-qubit states parametrised by Bloch vectors b_k = (bx, by, bz):
+
+        ρ_k = (I + b_k · σ) / 2
+        ‖ρ_k^i - ρ_k^j‖_F² = ½ ‖b_k^i - b_k^j‖²
+
+    Hence K^{PQ}(γ) is identical to the RBF kernel
+
+        exp(-(γ/2) · ‖concat(b^i) − concat(b^j)‖²)
+
+    i.e. ``sklearn.metrics.pairwise.rbf_kernel(X, gamma=gamma/2)`` where X
+    contains the concatenated Bloch vectors.
 
     Parameters
     ----------
@@ -124,6 +180,57 @@ def pqk_gram(rdms_list, gamma=1.0):
             k_val = float(np.exp(-gamma * dist2))
             K[i, j] = k_val
             K[j, i] = k_val
+    return K
+
+
+def pqk_gram_2local(psi_list, n, pairs="nn", gamma=1.0):
+    """
+    2-local Projected Quantum Kernel (PQK2) Gram matrix using 2-RDMs:
+
+        K^{PQ2}_{ab} = exp(-γ ∑_{(i,j) ∈ pairs} ‖ρ_{ij}^{(a)} - ρ_{ij}^{(b)}‖_F²)
+
+    Parameters
+    ----------
+    psi_list : list of np.ndarray, each of shape (2^n,)
+    n : int
+        Number of qubits.
+    pairs : {"nn", "all"}
+        Which pairs (i, j) to include:
+        - ``"nn"``:  nearest-neighbour open-boundary pairs (i, i+1) for
+                     i ∈ {0, ..., n-2}.
+        - ``"all"``: all unique pairs i < j.
+    gamma : float
+
+    Returns
+    -------
+    K : np.ndarray, shape (m, m)
+    """
+    if pairs == "nn":
+        pair_list = [(i, i + 1) for i in range(n - 1)]
+    elif pairs == "all":
+        pair_list = [(i, j) for i in range(n) for j in range(i + 1, n)]
+    else:
+        raise ValueError(f"Unknown pairs mode: {pairs!r}. Use 'nn' or 'all'.")
+
+    m = len(psi_list)
+
+    # Pre-compute 2-RDMs for all states and all pairs
+    rdms_2local = []
+    for psi in psi_list:
+        rdms_2local.append(
+            {(i, j): two_rdm(psi, n, i, j) for (i, j) in pair_list}
+        )
+
+    K = np.zeros((m, m), dtype=float)
+    for a in range(m):
+        for b in range(a, m):
+            dist2 = 0.0
+            for (i, j) in pair_list:
+                diff = rdms_2local[a][(i, j)] - rdms_2local[b][(i, j)]
+                dist2 += float(np.real(np.trace(diff.conj().T @ diff)))
+            k_val = float(np.exp(-gamma * dist2))
+            K[a, b] = k_val
+            K[b, a] = k_val
     return K
 
 
@@ -165,10 +272,10 @@ def classical_features(psi, n, mode="full_corr"):
     n : int
     mode : str
         One of:
-        - "1pt_X"        : [⟨X_0⟩, ..., ⟨X_{n-1}⟩]              (n features)
-        - "1pt_xyz"      : concatenated Bloch vectors [bx,by,bz]  (3n features)
-        - "2pt_all_pairs": all unique ⟨Z_i Z_j⟩ for i < j        (n(n-1)/2 features)
-        - "full_corr"    : "1pt_xyz" || "2pt_all_pairs"           (strongest baseline)
+        - ``"1pt_X"``        : [⟨X_0⟩, ..., ⟨X_{n-1}⟩]              (n features)
+        - ``"1pt_xyz"``      : concatenated Bloch vectors [bx,by,bz]  (3n features)
+        - ``"2pt_all_pairs"``: all unique ⟨Z_i Z_j⟩ for i < j        (n(n-1)/2 features)
+        - ``"full_corr"``    : "1pt_xyz" ∥ "2pt_all_pairs"            (strongest baseline)
 
     Returns
     -------
