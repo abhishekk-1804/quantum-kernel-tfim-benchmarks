@@ -52,11 +52,13 @@ def two_rdm(psi, n, i, j):
     Compute the 4×4 two-site reduced density matrix ρ_{ij} by partial trace
     over all sites except i and j.
 
-    The returned matrix has the tensor-product structure
-        ρ_{ij}[α·2 + β, α'·2 + β'] = ⟨α_i β_j | ρ_{ij} | α'_i β'_j⟩
+    Qubit convention:
+    Qubit 0 is the most significant tensor factor (big-endian bit ordering):
+        |q_0 q_1 ... q_{n-1}⟩ = |q_0⟩ ⊗ |q_1⟩ ⊗ ... ⊗ |q_{n-1}⟩
 
-    so that site i occupies the first (most significant) index and site j the
-    second, consistently with the overall little-endian convention.
+    The returned 4×4 matrix maintains this ordering where site i occupies
+    qubit 0 (most significant factor) and site j occupies qubit 1:
+        ρ_{ij}[α·2 + β, α'·2 + β'] = ⟨α_i β_j | ρ_{ij} | α'_i β'_j⟩
 
     Algorithm
     ---------
@@ -70,7 +72,7 @@ def two_rdm(psi, n, i, j):
     psi : np.ndarray, shape (2^n,)
     n : int
     i, j : int
-        Site indices (i ≠ j).  Site i becomes the first tensor index.
+        Site indices (i ≠ j). Site i becomes the first (most significant) tensor index.
 
     Returns
     -------
@@ -275,6 +277,8 @@ def classical_features(psi, n, mode="full_corr"):
         - ``"1pt_X"``        : [⟨X_0⟩, ..., ⟨X_{n-1}⟩]              (n features)
         - ``"1pt_xyz"``      : concatenated Bloch vectors [bx,by,bz]  (3n features)
         - ``"2pt_all_pairs"``: all unique ⟨Z_i Z_j⟩ for i < j        (n(n-1)/2 features)
+        - ``"2pt_pauli_nn"`` : ⟨X_i⟩ plus nearest-neighbour ⟨XX⟩, ⟨YY⟩, ⟨ZZ⟩
+                               (5*(n-1) features from 2-RDM Pauli expansion)
         - ``"full_corr"``    : "1pt_xyz" ∥ "2pt_all_pairs"            (strongest baseline)
 
     Returns
@@ -298,6 +302,27 @@ def classical_features(psi, n, mode="full_corr"):
             for j in range(i + 1, n):
                 feats.append(expect_zz(psi, n, i, j))
         return np.array(feats)
+
+    elif mode == "2pt_pauli_nn":
+        # Extract the 5 non-zero Pauli expectation values for each nearest-neighbour pair (i, i+1):
+        # <X_i>, <X_{i+1}>, <X_i X_{i+1}>, <Y_i Y_{i+1}>, <Z_i Z_{i+1}>
+        # In the Z_2-even sector, these are the only non-zero Pauli expansion coefficients of rho_{i, i+1}.
+        _XI = np.kron(_X.toarray(), np.eye(2, dtype=complex))
+        _IX = np.kron(np.eye(2, dtype=complex), _X.toarray())
+        _XX = np.kron(_X.toarray(), _X.toarray())
+        _YY = np.kron(_Y.toarray(), _Y.toarray())
+        _ZZ = np.kron(_Z.toarray(), _Z.toarray())
+        feats = []
+        for i in range(n - 1):
+            rho_ij = two_rdm(psi, n, i, i + 1)
+            feats.extend([
+                float(np.real(np.trace(rho_ij @ _XI))),
+                float(np.real(np.trace(rho_ij @ _IX))),
+                float(np.real(np.trace(rho_ij @ _XX))),
+                float(np.real(np.trace(rho_ij @ _YY))),
+                float(np.real(np.trace(rho_ij @ _ZZ))),
+            ])
+        return np.array(feats, dtype=float)
 
     elif mode == "full_corr":
         xyz = classical_features(psi, n, mode="1pt_xyz")

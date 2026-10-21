@@ -1060,3 +1060,222 @@ class TestTwoLocalPQK:
         psi_list, n = psi_list_and_n
         with pytest.raises(ValueError, match="Unknown pairs mode"):
             pqk_gram_2local(psi_list, n, pairs="diagonal")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Phase 1.6 — Noise API, Matched Pauli Baseline & Mathematical Equivalence
+# ═══════════════════════════════════════════════════════════════════════════════
+
+from noise import (
+    noisy_bloch_features,
+    noisy_classical_features,
+    fidelity_clip_psd,
+    total_shots,
+)
+
+
+class TestPhase16NoiseAndBaselines:
+    """
+    Verification tests for Phase 1.6:
+    - Qubit ordering on computational basis states for 1-RDM and 2-RDM
+    - Mathematical equivalence: 2-local PQK == RBF on 2pt_pauli_nn with gamma' = gamma / 4
+    - Asymptotic convergence of noisy Bloch features ~ 1/sqrt(S)
+    - Total shot scaling: PQK linear in m, fidelity quadratic in m
+    - PSD projection via fidelity_clip_psd
+    """
+
+    def test_one_rdm_and_two_rdm_basis_ordering(self):
+        """
+        Verify big-endian Kronecker ordering on computational basis states:
+            |q_0 q_1 ... q_{n-1}⟩ = |q_0⟩ ⊗ |q_1⟩ ⊗ ... ⊗ |q_{n-1}⟩
+        - On state |01⟩ (n=2, index 1):
+            site 0 is in state |0⟩ -> ρ_0 = |0⟩⟨0| = [[1, 0], [0, 0]]
+            site 1 is in state |1⟩ -> ρ_1 = |1⟩⟨1| = [[0, 0], [0, 1]]
+        - On state |010⟩ (n=3, index 2):
+            two_rdm(0, 1) -> |01⟩⟨01| = diag(0, 1, 0, 0)
+            two_rdm(1, 0) -> |10⟩⟨10| = diag(0, 0, 1, 0)
+            two_rdm(0, 2) -> |00⟩⟨00| = diag(1, 0, 0, 0)
+            two_rdm(1, 2) -> |10⟩⟨10| = diag(0, 0, 1, 0)
+        """
+        # --- n=2: |01> ---
+        psi2 = np.zeros(4, dtype=float)
+        psi2[1] = 1.0  # binary 01: q0=0, q1=1
+
+        rho0 = one_rdm(psi2, 2, 0)
+        expected_rho0 = np.array([[1.0, 0.0], [0.0, 0.0]], dtype=complex)
+        assert np.allclose(rho0, expected_rho0, atol=1e-12), f"rho0 mismatch:\n{rho0}"
+
+        rho1 = one_rdm(psi2, 2, 1)
+        expected_rho1 = np.array([[0.0, 0.0], [0.0, 1.0]], dtype=complex)
+        assert np.allclose(rho1, expected_rho1, atol=1e-12), f"rho1 mismatch:\n{rho1}"
+
+        # --- n=3: |010> ---
+        psi3 = np.zeros(8, dtype=float)
+        psi3[2] = 1.0  # binary 010: q0=0, q1=1, q2=0
+
+        # Sites (0, 1) are |01>: index in 4x4 basis is 0*2 + 1 = 1
+        r01 = two_rdm(psi3, 3, 0, 1)
+        exp_01 = np.zeros((4, 4), dtype=complex)
+        exp_01[1, 1] = 1.0
+        assert np.allclose(r01, exp_01, atol=1e-12), f"two_rdm(0,1) mismatch:\n{r01}"
+
+        # Sites (1, 0) are |10>: index in 4x4 basis is 1*2 + 0 = 2
+        r10 = two_rdm(psi3, 3, 1, 0)
+        exp_10 = np.zeros((4, 4), dtype=complex)
+        exp_10[2, 2] = 1.0
+        assert np.allclose(r10, exp_10, atol=1e-12), f"two_rdm(1,0) mismatch:\n{r10}"
+
+        # Sites (0, 2) are |00>: index in 4x4 basis is 0*2 + 0 = 0
+        r02 = two_rdm(psi3, 3, 0, 2)
+        exp_02 = np.zeros((4, 4), dtype=complex)
+        exp_02[0, 0] = 1.0
+        assert np.allclose(r02, exp_02, atol=1e-12), f"two_rdm(0,2) mismatch:\n{r02}"
+
+    def test_pqk2_equals_rbf_pauli_nn_derived_factor(self):
+        """
+        Mathematical Derivation of gamma' = gamma / 4:
+        ----------------------------------------------
+        Any 2-qubit reduced density matrix ρ_{ij} can be expanded in the 16
+        orthonormal Pauli tensor products σ_μ ⊗ σ_ν (μ, ν ∈ {0, x, y, z}):
+            ρ_{ij} = (1/4) ∑_{μ,ν} c_{μν} (σ_μ ⊗ σ_ν)
+        where c_{μν} = Tr(ρ_{ij} (σ_μ ⊗ σ_ν)).
+
+        Because Tr((σ_μ ⊗ σ_ν)(σ_μ' ⊗ σ_ν')) = 4 δ_{μμ'} δ_{νν'}, the squared
+        Frobenius distance between two 2-RDMs ρ_{ij}^{(a)} and ρ_{ij}^{(b)} is:
+            ‖ρ_{ij}^{(a)} - ρ_{ij}^{(b)}‖_F²
+                = Tr( ( (1/4) ∑_{μ,ν} Δc_{μν} σ_μ ⊗ σ_ν )² )
+                = (1/16) · 4 ∑_{μ,ν} (Δc_{μν})²
+                = (1/4) ∑_{μ,ν} (c_{μν}^{(a)} - c_{μν}^{(b)})²
+
+        In the Z_2-even parity sector (where P = ⊗ X_k = +1) with real statevectors,
+        the only non-zero components for each pair (i, i+1) are the 5 observables:
+            X_i ⊗ I,  I ⊗ X_{i+1},  X_i ⊗ X_{i+1},  Y_i ⊗ Y_{i+1},  Z_i ⊗ Z_{i+1}
+        (the identity I ⊗ I always has c_{00} = 1, so Δc_{00} ≡ 0).
+
+        `classical_features(psi, n, mode='2pt_pauli_nn')` collects these 5
+        observables for each nearest-neighbour pair (i, i+1) into a feature vector f.
+        Consequently:
+            ∑_{(i,i+1) ∈ nn} ‖ρ_{i,i+1}^{(a)} - ρ_{i,i+1}^{(b)}‖_F²
+                = (1/4) ‖f^{(a)} - f^{(b)}‖²
+
+        Substituting this into the 2-local PQK definition gives:
+            K^{PQ2}_{ab}(γ) = exp( -γ ∑_{nn} ‖Δρ_{ij}‖_F² )
+                            = exp( -(γ/4) ‖f^{(a)} - f^{(b)}‖² )
+                            = RBF(f, γ' = γ / 4)
+
+        This test asserts numerical equality between K^{PQ2}(γ) and RBF(f, γ/4)
+        to within 1e-10.
+        """
+        from sklearn.metrics.pairwise import rbf_kernel
+
+        n = 4
+        g_vals = [0.2, 0.6, 1.0, 1.8, 3.0]
+        psis = [ground_state(build_tfim(n, g=g), n, sector="even")[1] for g in g_vals]
+
+        gamma = 2.4
+        gamma_prime = gamma / 4.0  # Derived 1/4 factor
+
+        K_pqk2 = pqk_gram_2local(psis, n, pairs="nn", gamma=gamma)
+
+        features = [classical_features(psi, n, mode="2pt_pauli_nn") for psi in psis]
+        X_feat = np.array(features)
+        K_rbf = rbf_kernel(X_feat, gamma=gamma_prime)
+
+        diff = float(np.max(np.abs(K_pqk2 - K_rbf)))
+        assert diff < 1e-10, (
+            f"K^PQ2 != RBF(gamma/4): max diff = {diff:.3e}"
+        )
+
+    def test_noisy_bloch_features_convergence_large_shots(self):
+        """
+        Verify that noisy_bloch_features converges to exact Bloch expectation
+        values as shots S -> infinity, with error bounded by ~ O(1/sqrt(S)).
+        """
+        n = 4
+        H = build_tfim(n, g=1.5)
+        _, psi, _ = ground_state(H, n, sector="even")
+
+        exact_x = expect_x(psi, n)
+
+        shots = 40000
+        rng = np.random.default_rng(2026)
+        features = noisy_bloch_features([psi], n, shots=shots, rng=rng, components=("x",))
+
+        # Shape is (m=1, n, len(components)=1)
+        noisy_x = features[0, :, 0]
+
+        max_err = float(np.max(np.abs(noisy_x - exact_x)))
+        expected_tolerance = 4.0 / np.sqrt(shots)  # 4 sigma bound = 0.02
+
+        assert max_err < expected_tolerance, (
+            f"Noisy Bloch error {max_err:.4f} exceeded tolerance {expected_tolerance:.4f}"
+        )
+
+    def test_noisy_classical_features_shape_and_range(self):
+        """
+        Verify noisy_classical_features generates correct shapes and finite values.
+        """
+        n = 4
+        psis = [
+            ground_state(build_tfim(n, g=0.8), n, sector="even")[1],
+            ground_state(build_tfim(n, g=1.5), n, sector="even")[1],
+        ]
+        shots = 500
+        rng = np.random.default_rng(77)
+
+        # 2pt_pauli_nn has 5 * (n-1) = 15 features
+        noisy_feats = noisy_classical_features(psis, n, shots=shots, rng=rng, mode="2pt_pauli_nn")
+        assert noisy_feats.shape == (2, 15), f"Shape {noisy_feats.shape} != (2, 15)"
+        assert np.all(noisy_feats >= -1.0) and np.all(noisy_feats <= 1.0)
+
+    def test_total_shots_scaling(self):
+        """
+        Verify total_shots scaling:
+        - PQK is linear in m: total_shots('pqk', 2*m) == 2 * total_shots('pqk', m)
+        - Fidelity is quadratic in m: total_shots('fidelity', m) = m*(m-1)/2 * S
+        """
+        n = 8
+        S = 1024
+        m1 = 10
+        m2 = 20
+
+        # PQK linear scaling
+        shots_pqk_m1 = total_shots("pqk", m=m1, n=n, S=S)
+        shots_pqk_m2 = total_shots("pqk", m=m2, n=n, S=S)
+        assert shots_pqk_m2 == 2 * shots_pqk_m1, (
+            f"PQK scaling not linear: {shots_pqk_m2} != 2 * {shots_pqk_m1}"
+        )
+
+        # Fidelity quadratic scaling
+        shots_fid_m1 = total_shots("fidelity", m=m1, n=n, S=S)
+        shots_fid_m2 = total_shots("fidelity", m=m2, n=n, S=S)
+        expected_m1 = (m1 * (m1 - 1) // 2) * S
+        expected_m2 = (m2 * (m2 - 1) // 2) * S
+        assert shots_fid_m1 == expected_m1
+        assert shots_fid_m2 == expected_m2
+        # Ratio for m2=20 vs m1=10: (20*19/2) / (10*9/2) = 190 / 45 ≈ 4.22
+        ratio = shots_fid_m2 / shots_fid_m1
+        assert abs(ratio - (190.0 / 45.0)) < 1e-12
+
+    def test_fidelity_clip_psd(self):
+        """
+        Verify fidelity_clip_psd projects an indefinite noisy Gram matrix onto the
+        positive semi-definite cone, guaranteeing λ_min >= 0 and unit diagonal.
+        """
+        n = 4
+        g_vals = [0.5, 0.8, 1.2, 2.0]
+        psis = [ground_state(build_tfim(n, g=g), n, sector="even")[1] for g in g_vals]
+        K_exact = fidelity_gram(psis)
+
+        # Add severe finite-shot noise to guarantee negative eigenvalues
+        rng = np.random.default_rng(12345)
+        K_noisy, lam_min = shot_noise_fidelity(K_exact, shots=20, rng=rng)
+
+        # Clip using fidelity_clip_psd
+        K_psd = fidelity_clip_psd(K_noisy)
+
+        # Properties of K_psd
+        assert np.allclose(K_psd, K_psd.T, atol=1e-12), "K_psd not symmetric"
+        assert np.allclose(np.diag(K_psd), 1.0, atol=1e-12), "K_psd diagonal != 1"
+        lmin_psd = float(np.linalg.eigvalsh(K_psd)[0])
+        assert lmin_psd >= -1e-12, f"K_psd has negative eigenvalue: {lmin_psd:.3e}"
