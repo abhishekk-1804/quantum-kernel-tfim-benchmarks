@@ -426,14 +426,20 @@ def expect_x(psi, n):
     """
     Compute ⟨X_i⟩ for each site i.
 
+    Evaluated via bit-flip action in the computational basis:
+        ⟨ψ| X_i |ψ⟩ = ∑_s ψ_s ψ_{s ⊕ 2^{n - 1 - i}}
+    respecting qubit 0 as the most significant tensor factor (big-endian).
+
     Returns
     -------
     x_vals : np.ndarray, shape (n,)
     """
+    dim = 2 ** n
+    s = np.arange(dim)
     x_vals = np.zeros(n, dtype=float)
     for i in range(n):
-        Xi = _single_site_op(_X, i, n)
-        x_vals[i] = float(np.real(psi.conj() @ Xi.dot(psi)))
+        s_flip = s ^ (1 << (n - 1 - i))
+        x_vals[i] = float(np.real(np.sum(psi.conj() * psi[s_flip])))
     return x_vals
 
 
@@ -443,11 +449,34 @@ def expect_zz(psi, n, i, j):
 
     When i == j, Z_i² = I analytically, returning ‖ψ‖² = 1 for any
     normalised state without constructing the full operator.
+    Evaluated via the diagonal representation in the computational basis:
+        ⟨ψ| Z_i Z_j |ψ⟩ = ∑_s |ψ_s|² (-1)^{b_i(s) ⊕ b_j(s)}
     """
     if i == j:
         return float(np.real(np.dot(psi.conj(), psi)))
-    ZZ = _two_site_op(_Z, i, _Z, j, n)
-    return float(np.real(psi.conj() @ ZZ.dot(psi)))
+    dim = 2 ** n
+    s = np.arange(dim)
+    bi = (s >> (n - 1 - i)) & 1
+    bj = (s >> (n - 1 - j)) & 1
+    signs = 1.0 - 2.0 * ((bi ^ bj) & 1)
+    return float(np.sum(np.abs(psi) ** 2 * signs))
+
+
+def expect_zzzz(psi, n, i, j, k, l):
+    """
+    Compute ⟨ψ| Z_i Z_j Z_k Z_l |ψ⟩.
+
+    Evaluated via the diagonal representation in the computational basis:
+        ⟨ψ| Z_i Z_j Z_k Z_l |ψ⟩ = ∑_s |ψ_s|² (-1)^{b_i(s) ⊕ b_j(s) ⊕ b_k(s) ⊕ b_l(s)}
+    respecting qubit 0 as the most significant tensor factor (big-endian).
+    """
+    s = np.arange(2 ** n)
+    bi = (s >> (n - 1 - i)) & 1
+    bj = (s >> (n - 1 - j)) & 1
+    bk = (s >> (n - 1 - k)) & 1
+    bl = (s >> (n - 1 - l)) & 1
+    signs = 1.0 - 2.0 * ((bi ^ bj ^ bk ^ bl) & 1)
+    return float(np.sum(np.abs(psi) ** 2 * signs))
 
 
 def correlation_matrix(psi, n):

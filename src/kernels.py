@@ -211,8 +211,10 @@ def pqk_gram_2local(psi_list, n, pairs="nn", gamma=1.0):
         pair_list = [(i, i + 1) for i in range(n - 1)]
     elif pairs == "all":
         pair_list = [(i, j) for i in range(n) for j in range(i + 1, n)]
+    elif isinstance(pairs, (list, tuple)):
+        pair_list = list(pairs)
     else:
-        raise ValueError(f"Unknown pairs mode: {pairs!r}. Use 'nn' or 'all'.")
+        raise ValueError(f"Unknown pairs mode: {pairs!r}. Use 'nn', 'all', or a list of (i,j) pairs.")
 
     m = len(psi_list)
 
@@ -264,7 +266,7 @@ def kta(K, y):
 
 # ── Classical feature maps ─────────────────────────────────────────────────────
 
-def classical_features(psi, n, mode="full_corr"):
+def classical_features(psi, n, mode="full_corr", pairs=None):
     """
     Compute a classical feature vector derived from the quantum state |ψ⟩.
 
@@ -278,8 +280,10 @@ def classical_features(psi, n, mode="full_corr"):
         - ``"1pt_xyz"``      : concatenated Bloch vectors [bx,by,bz]  (3n features)
         - ``"2pt_all_pairs"``: all unique ⟨Z_i Z_j⟩ for i < j        (n(n-1)/2 features)
         - ``"2pt_pauli_nn"`` : ⟨X_i⟩ plus nearest-neighbour ⟨XX⟩, ⟨YY⟩, ⟨ZZ⟩
-                               (5*(n-1) features from 2-RDM Pauli expansion)
+                               (5*len(pairs) features from 2-RDM Pauli expansion)
         - ``"full_corr"``    : "1pt_xyz" ∥ "2pt_all_pairs"            (strongest baseline)
+    pairs : list of (i, j) tuples or None
+        Used when mode is "2pt_pauli_nn". Defaults to nearest-neighbour pairs (i, i+1).
 
     Returns
     -------
@@ -304,17 +308,24 @@ def classical_features(psi, n, mode="full_corr"):
         return np.array(feats)
 
     elif mode == "2pt_pauli_nn":
-        # Extract the 5 non-zero Pauli expectation values for each nearest-neighbour pair (i, i+1):
-        # <X_i>, <X_{i+1}>, <X_i X_{i+1}>, <Y_i Y_{i+1}>, <Z_i Z_{i+1}>
-        # In the Z_2-even sector, these are the only non-zero Pauli expansion coefficients of rho_{i, i+1}.
+        # Extract the 5 non-zero Pauli expectation values for each pair (i, j):
+        # <X_i>, <X_j>, <X_i X_j>, <Y_i Y_j>, <Z_i Z_j>
+        # In the Z_2-even sector, these are the only non-zero Pauli expansion coefficients of rho_{i, j}.
+        if pairs is None or pairs == "nn":
+            pair_list = [(i, i + 1) for i in range(n - 1)]
+        elif isinstance(pairs, (list, tuple)):
+            pair_list = list(pairs)
+        else:
+            raise ValueError(f"Unknown pairs specification: {pairs!r}")
+
         _XI = np.kron(_X.toarray(), np.eye(2, dtype=complex))
         _IX = np.kron(np.eye(2, dtype=complex), _X.toarray())
         _XX = np.kron(_X.toarray(), _X.toarray())
         _YY = np.kron(_Y.toarray(), _Y.toarray())
         _ZZ = np.kron(_Z.toarray(), _Z.toarray())
         feats = []
-        for i in range(n - 1):
-            rho_ij = two_rdm(psi, n, i, i + 1)
+        for i, j in pair_list:
+            rho_ij = two_rdm(psi, n, i, j)
             feats.extend([
                 float(np.real(np.trace(rho_ij @ _XI))),
                 float(np.real(np.trace(rho_ij @ _IX))),
