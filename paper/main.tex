@@ -13,22 +13,39 @@
 
 \begin{document}
 
-\title{Projected and Fidelity Quantum Kernels versus Classical Correlator Baselines on Exact Spin-Chain Ground States}
+\title{Classical Correlator Baselines Match Quantum Kernel\\
+Sample Efficiency on Exact Spin-Chain Ground States}
 
-\author{\IEEEauthorblockN{Abhishek K. Doddagoudar}
-\IEEEauthorblockA{\textit{Department of Computer Science \& Engineering} \\
-\textit{Presidency University}\\
-Bengaluru, India}
+\author{
+  \IEEEauthorblockN{Abhishek K. Doddagoudar}
+  \IEEEauthorblockA{\textit{Department of Computer Science \& Engineering} \\
+  \textit{Presidency University}, Bengaluru, India}
 }
 
 \maketitle
 
 \begin{abstract}
-We evaluate projected quantum kernels (PQK), fidelity quantum kernels (FQ), and matched classical correlator baselines for predicting physical properties of quantum spin-chain ground states. Across 1D transverse-field Ising models and 2D frustrated lattices up to $n \le 14$ spins, ground states are obtained via exact numerical diagonalization, isolating kernel representation geometry from circuit hardware noise. In a pre-declared statistical protocol across 20 fixed seeds, nearest-neighbor projected kernels (PQK-2nn) and classical two-body correlator features (E-raw) perform comparably to full fidelity kernels while requiring $12.2\times$ to $39.8\times$ fewer measurement shots. Under simulated destructive swap tests, raw FQ Gram matrices become non-positive semidefinite across 100\% of seeds, requiring eigenvalue clipping. Hyperparameter-retuned models show resilience to local depolarizing channels, while unmitigated models exhibit predictable attenuation. Our findings establish that physical correlator baselines match quantum kernel sample efficiency in equilibrium spin ground states, with zero claims of quantum advantage.
+We evaluate projected quantum kernels (PQK), fidelity quantum kernels (FQ),
+and matched classical correlator baselines for predicting ground-state
+properties of quantum spin chains. On 1D TFIM and 2D $J_1$--$J_2$ lattices
+up to $n\le 14$ spins, ground states are obtained via exact numerical
+diagonalization, isolating representation geometry from circuit hardware
+noise. In a pre-declared statistical protocol across 20 fixed seeds,
+nearest-neighbor projected kernels (PQK-2nn) and classical two-body
+correlator features (E-raw) match full fidelity kernels to
+$\Delta R^2\le 0.011$ while requiring $12.2\times$ to $39.8\times$ fewer
+measurement shots. Under simulated destructive swap tests, raw FQ Gram
+matrices become non-positive semidefinite across 100\% of seeds, requiring
+eigenvalue clipping. Hyperparameter-retuned models show resilience to local
+depolarizing channels, while unmitigated models exhibit predictable
+$(1-p)^2$ attenuation. Physical correlator baselines match quantum kernel
+sample efficiency in equilibrium spin ground states, with zero claims of
+quantum advantage.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Quantum machine learning, projected quantum kernels, support vector machines, spin chains, measurement noise.
+quantum machine learning, projected quantum kernels, fidelity quantum kernels,
+support vector machines, spin chains, measurement noise, kernel concentration
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -36,7 +53,18 @@ Quantum kernel methods map classical or quantum data into quantum state spaces w
 
 Theoretical analyses suggest that fidelity kernels can suffer from exponential concentration of measure (barren plateaus in kernel space) as the number of qubits $n$ scales~\cite{thanasilp2024, shaydulin2022}. Projected quantum kernels were proposed specifically to avoid this concentration by restricting representations to low-weight reduced subsystems~\cite{huang2021}. However, comparative benchmarks often omit matched classical baseline models that evaluate identical physical observables using classical support vector machines or ridge regressors. Furthermore, realistic experimental deployments require accounting for finite measurement shot budgets and physical open-system decoherence channels.
 
-In this work, we conduct a controlled empirical comparison of PQK, FQ, and matched classical correlator architectures on exact ground states of the 1D transverse-field Ising model (TFIM) and frustrated 2D lattices. We enforce a pre-declared statistical analysis protocol with family-wise error rate control, isolate finite-shot measurement sampling from gate synthesis noise, and systematically evaluate susceptibility to local depolarizing noise. For TFIM ground states, the $\mathbb{Z}_2$ parity symmetry $P=\prod_i X_i$ constrains single-site RDMs to $\rho_i = \tfrac{1}{2}(I + \langle X_i\rangle X_i)$, so that $\|\rho_i(\psi)-\rho_i(\phi)\|_F^2 = \tfrac{1}{2}(\langle X_i\rangle_\psi - \langle X_i\rangle_\phi)^2$, rendering PQK-1 identically an RBF kernel on single-site magnetization.
+In this work, we conduct a controlled empirical comparison of PQK, FQ, and matched classical correlator architectures on exact ground states of the 1D transverse-field Ising model (TFIM) and frustrated 2D lattices. We enforce a pre-declared statistical analysis protocol with family-wise error rate control, isolate finite-shot measurement sampling from gate synthesis noise, and systematically evaluate susceptibility to local depolarizing noise.
+
+Our principal contributions are: (i) an exact algebraic identity
+$k_{\mathrm{PQK\text{-}1}}(\psi,\phi)=\exp(-\tfrac{\gamma}{2}\sum_i
+(\langle X_i\rangle_\psi-\langle X_i\rangle_\phi)^2)$ proving that PQK-1
+is identically an RBF kernel on single-site magnetization (Sec.~II-B);
+(ii) a pre-declared, 20-seed Wilcoxon protocol on exact TFIM and
+$J_1$--$J_2$ ground states ($n\le 14$) showing that PQK-2nn and classical
+two-body correlators match FQ to $\Delta R^2\le 0.011$
+(Table~\ref{tab:confirmatory_stats}); and (iii) a $12.2\times$--$39.8\times$ FQ
+shot-budget overhead with non-PSD Gram matrices in 20/20 finite-shot
+seeds requiring spectral clipping (Fig.~\ref{fig:shots}).
 
 \section{Problem Formulation \& Architectures}
 
@@ -87,7 +115,7 @@ For feature-based models (PQK and classical correlators), measurements require m
 \subsubsection{Physical Depolarizing Channel}
 Each of the $n = 8$ qubits undergoes an independent depolarizing channel $\mathcal{E}(\rho) = (1-p)\rho + p(I/2) \otimes \text{Tr}(\rho)$, so a Pauli expectation of weight $k$ scales exactly by $(1-p)^k$; fidelity-kernel overlaps were computed from the explicitly evolved density matrices and normalized to unit diagonal. Hyperparameters were re-tuned by inner cross-validation at every $p$, so this experiment measures the effect of the channel after retuning, not on fixed models. In addition, an unmitigated control evaluating fixed $p=0.00$ optimal hyperparameters was executed to quantify intrinsic channel attenuation without adaptive compensation.
 
-\subsection{Statistical Protocol and Pre-Registration}
+\subsection{Statistical Protocol and Pre-Declaration}
 To ensure reproducibility and eliminate post-hoc selection bias, all statistical hypothesis tests follow a pre-declared analysis protocol. Model differences $d_i = \text{metric}(a)_i - \text{metric}(b)_i$ across 20 fixed seeds are assessed using two-sided Wilcoxon signed-rank tests with 10,000 bootstrap resamples for 95\% confidence intervals. Multiple comparisons within each cell are corrected via the Holm step-down procedure ($p_{\text{holm}}$). Confirmatory status was restricted ex-ante to PQK-1 vs PQK-2nn, PQK-2nn vs E (raw), and FQ vs E (raw) on primary tasks.
 
 \section{Empirical Results}
@@ -98,12 +126,12 @@ To ensure reproducibility and eliminate post-hoc selection bias, all statistical
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=\columnwidth,height=1.65in,keepaspectratio]{figures/fig_learning_curve_t1.pdf}
-  \caption{Task 1 learning curves: mean test $R^2$ vs.\ $N_{\mathrm{tr}}$ across 20 seeds. Shaded bands show 95\% bootstrap CIs.}
+  \includegraphics[width=\columnwidth,height=1.45in,keepaspectratio]{figures/fig_learning_curve_t1.pdf}
+  \caption{Task 1 half-chain entropy: mean test $R^2$ vs.\ training size $N_{\mathrm{tr}}$ across 20 fixed seeds. Bands: 95\% bootstrap CI. PQK-2nn tracks FQ and classical E (raw); single-body PQK-1 saturates $\approx 0.04$--$0.10$ $R^2$ lower.}
   \label{fig:t1_lc}
 \end{figure}
 
-Table~\ref{tab:t1_r2} presents test $R^2$ performance for Task 1 across sample sizes $N_{\text{tr}}=40$ and $N_{\text{tr}}=160$ (Fig.~\ref{fig:t1_lc} shows full learning curves).
+Table~\ref{tab:confirmatory_stats} reports confirmatory paired comparisons, while Fig.~\ref{fig:t1_lc} shows test $R^2$ scaling across sample sizes. Test $R^2$ values across arms at $N_{\text{tr}}=40$ and $N_{\text{tr}}=160$ are summarized in Table~\ref{tab:t1_r2}.
 
 \input{tables/tab1_t1_r2.tex}
 
@@ -128,12 +156,12 @@ This confirmatory test (Claim C3) proves that for non-trivial 4-body correlators
 \subsection{Task 3: Absence of Kernel Concentration}
 Evaluating the disordered TFIM ensemble from $n=4$ to $n=14$ reveals no evidence of exponential kernel concentration (Claim C4). Mean off-diagonal elements decay gradually (FQ off-diagonal mean decreases from $0.83$ at $n=4$ to $0.44$ at $n=14$), while variance remains bounded away from zero. Furthermore, across all 8,700 off-diagonal pairs evaluated at $n=14$, exactly zero entries fell below $10^{-3}$ (minimum observed FQ entry $= 0.1616$). Thus, ground-state manifolds of 1D local Hamiltonians avoid barren concentration plateaus up to $n=14$.
 
-\subsection{Task 5: Finite Shots and Depolarizing Channels}
+\subsection{Noise and Measurement Shot Budgets}
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=\columnwidth,height=1.65in,keepaspectratio]{figures/fig_shots.pdf}
-  \caption{FQ test $R^2$ vs.\ shot budget $S$ (20 seeds, $N_{\mathrm{tr}}=40$). Dashed line: PSD-clipped; solid: unclipped. Bands are 95\% bootstrap CIs.}
+  \includegraphics[width=\columnwidth,height=1.45in,keepaspectratio]{figures/fig_shots.pdf}
+  \caption{FQ test $R^2$ vs.\ total swap-test shots $S$ ($N_{\mathrm{tr}}=40$, 20 seeds). Solid: unclipped indefinite Gram (non-PSD in 20/20 seeds); dashed: eigenvalue-clipped. Feature-arm costs ($480S$--$720S$) are over an order of magnitude lower. Bands: 95\% bootstrap CI.}
   \label{fig:shots}
 \end{figure}
 
@@ -144,8 +172,8 @@ Furthermore, under independent per-entry swap-test sampling with $S \in \{100, 1
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=\columnwidth,height=1.65in,keepaspectratio]{figures/fig_depolarizing_retuned_per_qubit_proxy.pdf}
-  \caption{Test $R^2$ vs.\ depolarizing rate $p$ (20 seeds, $N_{\mathrm{tr}}=40$). Solid: hyperparameters re-tuned at each $p$; dashed: fixed $p=0$ hyperparameters.}
+  \includegraphics[width=\columnwidth,height=1.45in,keepaspectratio]{figures/fig_depolarizing_retuned_per_qubit_proxy.pdf}
+  \caption{Test $R^2$ vs.\ depolarizing rate $p$ ($N_{\mathrm{tr}}=40$, 20 seeds). (a) Hyperparameters re-tuned at each $p$---bandwidth absorbs feature shrinkage. (b) Fixed $p=0$ hyperparameters---two-body observables attenuate as $(1-p)^2$.}
   \label{fig:depol}
 \end{figure}
 
@@ -173,9 +201,12 @@ To prevent over-generalization, we explicitly delineate the negative scope of th
 \end{itemize}
 
 \section{Conclusion \& Reproducibility Statement}
-On exact equilibrium ground states of 1D and 2D spin chains, projected quantum kernels and classical two-body correlator baselines achieve learning performance statistically indistinguishable from full fidelity quantum kernels, while requiring over an order of magnitude fewer measurement shots. All data, analysis scripts, pre-declared statistical logs, and figures are fully reproducible via the accompanying open-source repository. All figures and tables in this paper are generated programmatically from committed CSV files via \texttt{scripts/make\_tables.py} and the figure-generation scripts, with no hand-typed empirical values.
+On exact equilibrium ground states of 1D and 2D spin chains, projected quantum kernels and classical two-body correlator baselines achieve learning performance statistically indistinguishable from full fidelity quantum kernels, while requiring over an order of magnitude fewer measurement shots. That classical two-body correlators track FQ at sample-efficiency parity on equilibrium ground states---where kernel-advantage intuition is strongest---suggests that observed advantages in the literature likely stem from non-equilibrium or non-local structure rather than from fidelity geometry itself. All data, analysis scripts, pre-declared statistical logs, and figures are fully reproducible via the accompanying open-source repository. All figures and tables in this paper are generated programmatically from committed CSV files via \texttt{scripts/make\_tables.py} and the figure-generation scripts, with no hand-typed empirical values.
 
+\begingroup
+\footnotesize
 \bibliographystyle{IEEEtran}
 \bibliography{references}
+\endgroup
 
 \end{document}
