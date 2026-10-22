@@ -344,9 +344,22 @@ def make_f4():
     df = pd.read_csv(source_file)
     df = df[df["tag"] == "disorder"].copy()
 
-    # Log search for n=14 fraction < 1e-3
-    print("  Checking for saved source of 'at n=14: fraction of FQ entries < 1e-3'...")
-    print("  MISSING: no saved source in results/ (omitting annotation per protocol).")
+    # Check for saved source of n=14 fraction < 1e-3
+    n14_file = "results/t3_n14_fraction.csv"
+    annot_str = None
+    if os.path.exists(n14_file):
+        df_n14 = pd.read_csv(n14_file)
+        fq_row = df_n14[df_n14["kernel"] == "FQ"]
+        if len(fq_row) > 0:
+            frac = fq_row["fraction"].values[0]
+            if frac == 0.0 or frac < 1e-6:
+                annot_str = "at n=14: fraction of FQ entries < 1e-3 is 0"
+            else:
+                annot_str = f"at n=14: fraction of FQ entries < 1e-3 is {frac:.4f}"
+            print(f"  Found n=14 fraction source: '{annot_str}'")
+    if annot_str is None:
+        print("  Checking for saved source of 'at n=14: fraction of FQ entries < 1e-3'...")
+        print("  MISSING: no saved source in results/ (omitting annotation per protocol).")
 
     n_vals = sorted(df["n"].unique())
 
@@ -405,6 +418,8 @@ def make_f4():
     axes[0].set_title(r"Off-diagonal Kernel Element Mean")
     axes[0].set_xticks(n_vals)
     axes[0].grid(True, ls="--", alpha=0.4)
+    if annot_str is not None:
+        axes[0].text(14, 0.46, annot_str, fontsize=6.2, ha="right", color="#D55E00", fontweight="bold")
 
     axes[1].set_yscale("log")
     axes[1].set_xlabel(r"Qubits $n$")
@@ -590,13 +605,26 @@ def make_f7():
     df_dep = df[(df["experiment"] == "depolarizing") & (df["metric"] == "r2")].copy()
     df_dep["model_std"] = df_dep.apply(map_std_model, axis=1)
 
-    p_vals = [0.00, 0.01, 0.02, 0.04, 0.06, 0.08]
-    models_to_plot = ["PQK-1 (== RBF on <X>)", "PQK-2nn", "FQ", "E (raw)", "E (std)", "E2 (raw)", "F (std)"]
+    source_fixed = "results/t5_depol_fixedhp.csv"
+    df_fixed = pd.read_csv(source_fixed) if os.path.exists(source_fixed) else pd.DataFrame()
 
-    fig, ax = plt.subplots(figsize=(3.4, 2.7))
+    p_vals = [0.00, 0.01, 0.02, 0.04, 0.06, 0.08]
+    models_to_plot_a = ["PQK-1 (== RBF on <X>)", "PQK-2nn", "FQ", "E (raw)", "E (std)", "E2 (raw)", "F (std)"]
+
+    p_vals_fixed = [0.00, 0.02, 0.04, 0.06, 0.08]
+    models_to_plot_b = [
+        ("PQK-1", "none", "PQK-1 (== RBF on <X>)"),
+        ("PQK-2nn", "none", "PQK-2nn"),
+        ("FQ", "mixed_state_overlap", "FQ"),
+        ("E", "raw", "E (raw)"),
+        ("E2", "raw", "E2 (raw)"),
+    ]
+
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.9), sharey=True)
     records = []
 
-    for m in models_to_plot:
+    # Panel A: Retuned
+    for m in models_to_plot_a:
         st = STYLE[m]
         sub_m = df_dep[df_dep["model_std"] == m]
         means, cis_l, cis_h = [], [], []
@@ -612,20 +640,51 @@ def make_f7():
             cis_h.append(ci_h)
 
             records.append({
-                "figure": "F7", "panel": "main", "model": m, "p": p_val,
+                "figure": "F7", "panel": "A_retuned", "model": m, "p": p_val,
                 "mean_r2": val_mean, "ci_low": ci_l, "ci_high": ci_h,
                 "n_seeds": len(vals), "source_file": source_file
             })
 
-        ax.plot(p_vals, means, marker=st["marker"], color=st["color"], ls=st["ls"], lw=st["lw"], ms=st["ms"], label=st["label"])
-        ax.fill_between(p_vals, cis_l, cis_h, color=st["color"], alpha=0.15, edgecolor="none")
+        axes[0].plot(p_vals, means, marker=st["marker"], color=st["color"], ls=st["ls"], lw=st["lw"], ms=st["ms"], label=st["label"])
+        axes[0].fill_between(p_vals, cis_l, cis_h, color=st["color"], alpha=0.15, edgecolor="none")
 
-    ax.set_xlabel(r"Depolarizing Error Rate $p$")
-    ax.set_ylabel(r"Test $R^2$")
-    ax.set_title("Depolarizing Noise\n(hyperparameters retuned at each p)")
-    ax.set_ylim(0.87, 1.00)
-    ax.grid(True, ls="--", alpha=0.4)
-    ax.legend(frameon=True, facecolor="white", edgecolor="none", framealpha=0.9, loc="lower left", fontsize=6.5)
+    axes[0].set_xlabel(r"Depolarizing Error Rate $p$")
+    axes[0].set_ylabel(r"Test $R^2$")
+    axes[0].set_title(r"(a) Retuned Hyperparameters (at each $p$)")
+    axes[0].set_ylim(0.87, 1.00)
+    axes[0].grid(True, ls="--", alpha=0.4)
+
+    # Panel B: Fixed
+    if not df_fixed.empty:
+        for m_key, v_key, std_name in models_to_plot_b:
+            st = STYLE[std_name]
+            sub_m = df_fixed[(df_fixed["model"] == m_key) & (df_fixed["variant"] == v_key)]
+            means, cis_l, cis_h = [], [], []
+
+            for p_val in p_vals_fixed:
+                sub_p = sub_m[sub_m["p"].astype(float) == float(p_val)]
+                vals = sub_p["r2"].values
+                val_mean = float(np.mean(vals))
+                assert abs(val_mean - np.mean(vals)) < 1e-9
+                ci_l, ci_h = bootstrap_ci(vals)
+                means.append(val_mean)
+                cis_l.append(ci_l)
+                cis_h.append(ci_h)
+
+                records.append({
+                    "figure": "F7", "panel": "B_fixed_hp", "model": std_name, "p": p_val,
+                    "mean_r2": val_mean, "ci_low": ci_l, "ci_high": ci_h,
+                    "n_seeds": len(vals), "source_file": source_fixed
+                })
+
+            axes[1].plot(p_vals_fixed, means, marker=st["marker"], color=st["color"], ls=st["ls"], lw=st["lw"], ms=st["ms"], label=st["label"])
+            axes[1].fill_between(p_vals_fixed, cis_l, cis_h, color=st["color"], alpha=0.15, edgecolor="none")
+
+    axes[1].set_xlabel(r"Depolarizing Error Rate $p$")
+    axes[1].set_title(r"(b) Fixed Hyperparameters ($p=0$ optimum)")
+    axes[1].set_ylim(0.87, 1.00)
+    axes[1].grid(True, ls="--", alpha=0.4)
+    axes[1].legend(frameon=True, facecolor="white", edgecolor="none", framealpha=0.9, loc="lower left", fontsize=6.5)
 
     save_pdf_and_data(fig, "fig_depolarizing_retuned_per_qubit_proxy", pd.DataFrame(records))
 
