@@ -2,14 +2,15 @@
 scripts/run_t2_correlators.py
 -----------------------------
 Task 2: Disordered 1D TFIM correlators, n=8.
-- Target T2a: <Z_0 Z_{n-1}> (tag: "contained")
-- Target T2b: <Z_0 Z_1 Z_{n-2} Z_{n-1}> (tag: "not_contained")
+- Target T2a: 2-point end-to-end correlator <Z_0 Z_{n-1}> (tag: "contained")
+- Target T2b: 4-point correlator <Z_0 Z_1 Z_{n-2} Z_{n-1}> (tag: "not_contained")
 N_train in {10, 20, 40, 80, 160}.
 """
 
 import os
 import sys
 import time
+import pandas as pd
 
 _SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 if _SCRIPTS_DIR not in sys.path:
@@ -25,9 +26,31 @@ from common import (
 )
 
 
-def run_t2(seeds, quick=False, out_csv=None, grid_version="grid_v2"):
+def get_completed_t2_blocks(csv_path: str):
+    if not os.path.exists(csv_path) or os.path.getsize(csv_path) == 0:
+        return set()
+    completed = set()
+    try:
+        df = pd.read_csv(csv_path)
+        if len(df) == 0:
+            return set()
+        counts = df.groupby(["task", "seed", "N_train"]).size()
+        for (task_name, s, N), cnt in counts.items():
+            if cnt >= 18:
+                completed.add((str(task_name), int(s), int(N)))
+    except Exception as e:
+        print(f"Warning: could not parse {csv_path} for resumption ({e})")
+    return completed
+
+
+def run_t2(seeds, quick=False, out_csv=None, grid_version="grid_v3"):
     if out_csv is None:
-        out_csv = os.path.join("results", "t2_correlators_gridv2.csv" if grid_version == "grid_v2" else "t2_correlators.csv")
+        if grid_version == "grid_v3":
+            out_csv = os.path.join("results", "t2_correlators_gridv3.csv")
+        elif grid_version == "grid_v2":
+            out_csv = os.path.join("results", "t2_correlators_gridv2.csv")
+        else:
+            out_csv = os.path.join("results", "t2_correlators.csv")
 
     write_run_meta()
 
@@ -37,57 +60,94 @@ def run_t2(seeds, quick=False, out_csv=None, grid_version="grid_v2"):
     else:
         n_train_list = [10, 20, 40, 80, 160]
 
+    completed_blocks = get_completed_t2_blocks(out_csv)
+    if completed_blocks:
+        print(f"Resumption: found {len(completed_blocks)} completed (task, seed, N_train) blocks in {out_csv}.")
+
     print(f"=== Starting T2 Correlators Benchmark ({grid_version}, Seeds: {seeds}, N_train: {n_train_list}) ===")
     total_rows = 0
     t_start = time.time()
+    per_seed_times = {}
+    num_timed_seeds = 0
+    elapsed_timed = 0.0
 
     for seed in seeds:
+        # Check if all blocks for both targets in this seed are already completed
+        needed_a = [N for N in n_train_list if ("T2a", seed, N) not in completed_blocks]
+        needed_b = [N for N in n_train_list if ("T2b", seed, N) not in completed_blocks]
+
+        if not needed_a and not needed_b:
+            print(f"  [T2] Seed {seed:2d} already completely computed. Skipping.")
+            continue
+
         t_seed = time.time()
         for N in n_train_list:
             # --- T2a: 2-point end-to-end correlator (contained) ---
-            tr_states_a, tr_targets_a, te_states_a, te_targets_a, _ = make_split(
-                task="t2", n=n, N=N, seed=seed, target_name="z0zn"
-            )
-            rows_a = evaluate_regression_models(
-                task="T2a",
-                target="z0_zn",
-                tag="contained",
-                n=n,
-                N_train=N,
-                seed=seed,
-                train_states=tr_states_a,
-                train_targets=tr_targets_a,
-                test_states=te_states_a,
-                test_targets=te_targets_a,
-                grid_version=grid_version,
-            )
-            write_csv_rows(out_csv, rows_a)
-            total_rows += len(rows_a)
+            if ("T2a", seed, N) not in completed_blocks:
+                tr_states_a, tr_targets_a, te_states_a, te_targets_a, _ = make_split(
+                    task="t2", n=n, N=N, seed=seed, target_name="z0zn"
+                )
+                rows_a = evaluate_regression_models(
+                    task="T2a",
+                    target="z0_zn",
+                    tag="contained",
+                    n=n,
+                    N_train=N,
+                    seed=seed,
+                    train_states=tr_states_a,
+                    train_targets=tr_targets_a,
+                    test_states=te_states_a,
+                    test_targets=te_targets_a,
+                    grid_version=grid_version,
+                )
+                write_csv_rows(out_csv, rows_a)
+                total_rows += len(rows_a)
+                completed_blocks.add(("T2a", seed, N))
 
             # --- T2b: 4-point correlator (not_contained) ---
-            tr_states_b, tr_targets_b, te_states_b, te_targets_b, _ = make_split(
-                task="t2", n=n, N=N, seed=seed, target_name="zzzz"
-            )
-            rows_b = evaluate_regression_models(
-                task="T2b",
-                target="z0_z1_zn2_zn1",
-                tag="not_contained",
-                n=n,
-                N_train=N,
-                seed=seed,
-                train_states=tr_states_b,
-                train_targets=tr_targets_b,
-                test_states=te_states_b,
-                test_targets=te_targets_b,
-                grid_version=grid_version,
-            )
-            write_csv_rows(out_csv, rows_b)
-            total_rows += len(rows_b)
+            if ("T2b", seed, N) not in completed_blocks:
+                tr_states_b, tr_targets_b, te_states_b, te_targets_b, _ = make_split(
+                    task="t2", n=n, N=N, seed=seed, target_name="zzzz"
+                )
+                rows_b = evaluate_regression_models(
+                    task="T2b",
+                    target="z0_z1_zn2_zn1",
+                    tag="not_contained",
+                    n=n,
+                    N_train=N,
+                    seed=seed,
+                    train_states=tr_states_b,
+                    train_targets=tr_targets_b,
+                    test_states=te_states_b,
+                    test_targets=te_targets_b,
+                    grid_version=grid_version,
+                )
+                write_csv_rows(out_csv, rows_b)
+                total_rows += len(rows_b)
+                completed_blocks.add(("T2b", seed, N))
 
-        print(f"  [T2] Seed {seed:2d} completed in {time.time() - t_seed:.2f}s (logged {total_rows} rows so far)")
+        seed_elapsed = time.time() - t_seed
+        per_seed_times[seed] = seed_elapsed
+        num_timed_seeds += 1
+        elapsed_timed += seed_elapsed
+        print(f"  [T2] Seed {seed:2d} completed in {seed_elapsed:.2f}s (logged {total_rows} rows so far)")
+
+        # Dynamic Runtime Gate check after 3 seeds timed
+        if num_timed_seeds == 3:
+            avg_per_seed = elapsed_timed / 3.0
+            projected = avg_per_seed * len(seeds)
+            print(f"  [Gate Check] 3 seeds timed in {elapsed_timed:.2f}s (avg {avg_per_seed:.2f}s/seed). Projected total for {len(seeds)} seeds: {projected:.2f}s ({projected/3600.0:.2f} hours).")
+            if projected > 1.0 * 3600.0:
+                print("=" * 80)
+                print(f"GATE HALT: Projected execution time {projected/3600.0:.2f} hours exceeds 1.0 hour limit!")
+                print("Per-seed timing profile:")
+                for s, st in per_seed_times.items():
+                    print(f"  Seed {s:2d}: {st:.2f}s")
+                print("=" * 80)
+                sys.exit(1)
 
     total_time = time.time() - t_start
-    print(f"=== T2 Benchmark complete: {total_rows} rows in {total_time:.2f}s -> {out_csv} ===")
+    print(f"=== T2 Benchmark complete: {total_rows} new rows in {total_time:.2f}s -> {out_csv} ===")
     return total_time
 
 
@@ -95,4 +155,5 @@ if __name__ == "__main__":
     parser = get_parser(description="Run Task 2 (Correlator Prediction) Benchmark")
     args = parser.parse_args()
     seeds = parse_seeds(args)
-    run_t2(seeds, quick=args.quick, out_csv=args.out)
+    grid_ver = args.grid if hasattr(args, "grid") and args.grid else "grid_v3"
+    run_t2(seeds, quick=args.quick, out_csv=args.out, grid_version=grid_ver)
