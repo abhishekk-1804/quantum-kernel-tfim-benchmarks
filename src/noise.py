@@ -507,3 +507,98 @@ def mixed_state_fidelity_gram(states: list, p: float, n: int = 8) -> np.ndarray:
     np.fill_diagonal(K_mixed, 1.0)
     return K_mixed
 
+
+def apply_single_qubit_depolarizing(rho: np.ndarray, p: float, k: int, n: int = 8) -> np.ndarray:
+    """
+    Apply single-qubit depolarizing channel on qubit k:
+        E_k(rho) = (1 - p)*rho + p * (I_k / 2) (x) Tr_k(rho)
+
+    Parameters
+    ----------
+    rho : np.ndarray, shape (2^n, 2^n)
+    p : float
+        Depolarizing probability.
+    k : int
+        Target qubit index (0 <= k < n, big-endian).
+    n : int
+        Total number of qubits.
+
+    Returns
+    -------
+    out : np.ndarray, shape (2^n, 2^n)
+    """
+    if p == 0.0:
+        return rho.copy()
+    flip = 1 << (n - 1 - k)
+    idx = np.arange(2**n)
+    bits = (idx >> (n - 1 - k)) & 1
+    same_bit = (bits[:, None] == bits[None, :])
+    idx_flipped = idx ^ flip
+    rho_flipped = rho[np.ix_(idx_flipped, idx_flipped)]
+
+    out = np.empty_like(rho)
+    out[~same_bit] = (1.0 - p) * rho[~same_bit]
+    out[same_bit] = (1.0 - 0.5 * p) * rho[same_bit] + 0.5 * p * rho_flipped[same_bit]
+    return out
+
+
+def apply_local_depolarizing_channel(rho: np.ndarray, p: float, n: int = 8) -> np.ndarray:
+    """
+    Apply independent local depolarizing channel to each qubit k = 0, ..., n-1:
+        E_{local}(rho) = (E_{n-1} o ... o E_0)(rho)
+    """
+    if p == 0.0:
+        return rho.copy()
+    curr = rho.copy()
+    for k in range(n):
+        curr = apply_single_qubit_depolarizing(curr, p, k, n)
+    return curr
+
+
+def partial_trace(rho: np.ndarray, keep_sites: list, n: int) -> np.ndarray:
+    """
+    Compute partial trace of an n-qubit density matrix keeping keep_sites.
+
+    Parameters
+    ----------
+    rho : np.ndarray, shape (2^n, 2^n)
+    keep_sites : list of int
+    n : int
+
+    Returns
+    -------
+    rho_sub : np.ndarray, shape (2^k, 2^k) where k = len(keep_sites)
+    """
+    k = len(keep_sites)
+    trace_sites = [s for s in range(n) if s not in keep_sites]
+    rho_t = rho.reshape([2] * (2 * n))
+    perm = keep_sites + [n + s for s in keep_sites] + trace_sites + [n + s for s in trace_sites]
+    rho_perm = np.transpose(rho_t, perm)
+    dim_keep = 2**k
+    dim_trace = 2**(n - k)
+    rho_mat = rho_perm.reshape((dim_keep, dim_keep, dim_trace, dim_trace))
+    return np.trace(rho_mat, axis1=2, axis2=3)
+
+
+def local_depolarizing_fidelity_gram(states: list, p: float, n: int = 8) -> np.ndarray:
+    """
+    Compute the normalized mixed-state overlap matrix under local depolarizing noise:
+        K_{ij}(p) = Tr(rho_i(p) rho_j(p)) / sqrt(Tr(rho_i(p)^2) Tr(rho_j(p)^2))
+    where rho_i(p) is obtained by applying E_k for k = 0, ..., n-1 to |psi_i><psi_i|.
+    """
+    m = len(states)
+    states_arr = np.asarray(states)
+
+    if p == 0.0:
+        K_pure = np.abs(states_arr @ states_arr.conj().T) ** 2
+        np.fill_diagonal(K_pure, 1.0)
+        return K_pure
+
+    rhos = [apply_local_depolarizing_channel(np.outer(s, s.conj()), p, n) for s in states]
+    R = np.array([r.reshape(-1) for r in rhos])
+    overlap = np.real(R @ R.conj().T)
+    diag = np.sqrt(np.diag(overlap))
+    K = overlap / np.outer(diag, diag)
+    np.fill_diagonal(K, 1.0)
+    return K
+

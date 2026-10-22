@@ -57,6 +57,7 @@ from noise import (
     destructive_swap_test_fidelity,
     fidelity_clip_psd,
     mixed_state_fidelity_gram,
+    local_depolarizing_fidelity_gram,
 )
 from kernels import classical_features
 
@@ -275,6 +276,7 @@ def run_noise_benchmark(
     quick: bool = False,
     out_csv: str = None,
     worker_id: int = None,
+    depol_only: bool = False,
 ):
     """Run Phase 2b benchmarks across assigned seeds."""
     if out_csv is None:
@@ -365,10 +367,11 @@ def run_noise_benchmark(
             print(f"  [Sanity check] Seed 0 fresh pure PQK-1 matches gridv3 baseline: diff = {abs(r2_pqk1 - val_pqk1_csv):.2e}", flush=True)
 
         # Add S=inf rows to results
-        for exp_type, noise_param, lvl_str, s_val, p_val in [
+        base_targets = [("depolarizing", "p", "0.00", np.inf, 0.0)] if depol_only else [
             ("finite_shots", "shots", "inf", np.inf, 0.0),
             ("depolarizing", "p", "0.00", np.inf, 0.0),
-        ]:
+        ]
+        for exp_type, noise_param, lvl_str, s_val, p_val in base_targets:
             if df_noiseless is not None:
                 sub_ref = df_noiseless[(df_noiseless["seed"] == seed) & (df_noiseless["N_train"] == 40)]
                 for _, r_ref in sub_ref.iterrows():
@@ -417,7 +420,7 @@ def run_noise_benchmark(
         # =====================================================================
         # 2. EXPERIMENT A: FINITE SHOTS SWEEP
         # =====================================================================
-        for S in shots_list:
+        for S in ([] if depol_only else shots_list):
             lvl_str = str(S)
             needed_models = [
                 m for m in ["PQK-1", "PQK-2nn", "FQ-raw", "FQ-clipped", "E", "E2", "F"]
@@ -651,7 +654,7 @@ def run_noise_benchmark(
             X_e_te_depol_std = scaler_e_depol.transform(X_e_depol[N_train:])
 
             # FQ mixed-state normalized overlap
-            K_depol_full = mixed_state_fidelity_gram(all_states, p=p, n=n)
+            K_depol_full = local_depolarizing_fidelity_gram(all_states, p=p, n=n)
             K_depol_tr = K_depol_full[:N_train, :N_train]
             K_depol_te = K_depol_full[N_train:, :N_train]
             lam_min_depol = float(np.min(np.linalg.eigvalsh(K_depol_tr)))
@@ -773,7 +776,7 @@ def run_noise_benchmark(
             new_rows = []
 
 
-def launch_parallel_workers(seeds: list, quick: bool, out_csv: str, n_workers: int = 4):
+def launch_parallel_workers(seeds: list, quick: bool, out_csv: str, n_workers: int = 4, depol_only: bool = False):
     """Launch n_workers parallel subprocesses, wait, and merge results."""
     t_start = time.time()
     worker_csvs = [os.path.join("results", f"t5_noise_worker{w}.csv") for w in range(n_workers)]
@@ -808,6 +811,8 @@ def launch_parallel_workers(seeds: list, quick: bool, out_csv: str, n_workers: i
         ]
         if quick:
             cmd.append("--quick")
+        if depol_only:
+            cmd.append("--depol-only")
 
         env = os.environ.copy()
         env["OMP_NUM_THREADS"] = "1"
@@ -833,7 +838,14 @@ def launch_parallel_workers(seeds: list, quick: bool, out_csv: str, n_workers: i
             merged_dfs.append(pd.read_csv(w_csv))
 
     if merged_dfs:
-        final_df = pd.concat(merged_dfs, ignore_index=True)
+        merged_all = pd.concat(merged_dfs, ignore_index=True)
+        if depol_only and os.path.exists(out_csv):
+            existing_df = pd.read_csv(out_csv)
+            finite_df = existing_df[existing_df["experiment"] == "finite_shots"]
+            print(f"Preserving {len(finite_df)} finite_shots rows from {out_csv}", flush=True)
+            final_df = pd.concat([finite_df, merged_all], ignore_index=True)
+        else:
+            final_df = merged_all
         # Sort for clarity
         final_df.sort_values(
             by=["experiment", "noise_level", "seed", "model", "variant", "metric"],
@@ -859,6 +871,7 @@ if __name__ == "__main__":
     parser.add_argument("--workers", type=int, default=4, help="Number of parallel workers.")
     parser.add_argument("--out", type=str, default=None, help="Output CSV path.")
     parser.add_argument("--single-process", action="store_true", help="Run sequentially without subprocesses.")
+    parser.add_argument("--depol-only", action="store_true", help="Run only the depolarizing channel sweep.")
     args = parser.parse_args()
 
     # Parse seeds: explicit --seeds takes priority over --quick
@@ -881,6 +894,7 @@ if __name__ == "__main__":
             quick=args.quick,
             out_csv=target_out,
             worker_id=args.worker,
+            depol_only=args.depol_only,
         )
     else:
         launch_parallel_workers(
@@ -888,4 +902,5 @@ if __name__ == "__main__":
             quick=args.quick,
             out_csv=target_out,
             n_workers=args.workers,
+            depol_only=args.depol_only,
         )

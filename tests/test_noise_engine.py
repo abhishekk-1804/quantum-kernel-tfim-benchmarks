@@ -35,7 +35,14 @@ from noise import (
     destructive_swap_test_fidelity,
     depolarize_state,
     mixed_state_fidelity_gram,
+    apply_single_qubit_depolarizing,
+    apply_local_depolarizing_channel,
+    partial_trace,
+    local_depolarizing_fidelity_gram,
 )
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
+from scripts.common import make_split
 
 
 class TestNoiseEngine:
@@ -253,3 +260,155 @@ class TestNoiseEngine:
         K_p1 = mixed_state_fidelity_gram([psi1, psi2], p=1.0, n=n)
         assert abs(K_p1[0, 1] - 1.0) < 1e-14  # Both become identical maximally mixed states
         assert abs(K_p1[0, 0] - 1.0) < 1e-14
+
+    def test_per_qubit_depolarizing_pauli_sum_equivalence_n4(self):
+        """
+        At n=4, assert that Tr(rho_i(p) rho_j(p)) computed via sequential
+        single-qubit channels equals the analytical Pauli sum:
+            (1/2^n) * sum_P (1 - p)^(2*|P|) <P>_i <P>_j
+        to < 1e-12.
+        """
+        import itertools
+        n = 4
+        dim = 2 ** n
+        p = 0.07
+
+        # Generate two random pure states
+        rng = np.random.default_rng(202610)
+        psi1 = rng.standard_normal(dim)
+        psi1 /= np.linalg.norm(psi1)
+        psi2 = rng.standard_normal(dim)
+        psi2 /= np.linalg.norm(psi2)
+
+        rho1 = np.outer(psi1, psi1)
+        rho2 = np.outer(psi2, psi2)
+
+        rho1_p = apply_local_depolarizing_channel(rho1, p, n)
+        rho2_p = apply_local_depolarizing_channel(rho2, p, n)
+
+        hs_overlap_channel = float(np.real(np.sum(rho1_p * rho2_p)))
+
+        # Analytical Pauli sum
+        I2 = np.eye(2, dtype=complex)
+        X = np.array([[0, 1], [1, 0]], dtype=complex)
+        Y = np.array([[0, -1j], [1j, 0]], dtype=complex)
+        Z = np.array([[1, 0], [0, -1]], dtype=complex)
+        paulis = [I2, X, Y, Z]
+
+        hs_overlap_pauli = 0.0
+        for ops in itertools.product(range(4), repeat=n):
+            weight = sum(1 for op in ops if op != 0)
+            mat = paulis[ops[0]]
+            for op in ops[1:]:
+                mat = np.kron(mat, paulis[op])
+            exp1 = float(np.real(psi1.conj() @ (mat @ psi1)))
+            exp2 = float(np.real(psi2.conj() @ (mat @ psi2)))
+            hs_overlap_pauli += ((1.0 - p) ** (2 * weight)) * exp1 * exp2
+
+        hs_overlap_pauli /= (2 ** n)
+
+        diff = abs(hs_overlap_channel - hs_overlap_pauli)
+        print(f"\nTest 1 Pauli sum vs channel diff: {diff:.2e}")
+        assert diff < 1e-12, f"Pauli sum equivalence failed with diff={diff}"
+
+    def test_per_qubit_depolarizing_noiseless_limit(self):
+        """
+        At p = 0.00, assert that the normalized overlap matrix K(p=0)
+        equals the pure-state fidelity Gram matrix |<psi_i|psi_j>|^2 to < 1e-12.
+        """
+        n = 4
+        dim = 2 ** n
+        rng = np.random.default_rng(42)
+        states = [rng.standard_normal(dim) for _ in range(6)]
+        states = [s / np.linalg.norm(s) for s in states]
+
+        K_p0 = local_depolarizing_fidelity_gram(states, 0.0, n)
+        states_arr = np.array(states)
+        K_pure = (states_arr @ states_arr.T) ** 2
+
+        diff = np.max(np.abs(K_p0 - K_pure))
+        print(f"\nTest 2 p=0 vs K_pure diff: {diff:.2e}")
+        assert diff < 1e-12, f"p=0 limit failed with diff={diff}"
+
+    def test_rdm_evolution_equivalence(self):
+        """
+        Assert that 1-RDMs and 2-RDMs derived from partial tracing rho_i(p)
+        match the scaled Bloch coefficient definitions to < 1e-12.
+        """
+        n = 4
+        dim = 2 ** n
+        p = 0.05
+        rng = np.random.default_rng(999)
+        psi = rng.standard_normal(dim)
+        psi /= np.linalg.norm(psi)
+        rho = np.outer(psi, psi)
+
+        rho_p = apply_local_depolarizing_channel(rho, p, n)
+
+        # 1-RDM test on site 0
+        rdm1_traced = partial_trace(rho_p, [0], n)
+        sx = np.array([[0, 1], [1, 0]], dtype=complex)
+        sy = np.array([[0, -1j], [1j, 0]], dtype=complex)
+        sz = np.array([[1, 0], [0, -1]], dtype=complex)
+        I2 = np.eye(2, dtype=complex)
+
+        rdm1_pure = partial_trace(rho, [0], n)
+        bx = float(np.real(np.trace(sx @ rdm1_pure)))
+        by = float(np.real(np.trace(sy @ rdm1_pure)))
+        bz = float(np.real(np.trace(sz @ rdm1_pure)))
+        rdm1_scaled = 0.5 * (I2 + (1 - p) * bx * sx + (1 - p) * by * sy + (1 - p) * bz * sz)
+
+        diff1 = np.max(np.abs(rdm1_traced - rdm1_scaled))
+        assert diff1 < 1e-12, f"1-RDM traced vs scaled diff={diff1}"
+
+        # 2-RDM test on sites 0, 1
+        rdm2_traced = partial_trace(rho_p, [0, 1], n)
+        rdm2_pure = partial_trace(rho, [0, 1], n)
+        paulis = [I2, sx, sy, sz]
+        rdm2_scaled = np.zeros((4, 4), dtype=complex)
+        for a in range(4):
+            for b in range(4):
+                weight = (1 if a > 0 else 0) + (1 if b > 0 else 0)
+                coeff = float(np.real(np.trace(np.kron(paulis[a], paulis[b]) @ rdm2_pure))) / 4.0
+                rdm2_scaled += ((1 - p) ** weight) * coeff * np.kron(paulis[a], paulis[b])
+
+        diff2 = np.max(np.abs(rdm2_traced - rdm2_scaled))
+        assert diff2 < 1e-12, f"2-RDM traced vs scaled diff={diff2}"
+
+    def test_feature_std_ratios(self):
+        """
+        Precondition: Evaluate on the EXACT SAME fixed set of 40 training states from Seed 0.
+        Assert std(<X_0>_{p=0.08}) / std(<X_0>_{p=0.00}) == (1 - 0.08) within atol=1e-9.
+        Assert std(<Z_0 Z_1>_{p=0.08}) / std(<Z_0 Z_1>_{p=0.00}) == (1 - 0.08)^2 within atol=1e-9.
+        """
+        tr_states, _, _, _, _ = make_split("t1", n=8, N=40, seed=0)
+
+        sx = np.array([[0, 1], [1, 0]], dtype=complex)
+        sz = np.array([[1, 0], [0, -1]], dtype=complex)
+        X0 = np.kron(sx, np.eye(128, dtype=complex))
+        ZZ01 = np.kron(np.kron(sz, sz), np.eye(64, dtype=complex))
+
+        p = 0.08
+
+        exp_x0_p0 = [float(np.real(psi.conj() @ (X0 @ psi))) for psi in tr_states]
+        exp_zz01_p0 = [float(np.real(psi.conj() @ (ZZ01 @ psi))) for psi in tr_states]
+
+        # Under local depolarizing channel:
+        # <X_0>_p = (1 - p) * <X_0>_0
+        # <Z_0 Z_1>_p = (1 - p)^2 * <Z_0 Z_1>_0
+        exp_x0_p08 = [(1.0 - p) * v for v in exp_x0_p0]
+        exp_zz01_p08 = [((1.0 - p) ** 2) * v for v in exp_zz01_p0]
+
+        std_x0_p0 = float(np.std(exp_x0_p0))
+        std_x0_p08 = float(np.std(exp_x0_p08))
+        std_zz_p0 = float(np.std(exp_zz01_p0))
+        std_zz_p08 = float(np.std(exp_zz01_p08))
+
+        ratio_x = std_x0_p08 / std_x0_p0
+        ratio_zz = std_zz_p08 / std_zz_p0
+
+        print(f"\nratio_x: {ratio_x:.10f}, expected: {1-p:.10f}")
+        print(f"ratio_zz: {ratio_zz:.10f}, expected: {(1-p)**2:.10f}")
+
+        assert abs(ratio_x - (1.0 - p)) < 1e-9
+        assert abs(ratio_zz - (1.0 - p) ** 2) < 1e-9
