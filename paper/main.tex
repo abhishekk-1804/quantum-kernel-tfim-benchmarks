@@ -24,7 +24,7 @@ Bengaluru, India}
 \maketitle
 
 \begin{abstract}
-We evaluate projected quantum kernels (PQK), fidelity quantum kernels (FQ), and matched classical correlator baselines for predicting physical properties of quantum spin-chain ground states. Across 1D transverse-field Ising models and 2D frustrated lattices up to $n \le 14$ spins, ground states are obtained via exact numerical diagonalization, isolating kernel representation geometry from circuit hardware noise. In a pre-registered statistical protocol across 20 fixed seeds, nearest-neighbor projected kernels (PQK-2nn) and classical two-body correlator features (E-raw) perform comparably to full fidelity kernels while requiring $12.2\times$ to $39.8\times$ fewer measurement shots. Under simulated destructive swap tests, raw FQ Gram matrices become non-positive semidefinite across 100\% of seeds, requiring eigenvalue clipping. Hyperparameter-retuned models show resilience to local depolarizing channels, while unmitigated models exhibit predictable attenuation. Our findings establish that physical correlator baselines match quantum kernel sample efficiency in equilibrium spin ground states, with zero claims of quantum advantage.
+We evaluate projected quantum kernels (PQK), fidelity quantum kernels (FQ), and matched classical correlator baselines for predicting physical properties of quantum spin-chain ground states. Across 1D transverse-field Ising models and 2D frustrated lattices up to $n \le 14$ spins, ground states are obtained via exact numerical diagonalization, isolating kernel representation geometry from circuit hardware noise. In a pre-declared statistical protocol across 20 fixed seeds, nearest-neighbor projected kernels (PQK-2nn) and classical two-body correlator features (E-raw) perform comparably to full fidelity kernels while requiring $12.2\times$ to $39.8\times$ fewer measurement shots. Under simulated destructive swap tests, raw FQ Gram matrices become non-positive semidefinite across 100\% of seeds, requiring eigenvalue clipping. Hyperparameter-retuned models show resilience to local depolarizing channels, while unmitigated models exhibit predictable attenuation. Our findings establish that physical correlator baselines match quantum kernel sample efficiency in equilibrium spin ground states, with zero claims of quantum advantage.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -36,7 +36,7 @@ Quantum kernel methods map classical or quantum data into quantum state spaces w
 
 Theoretical analyses suggest that fidelity kernels can suffer from exponential concentration of measure (barren plateaus in kernel space) as the number of qubits $n$ scales~\cite{TODO_thanasilp2022, TODO_shaydulin2022}. Projected quantum kernels were proposed specifically to avoid this concentration by restricting representations to low-weight reduced subsystems~\cite{TODO_huang2021}. However, comparative benchmarks often omit matched classical baseline models that evaluate identical physical observables using classical support vector machines or ridge regressors. Furthermore, realistic experimental deployments require accounting for finite measurement shot budgets and physical open-system decoherence channels.
 
-In this work, we conduct a controlled empirical comparison of PQK, FQ, and matched classical correlator architectures on exact ground states of the 1D transverse-field Ising model (TFIM) and frustrated 2D lattices. We enforce a pre-registered statistical analysis protocol with family-wise error rate control, isolate finite-shot measurement sampling from gate synthesis noise, and systematically evaluate susceptibility to local depolarizing noise.
+In this work, we conduct a controlled empirical comparison of PQK, FQ, and matched classical correlator architectures on exact ground states of the 1D transverse-field Ising model (TFIM) and frustrated 2D lattices. We enforce a pre-declared statistical analysis protocol with family-wise error rate control, isolate finite-shot measurement sampling from gate synthesis noise, and systematically evaluate susceptibility to local depolarizing noise.
 
 \section{Problem Formulation \& Architectures}
 
@@ -152,7 +152,7 @@ To prevent over-generalization, we explicitly delineate the negative scope of th
 \end{itemize}
 
 \section{Conclusion \& Reproducibility Statement}
-On exact equilibrium ground states of 1D and 2D spin chains, projected quantum kernels and classical two-body correlator baselines achieve learning performance statistically indistinguishable from full fidelity quantum kernels, while requiring over an order of magnitude fewer measurement shots. All data, analysis scripts, pre-registered statistical logs, and figures are fully reproducible via the accompanying open-source repository.
+On exact equilibrium ground states of 1D and 2D spin chains, projected quantum kernels and classical two-body correlator baselines achieve learning performance statistically indistinguishable from full fidelity quantum kernels, while requiring over an order of magnitude fewer measurement shots. All data, analysis scripts, pre-declared statistical logs, and figures are fully reproducible via the accompanying open-source repository.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

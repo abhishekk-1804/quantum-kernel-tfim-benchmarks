@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview & Objective Abstract
-This repository provides a rigorous, pre-registered empirical benchmark comparing **Projected Quantum Kernels (PQK)**, **Fidelity Quantum Kernels (FQ)**, and **matched classical correlator baselines** for predicting physical properties of quantum spin-chain ground states.
+This repository provides a rigorous, pre-declared empirical benchmark comparing **Projected Quantum Kernels (PQK)**, **Fidelity Quantum Kernels (FQ)**, and **matched classical correlator baselines** for predicting physical properties of quantum spin-chain ground states.
 
 Across 1D transverse-field Ising models (TFIM) and frustrated 2D $J_1$-$J_2$ lattices up to $n \le 14$ spins, quantum states are generated via exact numerical diagonalization, isolating kernel representation geometry from circuit synthesis and variational optimization noise. Evaluated across 20 fixed RNG seeds with two-tiered family-wise error rate control (Holm step-down procedure), the empirical results show:
 - Nearest-neighbor projected quantum kernels (`PQK-2nn`) and classical two-body correlator features (`E-raw`) achieve learning accuracy comparable to full fidelity kernels (`FQ`).
