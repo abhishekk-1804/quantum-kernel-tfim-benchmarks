@@ -1,13 +1,13 @@
-\begin{table*}[!t]
-\caption{Pre-Declared Confirmatory Paired Comparisons: Wilcoxon Signed-Rank Test Results}
-\label{tab:confirmatory_stats}
-\centering
 \begingroup
 \tiny
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{@{}lllllcccc@{}}
+\setlength{\tabcolsep}{2.2pt}
+\begin{table*}[!t]
+\centering
+\caption{Pre-Declared Confirmatory Paired Comparisons: Wilcoxon Signed-Rank Test Results}
+\label{tab:confirmatory_stats}
+\begin{tabular}{@{}llllrcccc@{}}
 \toprule
-\textbf{Task} & \textbf{Lattice} & \textbf{Metric} & \textbf{Pair ($a$ vs $b$)} & \textbf{$N$} & \textbf{Mean Diff} & \textbf{95\% CI} & \textbf{$p_{\text{holm}}$} & \textbf{$r$} \\
+Task & Lattice & Metric & Pair ($a$ vs $b$) & $N$ & Mean Diff & 95\% CI & $p_{\mathrm{holm}}$ & $r$ \\
 \midrule
 T1 & chain & r2 & PQK-1 vs PQK-2nn & 40 & -0.0803 & [-0.0950, -0.0662] & 1.53e-05 & -1.0000 \\
 T1 & chain & r2 & PQK-2nn vs E (raw) & 40 & -0.0083 & [-0.0132, -0.0041] & 0.0012 & -0.8381 \\
@@ -47,5 +47,5 @@ T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 80 & +0.0001 & [-0.0004, +0.0005] & 1.0000
 T4b & 3x4 & r2 & FQ vs E (raw) & 80 & +0.0003 & [-0.0000, +0.0007] & 1.0000 & +0.0632 \\
 \bottomrule
 \end{tabular}
-\endgroup
 \end{table*}
+\endgroup

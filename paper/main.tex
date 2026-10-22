@@ -108,9 +108,7 @@ We compare these quantum kernels against classical linear and non-linear correla
 
 \subsection{Noise and Measurement Models}
 \subsubsection{Finite Measurement Shots}
-Fidelity kernel entries $K_{ij} = |\langle \psi_i | \psi_j \rangle|^2$ are measured via destructive swap tests. The zero-outcome probability is $P_0 = (1 + K_{ij})/2$. For shot budget $S$, the empirical count follows $N_0 \sim \text{Binomial}(S, P_0)$, giving the estimator $\hat{K}_{ij} = 2(N_0/S) - 1$. Under independent per-entry sampling, this creates off-diagonal variance $\text{Var}(\hat{K}_{ij}) = (1 - K_{ij}^2)/S$. For $N_{\text{tr}}=40$ and $N_{\text{te}}=200$, the deployed measurement cost is $\binom{40}{2} + 40 \times 200 = 8{,}780 \cdot S$ shots, while a full Gram simulation evaluates $\binom{240}{2} = 28{,}680 \cdot S$ shots.
-
-For feature-based models (PQK and classical correlators), measurements require measuring independent commuting Pauli bases across each state. For $m=240$ states, measuring single-body $X$ and $Z$ observables requires $2 \times 240 \cdot S = 480 \cdot S$ shots. Including nearest-neighbor $YY$ and $ZZ$ bases requires 3 distinct measurement settings, scaling as $3 \times 240 \cdot S = 720 \cdot S$ shots.
+Fidelity kernel entries $K_{ij} = |\langle \psi_i | \psi_j \rangle|^2$ are measured via destructive swap tests. The zero-outcome probability is $P_0 = (1 + K_{ij})/2$. For shot budget $S$, the empirical count follows $N_0 \sim \text{Binomial}(S, P_0)$, giving the estimator $\hat{K}_{ij} = 2(N_0/S) - 1$. Under independent per-entry sampling, this creates off-diagonal variance $\text{Var}(\hat{K}_{ij}) = (1 - K_{ij}^2)/S$.
 
 \subsubsection{Physical Depolarizing Channel}
 Each of the $n = 8$ qubits undergoes an independent depolarizing channel $\mathcal{E}(\rho) = (1-p)\rho + p(I/2) \otimes \text{Tr}(\rho)$, so a Pauli expectation of weight $k$ scales exactly by $(1-p)^k$; fidelity-kernel overlaps were computed from the explicitly evolved density matrices and normalized to unit diagonal. Hyperparameters were re-tuned by inner cross-validation at every $p$, so this experiment measures the effect of the channel after retuning, not on fixed models. In addition, an unmitigated control evaluating fixed $p=0.00$ optimal hyperparameters was executed to quantify intrinsic channel attenuation without adaptive compensation.
@@ -166,7 +164,7 @@ Evaluating the disordered TFIM ensemble from $n=4$ to $n=14$ reveals no evidence
 \end{figure}
 
 \subsubsection{Measurement Shot Scaling (Claim C5)}
-Feature-based models require only $480 \cdot S$ to $720 \cdot S$ total shots across $m=240$ states, whereas FQ requires $8{,}780 \cdot S$ deployed shots and $28{,}680 \cdot S$ full Gram shots---a $12.2\times$ to $39.8\times$ shot overhead (Fig.~\ref{fig:shots}).
+Feature-based models require only $480 \cdot S$ to $720 \cdot S$ total shots across $m=240$ states, whereas FQ requires 8,780 $\cdot S$ deployed shots and 28,680 $\cdot S$ full Gram shots---a $12.2\times$ to $39.8\times$ shot overhead (Fig.~\ref{fig:shots}).
 
 Furthermore, under independent per-entry swap-test sampling with $S \in \{100, 1000, 10000\}$, simulated training Gram matrices $\hat{K}_{\text{train}}$ exhibited negative eigenvalues ($\lambda_{\min} < 0$) across 100\% of seeds (20/20). Unmitigated SVR on indefinite Gram matrices suffered catastrophic degradation ($R^2 < 0$ at $S=100$). Eigenvalue thresholding (PSD clipping: $\lambda_i \leftarrow \max(\lambda_i, 0)$) successfully restored stability ($R^2 > 0.98$ at $S=1000$).
 
