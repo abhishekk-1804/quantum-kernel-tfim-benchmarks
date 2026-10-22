@@ -29,6 +29,8 @@ import json
 from collections import Counter
 from typing import Dict, Any, List, Tuple
 import numpy as np
+import pandas as pd
+from scipy.spatial.distance import cdist
 
 _SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 if _SCRIPTS_DIR not in sys.path:
@@ -370,7 +372,7 @@ def evaluate_t4b_regression(
         results.append({
             "task": task, "target": target, "tag": tag, "grid": grid_version, "n": n, "lattice": lattice_str, "boundary": "open",
             "N_train": N_train, "seed": seed, "model": "baseline_mean", "variant": "none",
-            "metric": metric, "value": val, "best_params": "{}", "fit_seconds": 0.0,
+            "metric": metric, "value": val, "best_params": "{}", "inner_cv_score": "", "fit_seconds": 0.0,
         })
 
     kf = KFold(n_splits=3, shuffle=True, random_state=42)
@@ -401,26 +403,48 @@ def evaluate_t4b_regression(
         best_cv = -np.inf
         best_C, best_c, best_eps = C_search[0], c_factors[0], epsilon_search[0]
 
-        for C in C_search:
-            for c_val in c_factors:
-                gamma = c_val / gamma_grid
+        D2_tr = cdist(X_tr, X_tr, metric="sqeuclidean")
+        D2_te = cdist(X_te, X_tr, metric="sqeuclidean")
+
+        folds_data = []
+        for tr_idx, val_idx in kf.split(X_tr):
+            f_y_tr = train_targets[tr_idx]
+            f_m, f_s = float(np.mean(f_y_tr)), float(np.std(f_y_tr))
+            if f_s < 1e-12: f_s = 1.0
+            f_y_tr_z = (f_y_tr - f_m) / f_s
+            f_y_val = train_targets[val_idx]
+            D2_fold_tr = D2_tr[np.ix_(tr_idx, tr_idx)]
+            D2_fold_val = D2_tr[np.ix_(val_idx, tr_idx)]
+            folds_data.append((D2_fold_tr, D2_fold_val, f_y_tr_z, f_y_val, f_m, f_s))
+
+        for c_val in c_factors:
+            gamma = float(c_val / gamma_grid)
+            fold_kernels = []
+            for D2_fold_tr, D2_fold_val, f_y_tr_z, f_y_val, f_m, f_s in folds_data:
+                K_tr = np.exp(-gamma * D2_fold_tr)
+                K_val = np.exp(-gamma * D2_fold_val)
+                fold_kernels.append((K_tr, K_val, f_y_tr_z, f_y_val, f_m, f_s))
+
+            for C in C_search:
                 for eps in epsilon_search:
                     fold_scores = []
-                    for tr_idx, val_idx in kf.split(X_tr):
-                        svr = SVR(kernel="rbf", C=C, epsilon=eps, gamma=gamma)
-                        svr.fit(X_tr[tr_idx], y_train_z[tr_idx])
-                        pred_z = svr.predict(X_tr[val_idx])
-                        pred_phys = pred_z * y_std + y_mean
-                        fold_scores.append(r2_score(train_targets[val_idx], pred_phys))
+                    for K_tr, K_val, f_y_tr_z, f_y_val, f_m, f_s in fold_kernels:
+                        svr = SVR(kernel="precomputed", C=float(C), epsilon=float(eps))
+                        svr.fit(K_tr, f_y_tr_z)
+                        pred_z = svr.predict(K_val)
+                        pred_phys = pred_z * f_s + f_m
+                        fold_scores.append(r2_score(f_y_val, pred_phys))
                     mean_r2 = float(np.mean(fold_scores))
                     if mean_r2 > best_cv:
                         best_cv = mean_r2
                         best_C, best_c, best_eps = C, c_val, eps
 
-        best_gamma = best_c / gamma_grid
-        svr_final = SVR(kernel="rbf", C=best_C, epsilon=best_eps, gamma=best_gamma)
-        svr_final.fit(X_tr, y_train_z)
-        pred_z = svr_final.predict(X_te)
+        best_gamma = float(best_c / gamma_grid)
+        K_final_tr = np.exp(-best_gamma * D2_tr)
+        K_final_te = np.exp(-best_gamma * D2_te)
+        svr_final = SVR(kernel="precomputed", C=float(best_C), epsilon=float(best_eps))
+        svr_final.fit(K_final_tr, y_train_z)
+        pred_z = svr_final.predict(K_final_te)
         pred_phys = pred_z * y_std + y_mean
         fit_sec = time.time() - t0
 
@@ -432,7 +456,7 @@ def evaluate_t4b_regression(
             results.append({
                 "task": task, "target": target, "tag": arm_tag, "grid": grid_version, "n": n, "lattice": lattice_str, "boundary": "open",
                 "N_train": N_train, "seed": seed, "model": model_name, "variant": variant,
-                "metric": m_name, "value": val, "best_params": b_params, "fit_seconds": fit_sec,
+                "metric": m_name, "value": val, "best_params": b_params, "inner_cv_score": float(best_cv), "fit_seconds": fit_sec,
             })
 
     # Arm 1: PQK-1
@@ -440,27 +464,39 @@ def evaluate_t4b_regression(
     # Arm 2: PQK-2nn
     tune_and_score_svr(X_e2_train, X_e2_test, 4.0 * n, "PQK-2nn", "none", tag, c_factors=c_search)
 
-    # Arm 3: FQ
+    # Arm 3: FQ (tune C and epsilon with precomputed kernel slicing)
     t0 = time.time()
     best_cv_fq = -np.inf
     best_C_fq = C_search[0]
     best_eps_fq = epsilon_search[0]
+
+    fq_folds_data = []
+    for tr_idx, val_idx in kf.split(train_states):
+        f_y_tr = train_targets[tr_idx]
+        f_m, f_s = float(np.mean(f_y_tr)), float(np.std(f_y_tr))
+        if f_s < 1e-12: f_s = 1.0
+        f_y_tr_z = (f_y_tr - f_m) / f_s
+        f_y_val = train_targets[val_idx]
+        K_fold_tr = K_fq_train[np.ix_(tr_idx, tr_idx)]
+        K_fold_val = K_fq_train[np.ix_(val_idx, tr_idx)]
+        fq_folds_data.append((K_fold_tr, K_fold_val, f_y_tr_z, f_y_val, f_m, f_s))
+
     for C in C_search:
         for eps in epsilon_search:
             fold_scores = []
-            for tr_idx, val_idx in kf.split(train_states):
-                svr = SVR(kernel="precomputed", C=C, epsilon=eps)
-                svr.fit(K_fq_train[np.ix_(tr_idx, tr_idx)], y_train_z[tr_idx])
-                pred_z = svr.predict(K_fq_train[np.ix_(val_idx, tr_idx)])
-                pred_phys = pred_z * y_std + y_mean
-                fold_scores.append(r2_score(train_targets[val_idx], pred_phys))
+            for K_fold_tr, K_fold_val, f_y_tr_z, f_y_val, f_m, f_s in fq_folds_data:
+                svr = SVR(kernel="precomputed", C=float(C), epsilon=float(eps))
+                svr.fit(K_fold_tr, f_y_tr_z)
+                pred_z = svr.predict(K_fold_val)
+                pred_phys = pred_z * f_s + f_m
+                fold_scores.append(r2_score(f_y_val, pred_phys))
             mean_r2 = float(np.mean(fold_scores))
             if mean_r2 > best_cv_fq:
                 best_cv_fq = mean_r2
                 best_C_fq = C
                 best_eps_fq = eps
 
-    svr_fq = SVR(kernel="precomputed", C=best_C_fq, epsilon=best_eps_fq)
+    svr_fq = SVR(kernel="precomputed", C=float(best_C_fq), epsilon=float(best_eps_fq))
     svr_fq.fit(K_fq_train, y_train_z)
     pred_z = svr_fq.predict(K_fq_test)
     pred_phys = pred_z * y_std + y_mean
@@ -472,7 +508,7 @@ def evaluate_t4b_regression(
         results.append({
             "task": task, "target": target, "tag": tag, "grid": grid_version, "n": n, "lattice": lattice_str, "boundary": "open",
             "N_train": N_train, "seed": seed, "model": "FQ", "variant": "none",
-            "metric": m_name, "value": val, "best_params": b_params_fq, "fit_seconds": fit_sec_fq,
+            "metric": m_name, "value": val, "best_params": b_params_fq, "inner_cv_score": float(best_cv_fq), "fit_seconds": fit_sec_fq,
         })
 
     # Arm 4: E (raw)
@@ -487,17 +523,22 @@ def evaluate_t4b_regression(
     for alpha in alpha_search:
         fold_scores = []
         for tr_idx, val_idx in kf.split(X_e_train_std):
-            ridge = Ridge(alpha=alpha)
-            ridge.fit(X_e_train_std[tr_idx], y_train_z[tr_idx])
+            f_y_tr = train_targets[tr_idx]
+            f_m, f_s = float(np.mean(f_y_tr)), float(np.std(f_y_tr))
+            if f_s < 1e-12: f_s = 1.0
+            f_y_tr_z = (f_y_tr - f_m) / f_s
+
+            ridge = Ridge(alpha=float(alpha))
+            ridge.fit(X_e_train_std[tr_idx], f_y_tr_z)
             pred_z = ridge.predict(X_e_train_std[val_idx])
-            pred_phys = pred_z * y_std + y_mean
+            pred_phys = pred_z * f_s + f_m
             fold_scores.append(r2_score(train_targets[val_idx], pred_phys))
         mean_r2 = float(np.mean(fold_scores))
         if mean_r2 > best_cv_ridge:
             best_cv_ridge = mean_r2
             best_alpha = alpha
 
-    ridge_final = Ridge(alpha=best_alpha)
+    ridge_final = Ridge(alpha=float(best_alpha))
     ridge_final.fit(X_e_train_std, y_train_z)
     pred_z = ridge_final.predict(X_e_test_std)
     pred_phys = pred_z * y_std + y_mean
@@ -509,19 +550,64 @@ def evaluate_t4b_regression(
         results.append({
             "task": task, "target": target, "tag": tag, "grid": grid_version, "n": n, "lattice": lattice_str, "boundary": "open",
             "N_train": N_train, "seed": seed, "model": "F", "variant": "std",
-            "metric": m_name, "value": val, "best_params": b_params_ridge, "fit_seconds": fit_sec_ridge,
+            "metric": m_name, "value": val, "best_params": b_params_ridge, "inner_cv_score": float(best_cv_ridge), "fit_seconds": fit_sec_ridge,
         })
 
     # Arm 7: E2
     tune_and_score_svr(X_e2_train, X_e2_test, float(d_e2), "E2", "raw", "sanity", c_factors=c_search)
 
-    # Arm 8: E_X with strict runtime bandwidth matching assertion
+    # Arm 8: E_X with strict runtime bandwidth and epsilon matching assertions
     gamma_grid_pqk1 = c_search / float(n)
     gamma_grid_ex = c_search / (2.0 * n)
     assert np.allclose(gamma_grid_pqk1, 2.0 * gamma_grid_ex, atol=1e-12), "Bandwidth matching assertion failed!"
+    epsilon_grid_pqk1 = epsilon_search
+    epsilon_grid_ex = epsilon_search
+    assert epsilon_grid_pqk1 == epsilon_grid_ex, "Epsilon matching assertion failed!"
     tune_and_score_svr(X_x_train, X_x_test, 2.0 * n, "E_X", "raw", "sanity", c_factors=c_search)
 
     return results
+
+
+def get_completed_t4b_blocks(csv_path: str):
+    if not os.path.exists(csv_path) or os.path.getsize(csv_path) == 0:
+        return set()
+    completed = set()
+    try:
+        df = pd.read_csv(csv_path)
+        if len(df) == 0:
+            return set()
+        if "task" in df.columns:
+            df_b = df[df["task"] == "T4b"]
+        else:
+            df_b = df
+        counts = df_b.groupby(["lattice", "seed", "N_train"]).size()
+        for (lat, s, N), cnt in counts.items():
+            if cnt >= 18:
+                completed.add((str(lat), int(s), int(N)))
+    except Exception as e:
+        print(f"Warning: could not parse {csv_path} for resumption ({e})")
+    return completed
+
+
+def get_completed_t4a_blocks(csv_path: str):
+    if not os.path.exists(csv_path) or os.path.getsize(csv_path) == 0:
+        return set()
+    completed = set()
+    try:
+        df = pd.read_csv(csv_path)
+        if len(df) == 0:
+            return set()
+        if "task" in df.columns:
+            df_a = df[df["task"] == "T4a"]
+        else:
+            df_a = df
+        counts = df_a.groupby(["lattice", "seed", "N_train"]).size()
+        for (lat, s, N), cnt in counts.items():
+            if cnt >= 18:
+                completed.add((str(lat), int(s), int(N)))
+    except Exception as e:
+        print(f"Warning: could not parse {csv_path} for resumption ({e})")
+    return completed
 
 
 def run_t4_v2(seeds, quick=False, out_csv=None, grid_version="grid_v3", run_t4a=None, run_t4b=True):
@@ -555,19 +641,44 @@ def run_t4_v2(seeds, quick=False, out_csv=None, grid_version="grid_v3", run_t4a=
     fieldnames = [
         "task", "target", "tag", "grid", "n", "lattice", "boundary",
         "N_train", "seed", "model", "variant", "metric", "value",
-        "best_params", "fit_seconds"
+        "best_params", "inner_cv_score", "fit_seconds"
     ]
-    with open(out_csv, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
+    write_header = not os.path.exists(out_csv) or os.path.getsize(out_csv) == 0
+    if write_header:
+        with open(out_csv, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+
+    completed_t4b = get_completed_t4b_blocks(out_csv) if run_t4b else set()
+    completed_t4a = get_completed_t4a_blocks(out_csv) if run_t4a else set()
+    if completed_t4b or completed_t4a:
+        print(f"Resumption: found {len(completed_t4b)} completed T4b blocks, {len(completed_t4a)} completed T4a blocks in {out_csv}.")
 
     print(f"=== Starting T4 (v2) Benchmark ({grid_version}, Lattices: {[l[0] for l in lattices]}, Seeds: {seeds}, N_train: {n_train_list}) ===")
     total_rows = 0
     t_start = time.time()
+    num_timed_seeds = 0
+    elapsed_timed = 0.0
 
     for seed in seeds:
-        t_seed = time.time()
+        # Check which lattices have uncompleted blocks
+        lattices_needed = []
         for lattice_str, rows, cols in lattices:
+            needed_N = []
+            for N in n_train_list:
+                need_b = run_t4b and (lattice_str, seed, N) not in completed_t4b
+                need_a = run_t4a and (lattice_str, seed, N) not in completed_t4a
+                if need_b or need_a:
+                    needed_N.append(N)
+            if needed_N:
+                lattices_needed.append((lattice_str, rows, cols, needed_N))
+
+        if not lattices_needed:
+            print(f"  [T4 v2] Seed {seed:2d} already completely computed. Skipping.")
+            continue
+
+        t_seed = time.time()
+        for lattice_str, rows, cols, needed_N in lattices_needed:
             n = rows * cols
             
             # Generate 80 train states + 200 test states = 280 states
@@ -597,13 +708,13 @@ def run_t4_v2(seeds, quick=False, out_csv=None, grid_version="grid_v3", run_t4a=
             test_labels = labels[80:280]
             test_ents = ents[80:280]
 
-            for N in n_train_list:
+            for N in needed_N:
                 train_states = states[:N]
                 train_labels = labels[:N]
                 train_ents = ents[:N]
 
                 # Evaluate T4a (Classification)
-                if run_t4a:
+                if run_t4a and (lattice_str, seed, N) not in completed_t4a:
                     rows_a = evaluate_t4a_classification(
                         lattice_str=lattice_str, n=n, N_train=N, seed=seed,
                         train_states=train_states, train_labels=train_labels,
@@ -616,9 +727,10 @@ def run_t4_v2(seeds, quick=False, out_csv=None, grid_version="grid_v3", run_t4a=
                             writer.writerow({k: r.get(k, "") for k in fieldnames})
                         f.flush()
                     total_rows += len(rows_a)
+                    completed_t4a.add((lattice_str, seed, N))
 
                 # Evaluate T4b (Regression)
-                if run_t4b:
+                if run_t4b and (lattice_str, seed, N) not in completed_t4b:
                     rows_b = evaluate_t4b_regression(
                         lattice_str=lattice_str, n=n, N_train=N, seed=seed,
                         train_states=train_states, train_targets=train_ents,
@@ -631,110 +743,23 @@ def run_t4_v2(seeds, quick=False, out_csv=None, grid_version="grid_v3", run_t4a=
                             writer.writerow({k: r.get(k, "") for k in fieldnames})
                         f.flush()
                     total_rows += len(rows_b)
+                    completed_t4b.add((lattice_str, seed, N))
 
-        print(f"  [T4 v2] Seed {seed:2d} completed in {time.time() - t_seed:.2f}s (logged {total_rows} rows so far)")
+        seed_elapsed = time.time() - t_seed
+        num_timed_seeds += 1
+        elapsed_timed += seed_elapsed
+        print(f"  [T4 v2] Seed {seed:2d} completed in {seed_elapsed:.2f}s (logged {total_rows} rows so far)")
 
-    total_time = time.time() - t_start
-    print(f"=== T4 v2 Benchmark complete: {total_rows} rows in {total_time:.2f}s -> {out_csv} ===")
-    return total_time
-
-    cb_csv = os.path.join("results", "t4_v2_class_balance.csv")
-    write_run_meta()
-
-    if quick:
-        lattices = [("2x4", 2, 4)]
-        n_train_list = [10, 20]
-    else:
-        lattices = [("2x4", 2, 4), ("3x4", 3, 4)]
-        n_train_list = [10, 20, 40, 80]
-
-    os.makedirs(os.path.dirname(os.path.abspath(cb_csv)), exist_ok=True)
-    with open(cb_csv, "w", encoding="utf-8") as f_cb:
-        f_cb.write("lattice,seed,total_sampled,dropped_count,dropped_fraction,n_neel,n_stripe,frac_neel,frac_stripe,decision\n")
-
-    os.makedirs(os.path.dirname(os.path.abspath(out_csv)), exist_ok=True)
-    fieldnames = [
-        "task", "target", "tag", "n", "lattice", "boundary",
-        "N_train", "seed", "model", "variant", "metric", "value",
-        "best_params", "fit_seconds"
-    ]
-    with open(out_csv, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-
-    print(f"=== Starting T4 (v2) Benchmark (Lattices: {[l[0] for l in lattices]}, Seeds: {seeds}, N_train: {n_train_list}) ===")
-    total_rows = 0
-    t_start = time.time()
-
-    for seed in seeds:
-        t_seed = time.time()
-        for lattice_str, rows, cols in lattices:
-            n = rows * cols
-            
-            # Generate 80 train states + 200 test states = 280 states
-            states, labels, ents, pairs, dropped_cnt, total_samp = generate_t4_states(
-                rows=rows, cols=cols, seed=seed, n_needed=280
-            )
-
-            # Class balance logging over all 280 states
-            n_neel = int(np.sum(labels == 1))
-            n_stripe = int(np.sum(labels == 0))
-            frac_neel = n_neel / 280.0
-            frac_stripe = n_stripe / 280.0
-            drop_frac = dropped_cnt / float(total_samp) if total_samp > 0 else 0.0
-
-            if min(frac_neel, frac_stripe) < 0.15:
-                decision = f"WARNING: minority class < 15% (neel={frac_neel:.1%}, stripe={frac_stripe:.1%})"
-            else:
-                decision = "Balanced classes >= 15%"
-
-            if run_t4a:
-                with open(cb_csv, "a", encoding="utf-8") as f_cb:
-                    f_cb.write(f"{lattice_str},{seed},{total_samp},{dropped_cnt},{drop_frac:.6f},{n_neel},{n_stripe},{frac_neel:.4f},{frac_stripe:.4f},\"{decision}\"\n")
-
-            # Training pool: first 80 states
-            # Test pool: states 80 to 280 (200 states)
-            test_states = states[80:280]
-            test_labels = labels[80:280]
-            test_ents = ents[80:280]
-
-            for N in n_train_list:
-                train_states = states[:N]
-                train_labels = labels[:N]
-                train_ents = ents[:N]
-
-                # Evaluate T4a (Classification)
-                rows_a = evaluate_t4a_classification(
-                    lattice_str=lattice_str, n=n, N_train=N, seed=seed,
-                    train_states=train_states, train_labels=train_labels,
-                    test_states=test_states, test_labels=test_labels,
-                    pairs=pairs
-                )
-                with open(out_csv, "a", newline="", encoding="utf-8") as f:
-                    writer = csv.DictWriter(f, fieldnames=fieldnames)
-                    for r in rows_a:
-                        writer.writerow({k: r.get(k, "") for k in fieldnames})
-                    f.flush()
-                total_rows += len(rows_a)
-
-                # Evaluate T4b (Regression)
-                rows_b = evaluate_t4b_regression(
-                    lattice_str=lattice_str, n=n, N_train=N, seed=seed,
-                    train_states=train_states, train_targets=train_ents,
-                    test_states=test_states, test_targets=test_ents,
-                    pairs=pairs
-                )
-                with open(out_csv, "a", newline="", encoding="utf-8") as f:
-                    writer = csv.DictWriter(f, fieldnames=fieldnames)
-                    for r in rows_b:
-                        writer.writerow({k: r.get(k, "") for k in fieldnames})
-                    f.flush()
-                total_rows += len(rows_b)
-
-        print(f"  [T4 v2] Seed {seed:2d} completed in {time.time() - t_seed:.2f}s (logged {total_rows} rows so far)")
+        # Dynamic Runtime Gate check after 3 seeds timed
+        if num_timed_seeds == 3:
+            avg_per_seed = elapsed_timed / 3.0
+            projected = avg_per_seed * len(seeds)
+            print(f"  [Gate Check] 3 seeds timed in {elapsed_timed:.2f}s (avg {avg_per_seed:.2f}s/seed). Projected total for {len(seeds)} seeds: {projected:.2f}s ({projected/3600.0:.2f} hours).")
+            if projected > 3.0 * 3600.0:
+                raise RuntimeError(f"HALT: Dynamic Runtime Gate triggered! Projected wall time {projected/3600.0:.2f} hours exceeds 3.0 hour limit.")
 
     total_time = time.time() - t_start
-    print(f"=== T4 v2 Benchmark complete: {total_rows} rows in {total_time:.2f}s -> {out_csv} ===")
+    print(f"=== T4 v2 Benchmark complete: {total_rows} new rows in {total_time:.2f}s -> {out_csv} ===")
     return total_time
 
 

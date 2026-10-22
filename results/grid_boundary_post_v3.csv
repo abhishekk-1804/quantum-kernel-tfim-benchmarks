@@ -1,0 +1,118 @@
+task,target,lattice,model,variant,N_train,n_seeds,C_low_pct,C_high_pct,c_low_pct,c_high_pct,alpha_low_pct,alpha_high_pct,eps_low_pct,eps_high_pct
+T1,half_chain_entropy,none,baseline_mean,none,10,20,,,,,,,,
+T1,half_chain_entropy,none,PQK-1 (== RBF on <X>),none,10,20,0.0,40.0,15.0,10.0,,,35.0,45.0
+T1,half_chain_entropy,none,PQK-2nn,none,10,20,0.0,35.0,15.0,0.0,,,60.0,30.0
+T1,half_chain_entropy,none,FQ,none,10,20,0.0,0.0,,,,,60.0,30.0
+T1,half_chain_entropy,none,E,raw,10,20,0.0,45.0,25.0,0.0,,,65.0,20.0
+T1,half_chain_entropy,none,E,std,10,20,0.0,40.0,60.0,0.0,,,65.0,30.0
+T1,half_chain_entropy,none,F,std,10,20,,,,,45.0,5.0,,
+T1,half_chain_entropy,none,E2,raw,10,20,0.0,40.0,20.0,0.0,,,65.0,25.0
+T1,half_chain_entropy,none,E_X,raw,10,20,0.0,40.0,15.0,10.0,,,35.0,45.0
+T1,half_chain_entropy,none,baseline_mean,none,20,20,,,,,,,,
+T1,half_chain_entropy,none,PQK-1 (== RBF on <X>),none,20,20,0.0,5.0,0.0,0.0,,,50.0,30.0
+T1,half_chain_entropy,none,PQK-2nn,none,20,20,0.0,35.0,15.0,0.0,,,45.0,25.0
+T1,half_chain_entropy,none,FQ,none,20,20,0.0,0.0,,,,,75.0,0.0
+T1,half_chain_entropy,none,E,raw,20,20,0.0,60.0,0.0,0.0,,,60.0,0.0
+T1,half_chain_entropy,none,E,std,20,20,0.0,35.0,50.0,0.0,,,55.00000000000001,15.0
+T1,half_chain_entropy,none,F,std,20,20,,,,,40.0,0.0,,
+T1,half_chain_entropy,none,E2,raw,20,20,0.0,35.0,15.0,0.0,,,45.0,25.0
+T1,half_chain_entropy,none,E_X,raw,20,20,0.0,5.0,0.0,0.0,,,50.0,30.0
+T1,half_chain_entropy,none,baseline_mean,none,40,20,,,,,,,,
+T1,half_chain_entropy,none,PQK-1 (== RBF on <X>),none,40,20,0.0,15.0,5.0,0.0,,,35.0,35.0
+T1,half_chain_entropy,none,PQK-2nn,none,40,20,0.0,20.0,5.0,0.0,,,20.0,0.0
+T1,half_chain_entropy,none,FQ,none,40,20,0.0,0.0,,,,,60.0,0.0
+T1,half_chain_entropy,none,E,raw,40,20,0.0,35.0,5.0,0.0,,,40.0,0.0
+T1,half_chain_entropy,none,E,std,40,20,0.0,50.0,30.0,0.0,,,45.0,0.0
+T1,half_chain_entropy,none,F,std,40,20,,,,,5.0,0.0,,
+T1,half_chain_entropy,none,E2,raw,40,20,0.0,10.0,5.0,0.0,,,20.0,0.0
+T1,half_chain_entropy,none,E_X,raw,40,20,0.0,15.0,5.0,0.0,,,35.0,35.0
+T1,half_chain_entropy,none,baseline_mean,none,80,20,,,,,,,,
+T1,half_chain_entropy,none,PQK-1 (== RBF on <X>),none,80,20,0.0,25.0,0.0,0.0,,,5.0,60.0
+T1,half_chain_entropy,none,PQK-2nn,none,80,20,0.0,40.0,0.0,0.0,,,35.0,0.0
+T1,half_chain_entropy,none,FQ,none,80,20,0.0,0.0,,,,,15.0,0.0
+T1,half_chain_entropy,none,E,raw,80,20,0.0,30.0,0.0,0.0,,,30.0,0.0
+T1,half_chain_entropy,none,E,std,80,20,0.0,25.0,5.0,0.0,,,15.0,5.0
+T1,half_chain_entropy,none,F,std,80,20,,,,,0.0,0.0,,
+T1,half_chain_entropy,none,E2,raw,80,20,0.0,35.0,0.0,0.0,,,25.0,0.0
+T1,half_chain_entropy,none,E_X,raw,80,20,0.0,25.0,0.0,0.0,,,5.0,60.0
+T1,half_chain_entropy,none,baseline_mean,none,160,20,,,,,,,,
+T1,half_chain_entropy,none,PQK-1 (== RBF on <X>),none,160,20,0.0,25.0,0.0,0.0,,,15.0,45.0
+T1,half_chain_entropy,none,PQK-2nn,none,160,20,0.0,10.0,0.0,0.0,,,15.0,0.0
+T1,half_chain_entropy,none,FQ,none,160,20,0.0,0.0,,,,,5.0,0.0
+T1,half_chain_entropy,none,E,raw,160,20,0.0,45.0,0.0,0.0,,,25.0,0.0
+T1,half_chain_entropy,none,E,std,160,20,0.0,15.0,0.0,0.0,,,5.0,0.0
+T1,half_chain_entropy,none,F,std,160,20,,,,,0.0,0.0,,
+T1,half_chain_entropy,none,E2,raw,160,20,0.0,10.0,0.0,0.0,,,25.0,0.0
+T1,half_chain_entropy,none,E_X,raw,160,20,0.0,25.0,0.0,0.0,,,15.0,45.0
+T4b,half_cut_entropy,2x4,baseline_mean,none,10,20,,,,,,,,
+T4b,half_cut_entropy,2x4,PQK-1 (== RBF on <X>),none,10,20,0.0,55.00000000000001,0.0,15.0,,,40.0,25.0
+T4b,half_cut_entropy,2x4,PQK-2nn,none,10,20,0.0,20.0,0.0,5.0,,,40.0,35.0
+T4b,half_cut_entropy,2x4,FQ,none,10,20,0.0,10.0,,,,,30.0,30.0
+T4b,half_cut_entropy,2x4,E,raw,10,20,0.0,5.0,0.0,15.0,,,40.0,15.0
+T4b,half_cut_entropy,2x4,E,std,10,20,0.0,10.0,10.0,0.0,,,60.0,25.0
+T4b,half_cut_entropy,2x4,F,std,10,20,,,,,5.0,30.0,,
+T4b,half_cut_entropy,2x4,E2,raw,10,20,0.0,15.0,0.0,5.0,,,45.0,35.0
+T4b,half_cut_entropy,2x4,E_X,raw,10,20,0.0,55.00000000000001,0.0,15.0,,,40.0,25.0
+T4b,half_cut_entropy,2x4,baseline_mean,none,20,20,,,,,,,,
+T4b,half_cut_entropy,2x4,PQK-1 (== RBF on <X>),none,20,20,0.0,35.0,0.0,5.0,,,15.0,35.0
+T4b,half_cut_entropy,2x4,PQK-2nn,none,20,20,0.0,65.0,0.0,0.0,,,25.0,0.0
+T4b,half_cut_entropy,2x4,FQ,none,20,20,0.0,35.0,,,,,20.0,35.0
+T4b,half_cut_entropy,2x4,E,raw,20,20,0.0,45.0,0.0,0.0,,,25.0,10.0
+T4b,half_cut_entropy,2x4,E,std,20,20,0.0,5.0,5.0,0.0,,,65.0,15.0
+T4b,half_cut_entropy,2x4,F,std,20,20,,,,,5.0,35.0,,
+T4b,half_cut_entropy,2x4,E2,raw,20,20,0.0,60.0,0.0,0.0,,,10.0,15.0
+T4b,half_cut_entropy,2x4,E_X,raw,20,20,0.0,35.0,0.0,5.0,,,15.0,35.0
+T4b,half_cut_entropy,2x4,baseline_mean,none,40,20,,,,,,,,
+T4b,half_cut_entropy,2x4,PQK-1 (== RBF on <X>),none,40,20,0.0,25.0,0.0,10.0,,,15.0,25.0
+T4b,half_cut_entropy,2x4,PQK-2nn,none,40,20,0.0,40.0,0.0,0.0,,,15.0,0.0
+T4b,half_cut_entropy,2x4,FQ,none,40,20,0.0,5.0,,,,,10.0,35.0
+T4b,half_cut_entropy,2x4,E,raw,40,20,0.0,35.0,0.0,0.0,,,40.0,0.0
+T4b,half_cut_entropy,2x4,E,std,40,20,0.0,15.0,0.0,0.0,,,40.0,25.0
+T4b,half_cut_entropy,2x4,F,std,40,20,,,,,0.0,0.0,,
+T4b,half_cut_entropy,2x4,E2,raw,40,20,0.0,45.0,0.0,0.0,,,35.0,5.0
+T4b,half_cut_entropy,2x4,E_X,raw,40,20,0.0,25.0,0.0,10.0,,,15.0,25.0
+T4b,half_cut_entropy,2x4,baseline_mean,none,80,20,,,,,,,,
+T4b,half_cut_entropy,2x4,PQK-1 (== RBF on <X>),none,80,20,0.0,50.0,0.0,5.0,,,10.0,35.0
+T4b,half_cut_entropy,2x4,PQK-2nn,none,80,20,0.0,45.0,0.0,0.0,,,25.0,0.0
+T4b,half_cut_entropy,2x4,FQ,none,80,20,0.0,65.0,,,,,15.0,20.0
+T4b,half_cut_entropy,2x4,E,raw,80,20,0.0,60.0,0.0,0.0,,,20.0,0.0
+T4b,half_cut_entropy,2x4,E,std,80,20,0.0,35.0,5.0,0.0,,,35.0,0.0
+T4b,half_cut_entropy,2x4,F,std,80,20,,,,,5.0,0.0,,
+T4b,half_cut_entropy,2x4,E2,raw,80,20,0.0,45.0,0.0,0.0,,,25.0,0.0
+T4b,half_cut_entropy,2x4,E_X,raw,80,20,0.0,50.0,0.0,5.0,,,10.0,35.0
+T4b,half_cut_entropy,3x4,baseline_mean,none,10,20,,,,,,,,
+T4b,half_cut_entropy,3x4,PQK-1 (== RBF on <X>),none,10,20,0.0,25.0,0.0,20.0,,,25.0,10.0
+T4b,half_cut_entropy,3x4,PQK-2nn,none,10,20,0.0,30.0,0.0,0.0,,,45.0,35.0
+T4b,half_cut_entropy,3x4,FQ,none,10,20,0.0,0.0,,,,,40.0,15.0
+T4b,half_cut_entropy,3x4,E,raw,10,20,0.0,25.0,0.0,0.0,,,40.0,15.0
+T4b,half_cut_entropy,3x4,E,std,10,20,0.0,0.0,0.0,0.0,,,55.00000000000001,20.0
+T4b,half_cut_entropy,3x4,F,std,10,20,,,,,5.0,65.0,,
+T4b,half_cut_entropy,3x4,E2,raw,10,20,0.0,20.0,0.0,0.0,,,30.0,25.0
+T4b,half_cut_entropy,3x4,E_X,raw,10,20,0.0,25.0,0.0,20.0,,,25.0,10.0
+T4b,half_cut_entropy,3x4,baseline_mean,none,20,20,,,,,,,,
+T4b,half_cut_entropy,3x4,PQK-1 (== RBF on <X>),none,20,20,0.0,40.0,0.0,15.0,,,15.0,15.0
+T4b,half_cut_entropy,3x4,PQK-2nn,none,20,20,0.0,55.00000000000001,0.0,0.0,,,30.0,5.0
+T4b,half_cut_entropy,3x4,FQ,none,20,20,0.0,5.0,,,,,50.0,15.0
+T4b,half_cut_entropy,3x4,E,raw,20,20,0.0,55.00000000000001,0.0,0.0,,,25.0,5.0
+T4b,half_cut_entropy,3x4,E,std,20,20,0.0,0.0,0.0,0.0,,,50.0,10.0
+T4b,half_cut_entropy,3x4,F,std,20,20,,,,,0.0,60.0,,
+T4b,half_cut_entropy,3x4,E2,raw,20,20,0.0,45.0,0.0,0.0,,,25.0,20.0
+T4b,half_cut_entropy,3x4,E_X,raw,20,20,0.0,40.0,0.0,15.0,,,15.0,15.0
+T4b,half_cut_entropy,3x4,baseline_mean,none,40,20,,,,,,,,
+T4b,half_cut_entropy,3x4,PQK-1 (== RBF on <X>),none,40,20,0.0,10.0,0.0,20.0,,,10.0,15.0
+T4b,half_cut_entropy,3x4,PQK-2nn,none,40,20,0.0,65.0,0.0,0.0,,,55.00000000000001,0.0
+T4b,half_cut_entropy,3x4,FQ,none,40,20,0.0,20.0,,,,,50.0,0.0
+T4b,half_cut_entropy,3x4,E,raw,40,20,0.0,85.0,0.0,0.0,,,35.0,0.0
+T4b,half_cut_entropy,3x4,E,std,40,20,0.0,40.0,0.0,0.0,,,50.0,0.0
+T4b,half_cut_entropy,3x4,F,std,40,20,,,,,5.0,0.0,,
+T4b,half_cut_entropy,3x4,E2,raw,40,20,0.0,65.0,0.0,0.0,,,65.0,0.0
+T4b,half_cut_entropy,3x4,E_X,raw,40,20,0.0,10.0,0.0,20.0,,,10.0,15.0
+T4b,half_cut_entropy,3x4,baseline_mean,none,80,20,,,,,,,,
+T4b,half_cut_entropy,3x4,PQK-1 (== RBF on <X>),none,80,20,0.0,45.0,0.0,25.0,,,40.0,5.0
+T4b,half_cut_entropy,3x4,PQK-2nn,none,80,20,0.0,95.0,0.0,0.0,,,60.0,0.0
+T4b,half_cut_entropy,3x4,FQ,none,80,20,0.0,20.0,,,,,30.0,0.0
+T4b,half_cut_entropy,3x4,E,raw,80,20,0.0,60.0,0.0,0.0,,,65.0,0.0
+T4b,half_cut_entropy,3x4,E,std,80,20,0.0,75.0,0.0,0.0,,,65.0,0.0
+T4b,half_cut_entropy,3x4,F,std,80,20,,,,,5.0,0.0,,
+T4b,half_cut_entropy,3x4,E2,raw,80,20,0.0,75.0,0.0,0.0,,,60.0,0.0
+T4b,half_cut_entropy,3x4,E_X,raw,80,20,0.0,45.0,0.0,25.0,,,40.0,5.0

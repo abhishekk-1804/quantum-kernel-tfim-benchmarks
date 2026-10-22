@@ -20,6 +20,7 @@ from typing import Dict, List, Tuple, Any
 
 import numpy as np
 import scipy
+from scipy.spatial.distance import cdist
 import sklearn
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.svm import SVR, SVC
@@ -334,7 +335,7 @@ def evaluate_regression_models(
         results.append({
             "task": task, "target": target, "tag": tag, "grid": grid_version, "n": n, "N_train": N_train,
             "seed": seed, "model": "baseline_mean", "variant": "none",
-            "metric": metric, "value": val, "best_params": "{}", "fit_seconds": 0.0,
+            "metric": metric, "value": val, "best_params": "{}", "inner_cv_score": "", "fit_seconds": 0.0,
         })
 
     kf = KFold(n_splits=3, shuffle=True, random_state=42)
@@ -372,11 +373,10 @@ def evaluate_regression_models(
     d_e2 = X_e2_train.shape[1]
 
     # 4. FQ Gram matrix
-    # K_fq = (Psi @ Psi.T)^2
     K_fq_train = (train_states @ train_states.T) ** 2
     K_fq_test = (test_states @ train_states.T) ** 2
 
-    # Helper: tune SVR with precomputed kernel or RBF
+    # Helper: tune SVR with precomputed distance matrices
     def tune_and_score_rbf(X_tr, X_te, gamma_grid, model_name, variant, arm_tag, c_factors=None, epsilon_grid=None):
         if c_factors is None:
             c_factors = c_search
@@ -385,32 +385,48 @@ def evaluate_regression_models(
         best_cv = -np.inf
         best_C, best_c, best_eps = C_search[0], c_factors[0], eps_list[0]
 
-        for C in C_search:
-            for c_val in c_factors:
-                gamma = c_val / gamma_grid
+        D2_tr = cdist(X_tr, X_tr, metric="sqeuclidean")
+        D2_te = cdist(X_te, X_tr, metric="sqeuclidean")
+
+        folds_data = []
+        for tr_idx, val_idx in kf.split(X_tr):
+            f_y_tr = train_targets[tr_idx]
+            f_m, f_s = float(np.mean(f_y_tr)), float(np.std(f_y_tr))
+            if f_s < 1e-12: f_s = 1.0
+            f_y_tr_z = (f_y_tr - f_m) / f_s
+            f_y_val = train_targets[val_idx]
+            D2_fold_tr = D2_tr[np.ix_(tr_idx, tr_idx)]
+            D2_fold_val = D2_tr[np.ix_(val_idx, tr_idx)]
+            folds_data.append((D2_fold_tr, D2_fold_val, f_y_tr_z, f_y_val, f_m, f_s))
+
+        for c_val in c_factors:
+            gamma = float(c_val / gamma_grid)
+            fold_kernels = []
+            for D2_fold_tr, D2_fold_val, f_y_tr_z, f_y_val, f_m, f_s in folds_data:
+                K_tr = np.exp(-gamma * D2_fold_tr)
+                K_val = np.exp(-gamma * D2_fold_val)
+                fold_kernels.append((K_tr, K_val, f_y_tr_z, f_y_val, f_m, f_s))
+
+            for C in C_search:
                 for eps in eps_list:
                     fold_scores = []
-                    for tr_idx, val_idx in kf.split(X_tr):
-                        # Fold z-score
-                        f_y_tr = train_targets[tr_idx]
-                        f_m, f_s = np.mean(f_y_tr), np.std(f_y_tr)
-                        if f_s < 1e-12: f_s = 1.0
-                        f_y_tr_z = (f_y_tr - f_m) / f_s
-
-                        clf = SVR(kernel="rbf", C=C, gamma=gamma, epsilon=eps)
-                        clf.fit(X_tr[tr_idx], f_y_tr_z)
-                        pred_z = clf.predict(X_tr[val_idx])
+                    for K_tr, K_val, f_y_tr_z, f_y_val, f_m, f_s in fold_kernels:
+                        clf = SVR(kernel="precomputed", C=float(C), epsilon=float(eps))
+                        clf.fit(K_tr, f_y_tr_z)
+                        pred_z = clf.predict(K_val)
                         pred = pred_z * f_s + f_m
-                        fold_scores.append(r2_score(train_targets[val_idx], pred))
+                        fold_scores.append(r2_score(f_y_val, pred))
                     mean_r2 = float(np.mean(fold_scores))
                     if mean_r2 > best_cv:
                         best_cv = mean_r2
                         best_C, best_c, best_eps = C, c_val, eps
 
-        best_gamma = best_c / gamma_grid
-        clf_final = SVR(kernel="rbf", C=best_C, gamma=best_gamma, epsilon=best_eps)
-        clf_final.fit(X_tr, y_train_z)
-        pred_z = clf_final.predict(X_te)
+        best_gamma = float(best_c / gamma_grid)
+        K_final_tr = np.exp(-best_gamma * D2_tr)
+        K_final_te = np.exp(-best_gamma * D2_te)
+        clf_final = SVR(kernel="precomputed", C=float(best_C), epsilon=float(best_eps))
+        clf_final.fit(K_final_tr, y_train_z)
+        pred_z = clf_final.predict(K_final_te)
         pred = pred_z * y_std + y_mean
         fit_sec = time.time() - t0
 
@@ -422,7 +438,7 @@ def evaluate_regression_models(
             results.append({
                 "task": task, "target": target, "tag": arm_tag, "grid": grid_version, "n": n, "N_train": N_train,
                 "seed": seed, "model": model_name, "variant": variant,
-                "metric": m_name, "value": val, "best_params": b_params, "fit_seconds": fit_sec,
+                "metric": m_name, "value": val, "best_params": b_params, "inner_cv_score": float(best_cv), "fit_seconds": fit_sec,
             })
 
     # Arm 1: PQK-1 (== RBF on <X>)
@@ -439,35 +455,39 @@ def evaluate_regression_models(
         c_factors=c_search,
     )
 
-    # Arm 3: FQ (tune C and epsilon)
+    # Arm 3: FQ (tune C and epsilon with precomputed kernel slicing)
     t0 = time.time()
     best_cv_fq = -np.inf
     best_C_fq = C_search[0]
     best_eps_fq = epsilon_search[0]
+
+    fq_folds_data = []
+    for tr_idx, val_idx in kf.split(train_states):
+        f_y_tr = train_targets[tr_idx]
+        f_m, f_s = float(np.mean(f_y_tr)), float(np.std(f_y_tr))
+        if f_s < 1e-12: f_s = 1.0
+        f_y_tr_z = (f_y_tr - f_m) / f_s
+        f_y_val = train_targets[val_idx]
+        K_fold_tr = K_fq_train[np.ix_(tr_idx, tr_idx)]
+        K_fold_val = K_fq_train[np.ix_(val_idx, tr_idx)]
+        fq_folds_data.append((K_fold_tr, K_fold_val, f_y_tr_z, f_y_val, f_m, f_s))
+
     for C in C_search:
         for eps in epsilon_search:
             fold_scores = []
-            for tr_idx, val_idx in kf.split(train_states):
-                f_y_tr = train_targets[tr_idx]
-                f_m, f_s = np.mean(f_y_tr), np.std(f_y_tr)
-                if f_s < 1e-12: f_s = 1.0
-                f_y_tr_z = (f_y_tr - f_m) / f_s
-
-                K_fold_tr = K_fq_train[np.ix_(tr_idx, tr_idx)]
-                K_fold_val = K_fq_train[np.ix_(val_idx, tr_idx)]
-
-                clf = SVR(kernel="precomputed", C=C, epsilon=eps)
+            for K_fold_tr, K_fold_val, f_y_tr_z, f_y_val, f_m, f_s in fq_folds_data:
+                clf = SVR(kernel="precomputed", C=float(C), epsilon=float(eps))
                 clf.fit(K_fold_tr, f_y_tr_z)
                 pred_z = clf.predict(K_fold_val)
                 pred = pred_z * f_s + f_m
-                fold_scores.append(r2_score(train_targets[val_idx], pred))
+                fold_scores.append(r2_score(f_y_val, pred))
             mean_r2 = float(np.mean(fold_scores))
             if mean_r2 > best_cv_fq:
                 best_cv_fq = mean_r2
                 best_C_fq = C
                 best_eps_fq = eps
 
-    clf_fq = SVR(kernel="precomputed", C=best_C_fq, epsilon=best_eps_fq)
+    clf_fq = SVR(kernel="precomputed", C=float(best_C_fq), epsilon=float(best_eps_fq))
     clf_fq.fit(K_fq_train, y_train_z)
     pred_z = clf_fq.predict(K_fq_test)
     pred = pred_z * y_std + y_mean
@@ -480,7 +500,7 @@ def evaluate_regression_models(
         results.append({
             "task": task, "target": target, "tag": tag, "grid": grid_version, "n": n, "N_train": N_train,
             "seed": seed, "model": "FQ", "variant": "none",
-            "metric": m_name, "value": val, "best_params": b_params_fq, "fit_seconds": fit_sec_fq,
+            "metric": m_name, "value": val, "best_params": b_params_fq, "inner_cv_score": float(best_cv_fq), "fit_seconds": fit_sec_fq,
         })
 
     # Arm 4: E (raw) - gamma = c / d_e
@@ -505,11 +525,11 @@ def evaluate_regression_models(
         fold_scores = []
         for tr_idx, val_idx in kf.split(X_e_train_std):
             f_y_tr = train_targets[tr_idx]
-            f_m, f_s = np.mean(f_y_tr), np.std(f_y_tr)
+            f_m, f_s = float(np.mean(f_y_tr)), float(np.std(f_y_tr))
             if f_s < 1e-12: f_s = 1.0
             f_y_tr_z = (f_y_tr - f_m) / f_s
 
-            clf = Ridge(alpha=alpha)
+            clf = Ridge(alpha=float(alpha))
             clf.fit(X_e_train_std[tr_idx], f_y_tr_z)
             pred_z = clf.predict(X_e_train_std[val_idx])
             pred = pred_z * f_s + f_m
@@ -519,7 +539,7 @@ def evaluate_regression_models(
             best_cv_ridge = mean_r2
             best_alpha = alpha
 
-    clf_ridge = Ridge(alpha=best_alpha)
+    clf_ridge = Ridge(alpha=float(best_alpha))
     clf_ridge.fit(X_e_train_std, y_train_z)
     pred_z = clf_ridge.predict(X_e_test_std)
     pred = pred_z * y_std + y_mean
@@ -532,7 +552,7 @@ def evaluate_regression_models(
         results.append({
             "task": task, "target": target, "tag": tag, "grid": grid_version, "n": n, "N_train": N_train,
             "seed": seed, "model": "F", "variant": "std",
-            "metric": m_name, "value": val, "best_params": b_params_ridge, "fit_seconds": fit_sec_ridge,
+            "metric": m_name, "value": val, "best_params": b_params_ridge, "inner_cv_score": float(best_cv_ridge), "fit_seconds": fit_sec_ridge,
         })
 
     # Arm 7: E2 (RBF on 2pt_pauli_nn, gamma = c/d_e2, tag "sanity")
@@ -543,10 +563,13 @@ def evaluate_regression_models(
     )
 
     # Arm 8: E_X (RBF on <X_i> only, raw, gamma = c/(2n), tag "sanity")
-    # Strict runtime bandwidth matching assertion
+    # Strict runtime bandwidth and epsilon matching assertions
     gamma_grid_pqk1 = c_search / float(n)
     gamma_grid_ex = c_search / (2.0 * n)
     assert np.allclose(gamma_grid_pqk1, 2.0 * gamma_grid_ex, atol=1e-12), "Bandwidth matching assertion failed!"
+    epsilon_grid_pqk1 = epsilon_search
+    epsilon_grid_ex = epsilon_search
+    assert epsilon_grid_pqk1 == epsilon_grid_ex, "Epsilon matching assertion failed!"
 
     tune_and_score_rbf(
         X_x_train, X_x_test, gamma_grid=2.0 * n,
@@ -579,8 +602,14 @@ def write_csv_rows(csv_path: str, rows: List[Dict[str, Any]]):
 
     fieldnames = [
         "task", "target", "tag", "grid", "n", "N_train", "seed",
-        "model", "variant", "metric", "value", "best_params", "fit_seconds"
+        "model", "variant", "metric", "value", "best_params", "inner_cv_score", "fit_seconds"
     ]
+    if not write_header:
+        with open(csv_path, "r", encoding="utf-8") as f:
+            first_line = f.readline().strip().split(",")
+        if "inner_cv_score" not in first_line:
+            fieldnames = [f for f in fieldnames if f != "inner_cv_score"]
+
     with open(csv_path, "a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         if write_header:
