@@ -1,50 +1,8 @@
-# Core scientific computing
 numpy==2.5.4
 scipy==1.18.1
-
-# Testing
-pytest==9.1.1
-
-# ML / QML
 scikit-learn==1.9.1
-pennylane==0.45.1
-pennylane_lightning==0.45.0
-
-# Visualisation & data
+pandas==3.0.6
 matplotlib==3.11.2
 seaborn==0.13.2
-pandas==3.0.6
-
-# Miscellaneous dependencies (pinned from environment)
-appdirs==1.4.4
-autograd==1.8.0
-autoray==0.8.4
-cachetools==7.2.4
-certifi==2026.10.19
-charset-normalizer==3.5.2
-cloudpickle==3.1.2
-contourpy==1.4.0
-cycler==0.12.1
-diastatic-malt==2.15.3
-fonttools==4.67.0
-gast==0.7.0
-idna==3.20
-joblib==1.6.0
-kiwisolver==1.5.1
-narwhals==2.27.1
-networkx==3.7
-packaging==26.3
-pillow==13.0.0
-pyparsing==3.3.3
-python-dateutil==2.9.0.post0
-requests==2.34.2
-rustworkx==0.18.1
-scipy-openblas32==0.3.34.237.2
-six==1.17.0
-termcolor==3.3.0
-threadpoolctl==3.7.0
-tomlkit==0.15.2
-typing_extensions==4.16.0
-tzdata==2026.5
-urllib3==2.8.0
-xgboost==3.4.1
+pytest==9.1.1
+pypdf==6.21.2

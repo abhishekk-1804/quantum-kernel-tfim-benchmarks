@@ -1,272 +1,123 @@
-# BMI Calculator
+# Projected and Fidelity Quantum Kernels versus Classical Correlator Baselines on Exact Spin-Chain Ground States
 
-A small server-rendered web application that calculates Body Mass Index (BMI) from a user's weight and height. It combines **Java**, **Spring Boot**, **Thymeleaf**, **Maven**, and **Tailwind CSS** in a focused example of form handling, validation, view rendering, and domain-specific calculation logic.
+[![Tests](https://github.com/abhishek/quantum-kernel-tfim-benchmarks/actions/workflows/tests.yml/badge.svg)](https://github.com/abhishek/quantum-kernel-tfim-benchmarks/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Note:** BMI is a general screening measure, not a medical diagnosis. The category labels in this project are implemented by the application code and should not be treated as clinical advice.
+## Overview & Objective Abstract
+This repository provides a rigorous, pre-registered empirical benchmark comparing **Projected Quantum Kernels (PQK)**, **Fidelity Quantum Kernels (FQ)**, and **matched classical correlator baselines** for predicting physical properties of quantum spin-chain ground states.
 
-[![Java](https://img.shields.io/badge/Java-11%2B-ED8B00?logo=openjdk&logoColor=white)](https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.6.7-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
-[![Build](https://img.shields.io/badge/build-Maven-C71A36?logo=apachemaven&logoColor=white)](https://maven.apache.org/)
+Across 1D transverse-field Ising models (TFIM) and frustrated 2D $J_1$-$J_2$ lattices up to $n \le 14$ spins, quantum states are generated via exact numerical diagonalization, isolating kernel representation geometry from circuit synthesis and variational optimization noise. Evaluated across 20 fixed RNG seeds with two-tiered family-wise error rate control (Holm step-down procedure), the empirical results show:
+- Nearest-neighbor projected quantum kernels (`PQK-2nn`) and classical two-body correlator features (`E-raw`) achieve learning accuracy comparable to full fidelity kernels (`FQ`).
+- Classical correlator and projected feature models require $12.2\times$ to $39.8\times$ fewer measurement shots than fidelity kernels.
+- Under simulated finite-shot swap tests, raw FQ Gram matrices become indefinite ($\lambda_{\min} < 0$) in 100% of seeds, requiring eigenvalue clipping to prevent catastrophic regression failure.
+- Under local per-qubit depolarizing noise, models with cross-validation retuning maintain baseline performance, while unmitigated models exhibit predictable signal attenuation.
+- **Zero claims of quantum advantage** are made; on equilibrium spin-chain ground states, classical correlator baselines match quantum kernel sample efficiency.
 
-## Contents
+---
 
-- [Overview](#overview)
-- [Features](#features)
-- [Demo](#demo)
-- [How the calculation works](#how-the-calculation-works)
-- [Architecture](#architecture)
-- [Technology choices](#technology-choices)
-- [Getting started](#getting-started)
-- [Testing and packaging](#testing-and-packaging)
-- [Project structure](#project-structure)
-- [Validation and edge cases](#validation-and-edge-cases)
-- [Security and privacy](#security-and-privacy)
-- [Limitations and future improvements](#limitations-and-future-improvements)
-- [Author](#author)
+## Primary Empirical Results
 
-## Overview
+### Task 1: Half-Chain Entropy Prediction ($n=8$, Test $R^2$, Mean and 95% Bootstrap CI)
+Evaluated across 20 fixed seeds on open-chain TFIM ground states:
 
-BMI Calculator gives a user a simple form for entering **weight in kilograms** and **height in centimeters**. After submission, the Spring Boot application validates the values, converts height to meters, calculates BMI, rounds it to one decimal place, and renders the result with a category label.
+| Model / Arm | Description | $N_{\text{tr}} = 40$ Mean $R^2$ [95% CI] | $N_{\text{tr}} = 160$ Mean $R^2$ [95% CI] |
+| :--- | :--- | :---: | :---: |
+| **PQK-1** | Single-body projected kernel ($\equiv$ RBF on $\langle X_i \rangle$) | 0.8986 [0.8847, 0.9111] | 0.9529 [0.9505, 0.9553] |
+| **PQK-2nn** | 2-body nearest-neighbor projected kernel | 0.9789 [0.9731, 0.9833] | 0.9943 [0.9936, 0.9950] |
+| **FQ** | Pure state fidelity overlap $|\langle \psi \vert \phi \rangle|^2$ | 0.9902 [0.9889, 0.9915] | 0.9975 [0.9972, 0.9978] |
+| **E (raw)** | Classical RBF kernel on full 1-body + 2-body correlators | 0.9872 [0.9847, 0.9893] | 0.9987 [0.9986, 0.9989] |
+| **E (std)** | Standardized classical RBF kernel | 0.9801 [0.9767, 0.9833] | 0.9965 [0.9961, 0.9969] |
+| **E2 (raw)** | Classical RBF on 1-body + NN 2-body correlators | 0.9786 [0.9727, 0.9833] | 0.9942 [0.9935, 0.9950] |
+| **F (std)** | Classical Ridge regression ($\ell_2$-linear) | 0.9728 [0.9663, 0.9776] | 0.9887 [0.9878, 0.9894] |
 
-The project is intentionally small. Its value is in showing the complete path from an HTML form to server-side validation, calculation logic, and a rendered response without introducing a database, authentication, or a separate frontend framework.
+### Confirmatory Paired Hypothesis Tests (Wilcoxon Signed-Rank with Holm Step-Down)
+| Task | Target | Pair ($a$ vs $b$) | $N_{\text{tr}}$ | Mean Diff ($a - b$) | 95% Bootstrap CI | $p_{\text{holm}}$ | Interpretation |
+| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
+| **T1** | Half-chain entropy | PQK-1 vs PQK-2nn | 40 | -0.0803 | [-0.0950, -0.0662] | $1.53 \times 10^{-5}$ | PQK-2nn significantly beats PQK-1 |
+| **T1** | Half-chain entropy | FQ vs E (raw) | 40 | +0.0031 | [+0.0015, +0.0050] | 0.0012 | FQ leads marginally at $N=40$ |
+| **T1** | Half-chain entropy | FQ vs E (raw) | 160 | -0.0012 | [-0.0015, -0.0009] | $1.53 \times 10^{-5}$ | E (raw) leads marginally at $N=160$ |
+| **T2b** | 4-point correlator | FQ vs E (raw) | 160 | +0.0000 | [-0.0002, +0.0003] | 1.0000 | Statistically indistinguishable |
+| **T2b** | 4-point correlator | PQK-2nn vs E (raw) | 160 | -0.0001 | [-0.0004, +0.0001] | 1.0000 | Statistically indistinguishable |
 
-## Features
+### Measurement Shot Complexity Comparison ($n=8$, $m=240$ states)
+| Model / Arm | Observable Families | Distinct Bases | Deployed Shots ($N_{\text{tr}}=40, N_{\text{te}}=200$) | Full Gram Simulation ($m=240$) |
+| :--- | :--- | :---: | :---: | :---: |
+| **PQK-1** | $\langle X_i \rangle, \langle Z_i \rangle$ | 2 | $480 \cdot S$ | $480 \cdot S$ |
+| **PQK-2nn** | 1-body + NN 2-body | 3 | $720 \cdot S$ | $720 \cdot S$ |
+| **E (raw)** | 1-body + all ZZ | 3 | $720 \cdot S$ | $720 \cdot S$ |
+| **FQ** | Swap test | 1 | $8{,}780 \cdot S$ | $28{,}680 \cdot S$ |
 
-- Server-rendered BMI calculator UI using Thymeleaf.
-- Weight and height input fields with HTML constraints and server-side Bean Validation.
-- BMI calculation with height conversion from centimeters to meters.
-- Result rounding to one decimal place.
-- Category mapping for Underweight, Normal, Overweight, and three obesity classes.
-- Inline validation messages when submitted values fail the DTO constraints.
-- Responsive layout utilities supplied by Tailwind CSS.
-- JUnit tests covering application startup and BMI category mapping.
+---
 
-## Demo
+## Publication Figures
+All figures are vector PDFs compiled from committed raw data in `results/`:
+- **Figure 1:** [Task 1 Learning Curves](figures/fig_learning_curve_t1.pdf)
+- **Figure 2:** [Task 2 Contained vs Non-Contained Correlators](figures/fig_t2_contained_vs_not.pdf)
+- **Figure 3:** [Task 4 2D Frustrated Lattices ($2 \times 4$ and $3 \times 4$)](figures/fig_t4_lattices.pdf)
+- **Figure 4:** [Task 3 Kernel Concentration Scaling ($n=4$ to $14$)](figures/fig_concentration.pdf)
+- **Figure 5:** [Task 5 Finite Measurement Shot Costs](figures/fig_shots.pdf)
+- **Figure 6:** [Task 5 FQ Gram Spectrum Indefiniteness](figures/fig_fq_spectrum.pdf)
+- **Figure 7:** [Task 5 Depolarizing Noise: Retuned vs Fixed Hyperparameters](figures/fig_depolarizing_retuned_per_qubit_proxy.pdf)
+- **Figure 8:** [Hyperparameter Search Grid Epsilon Selection](figures/fig_epsilon_selection.pdf)
 
-### Initial form
+---
 
-![BMI Calculator form](docs/images/bmi-calculator-form.png)
+## Explicit Boundaries & Limitations
+1. **Exact Ground States:** States are obtained via exact diagonalization rather than shallow parameterized quantum circuits. This isolates representation expressivity from barren plateaus in circuit optimization, but does not capture gate synthesis errors.
+2. **System Size Range ($n \le 14$):** Due to exponential statevector scaling ($2^{14} = 16{,}384$), classical ground state computation was bounded at $n \le 14$.
+3. **Equilibrium Physical Manifolds:** The benchmark evaluates equilibrium Hamiltonian ground states. It does not generalize to non-equilibrium Floquet states, thermal states, or synthetic data engineered to defeat classical polynomial-time algorithms.
+4. **Noise Model Scope:** Measurement noise is modeled via independent binomial swap-test sampling; decoherence is modeled via local per-qubit depolarizing channels rather than full hardware pulse-level cross-talk.
 
-### Example result
+---
 
-The verified example below uses **70 kg** and **175 cm**. The application displays a BMI of **22.9** and the category **Normal**.
-
-![BMI Calculator result](docs/images/bmi-calculator-result.png)
-
-There is no permanent hosted deployment configured for this repository. Run the application locally using the instructions below.
-
-## How the calculation works
-
-The controller converts the submitted height from centimeters to meters and applies the standard BMI formula:
-
-```text
-BMI = weight (kg) / height² (m²)
-```
-
-For example:
-
-```text
-70 / 1.75² = 22.9
-```
-
-The result is rounded to one decimal place before it is passed to `ResultDto`. The current implementation maps values using these thresholds:
-
-| BMI range | Application label |
-| --- | --- |
-| `< 19` | Underweight |
-| `19` to `< 25` | Normal |
-| `25` to `< 30` | Overweight |
-| `30` to `< 35` | Obesity class 1 |
-| `35` to `< 40` | Obesity class 2 |
-| `>= 40` | Obesity class 3 |
-
-These thresholds describe the behavior implemented in `ResultDto`; they are not presented as medical guidance.
-
-## Architecture
-
-This is a compact Spring MVC application with server-side HTML rendering:
-
-```mermaid
-flowchart TD
-    A[Browser form] -->|POST /| B[IndexController]
-    B --> C[UserInfoDto validation]
-    C -->|valid input| D[BMI calculation]
-    D --> E[ResultDto category mapping]
-    E --> F[Thymeleaf index.html]
-    F --> A
-    C -->|validation errors| F
-```
-
-### Component responsibilities
-
-- **`IndexController`** handles `GET /` and `POST /`. It creates the initial form model, checks validation results, performs the calculation, and returns the `index` view.
-- **`UserInfoDto`** holds weight and height values. Bean Validation annotations define the server-side numeric limits, and `getComputedHeight()` converts centimeters to meters.
-- **`ResultDto`** stores the rounded BMI and assigns the application's category label.
-- **`index.html`** is the Thymeleaf template that renders the form, validation messages, and result alert.
-- **`main.css`** contains the generated Tailwind CSS used by the template.
-
-There is no separate service layer, persistence layer, REST API, authentication flow, or JavaScript application in the current implementation.
-
-## Technology choices
-
-### Java
-
-Java was chosen for its strong typing, mature standard library, and broad ecosystem. In this project it provides a clear structure for the controller, DTOs, validation annotations, and calculation logic. The Maven configuration targets Java 11 or newer.
-
-### Spring Boot
-
-Spring Boot provides application bootstrapping, dependency management through the Spring Boot parent, an embedded Tomcat server, Spring MVC request handling, and integration with Thymeleaf and Bean Validation. The project uses Spring Boot `2.6.7`.
-
-### Thymeleaf
-
-Thymeleaf keeps the UI server-rendered and integrates directly with the Spring MVC model. The template can display submitted values, validation messages, and the calculated result without a client-side framework.
-
-### Tailwind CSS
-
-Tailwind CSS supplies utility classes for the layout, spacing, typography, colors, responsive widths, borders, and focus states used by the form. The source entry point is `styles/input.css`, and the generated stylesheet is written to `src/main/resources/static/css/main.css`.
-
-### Maven
-
-Maven manages the Java dependencies, test lifecycle, compilation, packaging, and Spring Boot run goal. The repository includes the Maven Wrapper, so contributors can use `./mvnw` without installing Maven globally.
-
-## Getting started
+## Reproduction Commands
 
 ### Prerequisites
-
-- JDK 11 or newer.
-- Node.js and npm, or Yarn, if you want to regenerate the Tailwind stylesheet.
-- A shell environment capable of running the Maven Wrapper.
-
-### Run locally
-
-From the repository root:
-
+- Python 3.10+
+- Virtual environment setup:
 ```bash
-cd bmi-main
-./mvnw spring-boot:run
+python -m venv venv
+# Windows:
+venv\Scripts\activate
+# Linux/macOS:
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
-Then open [http://localhost:8000](http://localhost:8000). The port is configured in `src/main/resources/application.properties`.
-
-### Regenerate Tailwind CSS
-
-The repository includes a generated stylesheet, so this step is not required for a normal run. Use it when changing Tailwind classes or the source stylesheet:
-
+### 1. Run Unit Tests (< 10 seconds)
 ```bash
-cd bmi-main
-npm install
-npm run build:css
+make test
+# or: pytest tests/ -v
 ```
 
-For continuous CSS rebuilding during development:
-
+### 2. Fast Smoke Test (< 1 minute)
+Runs 3 seeds on Task 1 at $N=40$:
 ```bash
-npm run css
+make reproduce-quick
+# or: python scripts/reproduce_quick.py
 ```
 
-## Testing and packaging
-
-Run the automated tests:
-
+### 3. Generate Publication Figures & LaTeX Tables
 ```bash
-cd bmi-main
-./mvnw test
+make figures
+# or: python scripts/make_figures.py && python scripts/make_tables.py
 ```
 
-The test suite currently includes an application context test and category-mapping tests for `ResultDto`.
-
-Create an executable JAR:
-
+### 4. Full Benchmark Execution
 ```bash
-./mvnw clean package
+make reproduce-full
 ```
 
-Run the packaged application:
+---
 
-```bash
-java -jar target/bmi-1.0.jar
+## License & Citation
+This project is licensed under the [MIT License](LICENSE).
+
+```bibtex
+@article{doddagoudar2026quantumkernels,
+  title={Projected and Fidelity Quantum Kernels versus Classical Correlator Baselines on Exact Spin-Chain Ground States},
+  author={Doddagoudar, Abhishek K.},
+  year={2026},
+  publisher={Presidency University}
+}
 ```
-
-The build was verified locally with `./mvnw test package` after pinning Lombok to `1.18.30`, which keeps the existing code compatible with the available JDK 21 environment while preserving the project's Java 11 target.
-
-## Project structure
-
-```text
-bmi-calculator/
-├── README.md
-├── docs/
-│   └── images/
-│       ├── bmi-calculator-form.png
-│       └── bmi-calculator-result.png
-├── .vscode/
-│   ├── launch.json
-│   └── settings.json
-└── bmi-main/
-    ├── pom.xml
-    ├── mvnw
-    ├── mvnw.cmd
-    ├── package.json
-    ├── tailwind.config.js
-    ├── styles/
-    │   └── input.css
-    └── src/
-        ├── main/
-        │   ├── java/com/tericcabrel/bmi/
-        │   │   ├── BmiApplication.java
-        │   │   ├── configs/WebConfig.java
-        │   │   ├── controllers/IndexController.java
-        │   │   ├── dtos/ResultDto.java
-        │   │   ├── dtos/UserInfoDto.java
-        │   │   └── utils/Constants.java
-        │   └── resources/
-        │       ├── application.properties
-        │       ├── static/css/main.css
-        │       └── templates/index.html
-        └── test/
-            └── java/com/tericcabrel/bmi/
-                ├── BmiApplicationTests.java
-                └── dtos/ResultDtoTest.java
-```
-
-## Validation and edge cases
-
-Server-side validation currently enforces:
-
-- Weight from `2` through `800` kilograms.
-- Height from `40` through `300` centimeters.
-
-The HTML form additionally declares browser-side limits of `0`–`800` for weight and `20`–`250` for height. The server-side DTO is the authoritative validation path when a form is submitted. Invalid values return the form view with field-level error messages rather than calculating a result.
-
-The current code does not provide dedicated handling for extremely large numeric values beyond the declared bounds, and it does not include custom error handling for malformed requests outside normal browser form submission.
-
-## Security and privacy
-
-The application does not use a database, user accounts, authentication, or persistent storage. The submitted height and weight are processed for the request and rendered in the response. No privacy, security, or production-readiness claim is made beyond that observed behavior.
-
-The repository includes Spring Boot Actuator as a dependency, but it does not define custom management endpoints or a deployment configuration.
-
-## Limitations and future improvements
-
-The project is suitable as a focused learning application, but it is not presented as a complete health platform. Reasonable next steps would include:
-
-- Add controller-level tests for valid submissions and validation failures.
-- Align the HTML and DTO ranges so users see the same limits on both sides.
-- Improve validation message wording and accessibility semantics.
-- Add a dedicated service or calculator class if the domain logic grows.
-- Add a CI workflow to run tests on pull requests.
-- Add a deployment guide if a permanent hosting target is selected.
-- Add optional history or persistence only if the product requirements justify storing user data.
-
-## Author
-
-**Abhishek K Doddagoudar**
-
-- GitHub: [abhishekk-1804](https://github.com/abhishekk-1804)
-
-## References
-
-[1]: https://spring.io/projects/spring-boot "Spring Boot project documentation"
-[2]: https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html "Thymeleaf and Spring tutorial"
-[3]: https://tailwindcss.com/docs/utility-first "Tailwind CSS utility-first fundamentals"
-[4]: https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html "Maven in five minutes"
-[5]: https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html "CDC adult BMI categories"

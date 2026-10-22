@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this benchmark suite, please cite it as below."
+authors:
+  - family-names: "Doddagoudar"
+    given-names: "Abhishek K."
+    affiliation: "Department of Computer Science & Engineering, Presidency University, Bengaluru, India"
+title: "Projected and Fidelity Quantum Kernels versus Classical Correlator Baselines on Exact Spin-Chain Ground States"
+version: 1.0.0
+date-released: 2026-10-22
+url: "https://github.com/abhishek/quantum-kernel-tfim-benchmarks"
+license: "MIT"
