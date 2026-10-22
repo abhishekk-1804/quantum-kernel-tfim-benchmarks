@@ -1,20 +1,20 @@
-\begin{table}[htbp]
-\caption{Measurement Shot Budget Scaling for $n=8$ TFIM System across Benchmark Arms}
+\begin{table}[!t]
+\caption{Measurement Shot Budget Scaling ($n=8$ TFIM, $N_{\mathrm{tr}}=40$, $N_{\mathrm{te}}=200$)}
 \label{tab:shot_costs}
 \centering
 \begingroup
-\begin{tabular}{lcccc}
-\hline
-\textbf{Model / Arm} & \textbf{Observable} & \textbf{Distinct} & \textbf{Deployed Cost} & \textbf{Full Gram Cost} \\
- & \textbf{Families} & \textbf{Bases} & \textbf{($N_{\text{tr}}=40, N_{\text{te}}=200$)} & \textbf{($m=240$ states)} \\
-\hline
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Model} & \textbf{Families} & \textbf{Bases} & \textbf{Deployed Cost} & \textbf{Full Gram} \\
+\midrule
 PQK-1 & $\langle X_i \rangle, \langle Z_i \rangle$ & 2 & $480 \cdot S$ & $480 \cdot S$ \\
 PQK-2nn & 1-body + NN 2-body & 3 & $720 \cdot S$ & $720 \cdot S$ \\
 E (raw) & 1-body + all ZZ & 3 & $720 \cdot S$ & $720 \cdot S$ \\
 E2 (raw) & 1-body + NN 2-body & 3 & $720 \cdot S$ & $720 \cdot S$ \\
 F (std) & 1-body + all ZZ & 3 & $720 \cdot S$ & $720 \cdot S$ \\
 FQ & Swap test & 1 & $8{,}780 \cdot S$ & $28{,}680 \cdot S$ \\
-\hline
+\bottomrule
 \end{tabular}
 \endgroup
 \end{table}

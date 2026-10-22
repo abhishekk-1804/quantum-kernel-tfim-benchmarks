@@ -1,109 +1,21 @@
-\begin{table}[htbp]
-\caption{Hyperparameter Search Grid Boundary Pegging ($> 50\%$ of Seeds at Lower or Upper Edge)}
+\begin{table}[!t]
+\caption{Hyperparameter Boundary Pegging Summary ($>50\%$ of seeds at a grid edge)}
 \label{tab:grid_boundaries}
 \centering
 \begingroup
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{llcccc}
-\hline
-\textbf{Task} & \textbf{Model} & \textbf{Variant} & \textbf{$N$} & \textbf{Boundary Parameter} & \textbf{\% at Edge} \\
-\hline
-T1 & E & raw & 10 & EPS LOW & 65.0\% \\
-T1 & E & std & 10 & C LOW & 60.0\% \\
-T1 & E & std & 10 & EPS LOW & 65.0\% \\
-T1 & E2 & raw & 10 & EPS LOW & 65.0\% \\
-T1 & FQ & none & 10 & EPS LOW & 60.0\% \\
-T1 & PQK-2nn & none & 10 & EPS LOW & 60.0\% \\
-T1 & E & raw & 20 & C HIGH & 60.0\% \\
-T1 & E & raw & 20 & EPS LOW & 60.0\% \\
-T1 & E & std & 20 & EPS LOW & 55.0\% \\
-T1 & FQ & none & 20 & EPS LOW & 75.0\% \\
-T1 & FQ & none & 40 & EPS LOW & 60.0\% \\
-T1 & E\_X & raw & 80 & EPS HIGH & 60.0\% \\
-T1 & PQK-1 (== RBF on $<$X$>$) & none & 80 & EPS HIGH & 60.0\% \\
-T2a & E & raw & 10 & EPS LOW & 70.0\% \\
-T2a & E & std & 10 & EPS LOW & 80.0\% \\
-T2a & E2 & raw & 10 & EPS LOW & 55.0\% \\
-T2a & PQK-2nn & none & 10 & EPS LOW & 55.0\% \\
-T2a & E & std & 20 & EPS LOW & 55.0\% \\
-T2a & FQ & none & 20 & EPS LOW & 75.0\% \\
-T2a & E & raw & 40 & C HIGH & 100.0\% \\
-T2a & E & raw & 40 & EPS LOW & 70.0\% \\
-T2a & E & std & 40 & C HIGH & 90.0\% \\
-T2a & E & std & 40 & EPS LOW & 70.0\% \\
-T2a & FQ & none & 40 & EPS LOW & 90.0\% \\
-T2a & E & raw & 80 & C HIGH & 100.0\% \\
-T2a & E & raw & 80 & EPS LOW & 100.0\% \\
-T2a & E & std & 80 & C HIGH & 100.0\% \\
-T2a & E & std & 80 & C LOW & 65.0\% \\
-T2a & E & std & 80 & EPS LOW & 95.0\% \\
-T2a & F & std & 80 & ALPHA LOW & 100.0\% \\
-T2a & FQ & none & 80 & EPS LOW & 90.0\% \\
-T2a & E & raw & 160 & C HIGH & 100.0\% \\
-T2a & E & raw & 160 & EPS LOW & 100.0\% \\
-T2a & E & std & 160 & C HIGH & 100.0\% \\
-T2a & E & std & 160 & C LOW & 100.0\% \\
-T2a & E & std & 160 & EPS LOW & 100.0\% \\
-T2a & E2 & raw & 160 & C HIGH & 60.0\% \\
-T2a & F & std & 160 & ALPHA LOW & 100.0\% \\
-T2a & FQ & none & 160 & EPS LOW & 95.0\% \\
-T2a & PQK-2nn & none & 160 & C HIGH & 55.0\% \\
-T2b & E & std & 10 & EPS LOW & 60.0\% \\
-T2b & E2 & raw & 10 & EPS LOW & 55.0\% \\
-T2b & FQ & none & 10 & EPS LOW & 55.0\% \\
-T2b & E & std & 20 & C LOW & 55.0\% \\
-T2b & E & raw & 40 & C HIGH & 55.0\% \\
-T2b & E2 & raw & 40 & EPS LOW & 55.0\% \\
-T2b & E\_X & raw & 40 & EPS HIGH & 55.0\% \\
-T2b & FQ & none & 40 & EPS LOW & 70.0\% \\
-T2b & PQK-1 (== RBF on $<$X$>$) & none & 40 & EPS HIGH & 55.0\% \\
-T2b & PQK-2nn & none & 40 & EPS LOW & 65.0\% \\
-T2b & E & raw & 80 & C HIGH & 60.0\% \\
-T2b & E & raw & 80 & EPS LOW & 55.0\% \\
-T2b & E & std & 80 & C HIGH & 65.0\% \\
-T2b & E2 & raw & 80 & C HIGH & 75.0\% \\
-T2b & E2 & raw & 80 & EPS LOW & 75.0\% \\
-T2b & E\_X & raw & 80 & C HIGH & 70.0\% \\
-T2b & FQ & none & 80 & EPS LOW & 95.0\% \\
-T2b & PQK-1 (== RBF on $<$X$>$) & none & 80 & C HIGH & 70.0\% \\
-T2b & PQK-2nn & none & 80 & C HIGH & 70.0\% \\
-T2b & PQK-2nn & none & 80 & EPS LOW & 75.0\% \\
-T2b & E & raw & 160 & C HIGH & 95.0\% \\
-T2b & E & raw & 160 & EPS LOW & 95.0\% \\
-T2b & E & std & 160 & C HIGH & 55.0\% \\
-T2b & E & std & 160 & EPS LOW & 75.0\% \\
-T2b & E2 & raw & 160 & C HIGH & 95.0\% \\
-T2b & E2 & raw & 160 & EPS LOW & 80.0\% \\
-T2b & FQ & none & 160 & EPS LOW & 85.0\% \\
-T2b & PQK-2nn & none & 160 & C HIGH & 95.0\% \\
-T2b & PQK-2nn & none & 160 & EPS LOW & 85.0\% \\
-T4b & E & std & 10 & EPS LOW & 60.0\% \\
-T4b & E & std & 10 & EPS LOW & 55.0\% \\
-T4b & E\_X & raw & 10 & C HIGH & 55.0\% \\
-T4b & F & std & 10 & ALPHA HIGH & 65.0\% \\
-T4b & PQK-1 (== RBF on $<$X$>$) & none & 10 & C HIGH & 55.0\% \\
-T4b & E & std & 20 & EPS LOW & 65.0\% \\
-T4b & E & raw & 20 & C HIGH & 55.0\% \\
-T4b & E2 & raw & 20 & C HIGH & 60.0\% \\
-T4b & F & std & 20 & ALPHA HIGH & 60.0\% \\
-T4b & PQK-2nn & none & 20 & C HIGH & 65.0\% \\
-T4b & PQK-2nn & none & 20 & C HIGH & 55.0\% \\
-T4b & E & raw & 40 & C HIGH & 85.0\% \\
-T4b & E2 & raw & 40 & C HIGH & 65.0\% \\
-T4b & E2 & raw & 40 & EPS LOW & 65.0\% \\
-T4b & PQK-2nn & none & 40 & C HIGH & 65.0\% \\
-T4b & PQK-2nn & none & 40 & EPS LOW & 55.0\% \\
-T4b & E & raw & 80 & C HIGH & 60.0\% \\
-T4b & E & raw & 80 & C HIGH & 60.0\% \\
-T4b & E & raw & 80 & EPS LOW & 65.0\% \\
-T4b & E & std & 80 & C HIGH & 75.0\% \\
-T4b & E & std & 80 & EPS LOW & 65.0\% \\
-T4b & E2 & raw & 80 & C HIGH & 75.0\% \\
-T4b & E2 & raw & 80 & EPS LOW & 60.0\% \\
-T4b & FQ & none & 80 & C HIGH & 65.0\% \\
-T4b & PQK-2nn & none & 80 & C HIGH & 95.0\% \\
-T4b & PQK-2nn & none & 80 & EPS LOW & 60.0\% \\
-\hline
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}llcl@{}}
+\toprule
+\textbf{Model} & \textbf{Param} & \textbf{\% at edge} & \textbf{Tasks (N)} \\
+\midrule
+PQK-1   & $\epsilon$ low & 60 & T1 (10, 80), T2b (80) \\
+PQK-2nn & $C$ high       & 70 & T2b (160), T4b (80) \\
+FQ      & $\epsilon$ low & 75 & T1 (20--160), T2b (40--160) \\
+E (raw) & $\epsilon$ low & 65 & T1 (10), T2a (80), T2b (160) \\
+E (std) & $C$ high       & 60 & T2a (40), T2b (160) \\
+E2 (raw)& $C$ high       & 75 & T2b (80--160) \\
+\bottomrule
 \end{tabular}
 \endgroup
 \end{table}

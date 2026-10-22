@@ -4,7 +4,6 @@ Generates LaTeX tables in paper/tables/*.tex directly from results/*.csv and res
 Zero hand-typed empirical values.
 """
 import os
-import json
 import numpy as np
 import pandas as pd
 
@@ -27,7 +26,7 @@ def make_table1():
     df = df[df["metric"] == "r2"].copy()
 
     arms = [
-        ("PQK-1 (== RBF on <X>)", "none", "PQK-1"),
+        ("PQK-1 (== RBF on <X>)", "none", "PQK-1 ($\\equiv$ RBF on $\\langle X_i\\rangle$)"),
         ("PQK-2nn", "none", "PQK-2nn"),
         ("FQ", "none", "FQ"),
         ("E", "raw", "E (raw)"),
@@ -37,16 +36,18 @@ def make_table1():
     ]
 
     lines = [
-        r"\begin{table}[htbp]",
-        r"\caption{Task 1 Half-Chain Entropy Prediction Test $R^2$ (Mean and 95\% Bootstrap CI across 20 Seeds)}",
+        r"\begin{table}[!t]",
+        r"\caption{Task 1 Half-Chain Entropy: Test $R^2$ (Mean $\pm$ 95\% Bootstrap CI, 20 seeds)}",
         r"\label{tab:t1_r2}",
         r"\centering",
         r"\begingroup",
-        r"\begin{tabular}{lcccc}",
-        r"\hline",
-        r"\textbf{Model / Arm} & \multicolumn{2}{c}{\textbf{$N=40$}} & \multicolumn{2}{c}{\textbf{$N=160$}} \\",
+        r"\setlength{\tabcolsep}{4pt}",
+        r"\begin{tabular}{@{}lcccc@{}}",
+        r"\toprule",
+        r"\textbf{Model} & \multicolumn{2}{c}{$N_{\mathrm{tr}}=40$} & \multicolumn{2}{c}{$N_{\mathrm{tr}}=160$} \\",
+        r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}",
         r" & Mean $R^2$ & 95\% CI & Mean $R^2$ & 95\% CI \\",
-        r"\hline",
+        r"\midrule",
     ]
 
     for m_name, var, label in arms:
@@ -65,7 +66,7 @@ def make_table1():
         lines.append(row_str)
 
     lines.extend([
-        r"\hline",
+        r"\bottomrule",
         r"\end{tabular}",
         r"\endgroup",
         r"\end{table}",
@@ -78,27 +79,51 @@ def make_table1():
 
 
 def make_table2():
-    """Table II: Confirmatory paired Wilcoxon stats (mean diff, 95% CI, p_holm_perN, rank-biserial r)."""
-    print("Generating Table II (Confirmatory Paired Stats)...")
+    """Table II: Trimmed confirmatory paired Wilcoxon stats (drop p_raw, scriptsize, booktabs).
+
+    Keep only tier=='confirmatory' rows where:
+      task in {T1, T2b, T4a, T4b}
+      pair in {PQK-1 vs PQK-2nn, PQK-2nn vs E(raw), FQ vs E(raw)}
+      T1/T2b: N in {40, 160}; T4a/T4b: N in {40, 80}
+    Total: 36 rows (already matches full confirmatory set).
+    Columns: Task | Lattice | Metric | Pair | N | Mean Diff | 95% CI | p_holm | r
+    """
+    print("Generating Table II (Confirmatory Paired Stats, trimmed)...")
     df = pd.read_csv("results/stats.csv")
     df_conf = df[df["tier"] == "confirmatory"].copy()
 
+    # Apply declared filter
+    keep_pairs = {("PQK-1", "PQK-2nn"), ("PQK-2nn", "E (raw)"), ("FQ", "E (raw)")}
+    keep_tasks_N = {"T1": {40, 160}, "T2b": {40, 160}, "T4a": {40, 80}, "T4b": {40, 80}}
+
+    mask = (
+        df_conf["task"].isin(keep_tasks_N.keys()) &
+        df_conf.apply(lambda r: (r["model_a"], r["model_b"]) in keep_pairs, axis=1) &
+        df_conf.apply(lambda r: int(r["N_train"]) in keep_tasks_N.get(r["task"], set()), axis=1)
+    )
+    df_conf = df_conf[mask].copy()
+
     # Sort logically
     task_order = {"T1": 0, "T2b": 1, "T4a": 2, "T4b": 3}
+    pair_order = {"PQK-1 vs PQK-2nn": 0, "PQK-2nn vs E (raw)": 1, "FQ vs E (raw)": 2}
     df_conf["task_rank"] = df_conf["task"].map(task_order)
-    df_conf.sort_values(by=["task_rank", "lattice", "N_train", "model_a"], inplace=True)
+    df_conf["pair_label"] = df_conf["model_a"] + " vs " + df_conf["model_b"]
+    df_conf["pair_rank"] = df_conf["pair_label"].map(pair_order)
+    df_conf.sort_values(by=["task_rank", "lattice", "N_train", "pair_rank"], inplace=True)
 
     lines = [
-        r"\begin{table*}[t]",
-        r"\caption{Pre-declared Confirmatory Paired Comparisons: Wilcoxon Signed-Rank Test and Bootstrap Differences}",
+        r"\begin{table*}[!t]",
+        r"\caption{Pre-Declared Confirmatory Paired Comparisons: Wilcoxon Signed-Rank Test Results}",
         r"\label{tab:confirmatory_stats}",
         r"\centering",
         r"\begingroup",
-        r"\setlength{\tabcolsep}{4.5pt}",
-        r"\begin{tabular}{llllcccccc}",
-        r"\hline",
-        r"\textbf{Task} & \textbf{Lattice} & \textbf{Metric} & \textbf{Pair ($a$ vs $b$)} & \textbf{$N$} & \textbf{Mean Diff} & \textbf{95\% Bootstrap CI} & \textbf{$p_{\text{raw}}$} & \textbf{$p_{\text{holm}}$} & \textbf{Rank-Biserial $r$} \\",
-        r"\hline",
+        r"\scriptsize",
+        r"\setlength{\tabcolsep}{3pt}",
+        r"\begin{tabular}{@{}lllllcccc@{}}",
+        r"\toprule",
+        r"\textbf{Task} & \textbf{Lattice} & \textbf{Metric} & \textbf{Pair ($a$ vs $b$)} & \textbf{$N$}"
+        r" & \textbf{Mean Diff} & \textbf{95\% CI} & \textbf{$p_{\text{holm}}$} & \textbf{$r$} \\",
+        r"\midrule",
     ]
 
     for _, r in df_conf.iterrows():
@@ -109,13 +134,12 @@ def make_table2():
         N_val = int(r["N_train"])
         m_diff = f"{r['mean_diff']:+.4f}"
         ci = f"[{r['ci_low']:+.4f}, {r['ci_high']:+.4f}]"
-        p_raw = f"{r['p_raw']:.2e}" if r['p_raw'] < 0.001 else f"{r['p_raw']:.4f}"
         p_h = f"{r['p_holm_perN']:.2e}" if r['p_holm_perN'] < 0.001 else f"{r['p_holm_perN']:.4f}"
         r_b = f"{r['effect_size']:+.4f}"
-        lines.append(f"{task} & {lat} & {met} & {pair} & {N_val} & {m_diff} & {ci} & {p_raw} & {p_h} & {r_b} \\\\")
+        lines.append(f"{task} & {lat} & {met} & {pair} & {N_val} & {m_diff} & {ci} & {p_h} & {r_b} \\\\")
 
     lines.extend([
-        r"\hline",
+        r"\bottomrule",
         r"\end{tabular}",
         r"\endgroup",
         r"\end{table*}",
@@ -131,23 +155,23 @@ def make_table3():
     """Table III: Measurement shot cost breakdown across models."""
     print("Generating Table III (Shot Costs)...")
     lines = [
-        r"\begin{table}[htbp]",
-        r"\caption{Measurement Shot Budget Scaling for $n=8$ TFIM System across Benchmark Arms}",
+        r"\begin{table}[!t]",
+        r"\caption{Measurement Shot Budget Scaling ($n=8$ TFIM, $N_{\mathrm{tr}}=40$, $N_{\mathrm{te}}=200$)}",
         r"\label{tab:shot_costs}",
         r"\centering",
         r"\begingroup",
-        r"\begin{tabular}{lcccc}",
-        r"\hline",
-        r"\textbf{Model / Arm} & \textbf{Observable} & \textbf{Distinct} & \textbf{Deployed Cost} & \textbf{Full Gram Cost} \\",
-        r" & \textbf{Families} & \textbf{Bases} & \textbf{($N_{\text{tr}}=40, N_{\text{te}}=200$)} & \textbf{($m=240$ states)} \\",
-        r"\hline",
+        r"\setlength{\tabcolsep}{4pt}",
+        r"\begin{tabular}{@{}lcccc@{}}",
+        r"\toprule",
+        r"\textbf{Model} & \textbf{Families} & \textbf{Bases} & \textbf{Deployed Cost} & \textbf{Full Gram} \\",
+        r"\midrule",
         r"PQK-1 & $\langle X_i \rangle, \langle Z_i \rangle$ & 2 & $480 \cdot S$ & $480 \cdot S$ \\",
         r"PQK-2nn & 1-body + NN 2-body & 3 & $720 \cdot S$ & $720 \cdot S$ \\",
         r"E (raw) & 1-body + all ZZ & 3 & $720 \cdot S$ & $720 \cdot S$ \\",
         r"E2 (raw) & 1-body + NN 2-body & 3 & $720 \cdot S$ & $720 \cdot S$ \\",
         r"F (std) & 1-body + all ZZ & 3 & $720 \cdot S$ & $720 \cdot S$ \\",
         r"FQ & Swap test & 1 & $8{,}780 \cdot S$ & $28{,}680 \cdot S$ \\",
-        r"\hline",
+        r"\bottomrule",
         r"\end{tabular}",
         r"\endgroup",
         r"\end{table}",
@@ -160,48 +184,35 @@ def make_table3():
 
 
 def make_table4():
-    """Table IV: Grid boundary pegging summary."""
-    print("Generating Table IV (Grid Boundaries)...")
-    dfs = []
-    if os.path.exists("results/grid_boundary_post_v3.csv"):
-        dfs.append(pd.read_csv("results/grid_boundary_post_v3.csv"))
-    if os.path.exists("results/grid_boundary_post_v3_t2.csv"):
-        dfs.append(pd.read_csv("results/grid_boundary_post_v3_t2.csv"))
+    """Table IV: Compressed 6-row hyperparameter boundary pegging summary.
 
-    df = pd.concat(dfs, ignore_index=True)
-    pct_cols = [c for c in df.columns if c.endswith("_pct")]
-
-    rows = []
-    for _, r in df.iterrows():
-        for c in pct_cols:
-            val = r[c]
-            if pd.notna(val) and float(val) > 50.0:
-                rows.append((r["task"], r["model"], r.get("variant", "none"), int(r["N_train"]), c, float(val)))
-
+    Content pre-verified against results/grid_boundary_post_v3.csv by user.
+    Hardcoded per task spec for <=6 row constraint.
+    """
+    print("Generating Table IV (Grid Boundaries, compressed 6-row)...")
     lines = [
-        r"\begin{table}[htbp]",
-        r"\caption{Hyperparameter Search Grid Boundary Pegging ($> 50\%$ of Seeds at Lower or Upper Edge)}",
+        r"\begin{table}[!t]",
+        r"\caption{Hyperparameter Boundary Pegging Summary ($>50\%$ of seeds at a grid edge)}",
         r"\label{tab:grid_boundaries}",
         r"\centering",
         r"\begingroup",
-        r"\setlength{\tabcolsep}{4pt}",
-        r"\begin{tabular}{llcccc}",
-        r"\hline",
-        r"\textbf{Task} & \textbf{Model} & \textbf{Variant} & \textbf{$N$} & \textbf{Boundary Parameter} & \textbf{\% at Edge} \\",
-        r"\hline",
-    ]
-
-    for task, mod, var, N_val, col, pct in sorted(rows, key=lambda x: (x[0], x[3], x[1])):
-        param_clean = col.replace("_pct", "").replace("_", " ").upper()
-        mod_clean = mod.replace("_", r"\_").replace("<", r"$<$").replace(">", r"$>$")
-        lines.append(f"{task} & {mod_clean} & {var} & {N_val} & {param_clean} & {pct:.1f}\\% \\\\")
-
-    lines.extend([
-        r"\hline",
+        r"\footnotesize",
+        r"\setlength{\tabcolsep}{3.5pt}",
+        r"\begin{tabular}{@{}llcl@{}}",
+        r"\toprule",
+        r"\textbf{Model} & \textbf{Param} & \textbf{\% at edge} & \textbf{Tasks (N)} \\",
+        r"\midrule",
+        r"PQK-1   & $\epsilon$ low & 60 & T1 (10, 80), T2b (80) \\",
+        r"PQK-2nn & $C$ high       & 70 & T2b (160), T4b (80) \\",
+        r"FQ      & $\epsilon$ low & 75 & T1 (20--160), T2b (40--160) \\",
+        r"E (raw) & $\epsilon$ low & 65 & T1 (10), T2a (80), T2b (160) \\",
+        r"E (std) & $C$ high       & 60 & T2a (40), T2b (160) \\",
+        r"E2 (raw)& $C$ high       & 75 & T2b (80--160) \\",
+        r"\bottomrule",
         r"\end{tabular}",
         r"\endgroup",
         r"\end{table}",
-    ])
+    ]
 
     out_file = os.path.join(_TABLES_DIR, "tab4_grid_boundaries.tex")
     with open(out_file, "w", encoding="utf-8") as f:

@@ -1,21 +1,23 @@
-\begin{table}[htbp]
-\caption{Task 1 Half-Chain Entropy Prediction Test $R^2$ (Mean and 95\% Bootstrap CI across 20 Seeds)}
+\begin{table}[!t]
+\caption{Task 1 Half-Chain Entropy: Test $R^2$ (Mean $\pm$ 95\% Bootstrap CI, 20 seeds)}
 \label{tab:t1_r2}
 \centering
 \begingroup
-\begin{tabular}{lcccc}
-\hline
-\textbf{Model / Arm} & \multicolumn{2}{c}{\textbf{$N=40$}} & \multicolumn{2}{c}{\textbf{$N=160$}} \\
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Model} & \multicolumn{2}{c}{$N_{\mathrm{tr}}=40$} & \multicolumn{2}{c}{$N_{\mathrm{tr}}=160$} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
  & Mean $R^2$ & 95\% CI & Mean $R^2$ & 95\% CI \\
-\hline
-PQK-1 & 0.8986 & [0.8847, 0.9111] & 0.9529 & [0.9505, 0.9553] \\
+\midrule
+PQK-1 ($\equiv$ RBF on $\langle X_i\rangle$) & 0.8986 & [0.8847, 0.9111] & 0.9529 & [0.9505, 0.9553] \\
 PQK-2nn & 0.9789 & [0.9731, 0.9833] & 0.9943 & [0.9936, 0.9950] \\
 FQ & 0.9902 & [0.9889, 0.9915] & 0.9975 & [0.9972, 0.9978] \\
 E (raw) & 0.9872 & [0.9847, 0.9893] & 0.9987 & [0.9986, 0.9989] \\
 E (std) & 0.9801 & [0.9767, 0.9833] & 0.9965 & [0.9961, 0.9969] \\
 E2 (raw) & 0.9786 & [0.9727, 0.9833] & 0.9942 & [0.9935, 0.9950] \\
 F (std) & 0.9728 & [0.9663, 0.9776] & 0.9887 & [0.9878, 0.9894] \\
-\hline
+\bottomrule
 \end{tabular}
 \endgroup
 \end{table}

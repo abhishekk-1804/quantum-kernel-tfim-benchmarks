@@ -36,7 +36,7 @@ Quantum kernel methods map classical or quantum data into quantum state spaces w
 
 Theoretical analyses suggest that fidelity kernels can suffer from exponential concentration of measure (barren plateaus in kernel space) as the number of qubits $n$ scales~\cite{thanasilp2024, shaydulin2022}. Projected quantum kernels were proposed specifically to avoid this concentration by restricting representations to low-weight reduced subsystems~\cite{huang2021}. However, comparative benchmarks often omit matched classical baseline models that evaluate identical physical observables using classical support vector machines or ridge regressors. Furthermore, realistic experimental deployments require accounting for finite measurement shot budgets and physical open-system decoherence channels.
 
-In this work, we conduct a controlled empirical comparison of PQK, FQ, and matched classical correlator architectures on exact ground states of the 1D transverse-field Ising model (TFIM) and frustrated 2D lattices. We enforce a pre-declared statistical analysis protocol with family-wise error rate control, isolate finite-shot measurement sampling from gate synthesis noise, and systematically evaluate susceptibility to local depolarizing noise.
+In this work, we conduct a controlled empirical comparison of PQK, FQ, and matched classical correlator architectures on exact ground states of the 1D transverse-field Ising model (TFIM) and frustrated 2D lattices. We enforce a pre-declared statistical analysis protocol with family-wise error rate control, isolate finite-shot measurement sampling from gate synthesis noise, and systematically evaluate susceptibility to local depolarizing noise. For TFIM ground states, the $\mathbb{Z}_2$ parity symmetry $P=\prod_i X_i$ constrains single-site RDMs to $\rho_i = \tfrac{1}{2}(I + \langle X_i\rangle X_i)$, so that $\|\rho_i(\psi)-\rho_i(\phi)\|_F^2 = \tfrac{1}{2}(\langle X_i\rangle_\psi - \langle X_i\rangle_\phi)^2$, rendering PQK-1 identically an RBF kernel on single-site magnetization.
 
 \section{Problem Formulation \& Architectures}
 
@@ -92,8 +92,18 @@ To ensure reproducibility and eliminate post-hoc selection bias, all statistical
 
 \section{Empirical Results}
 
+\input{tables/tab2_confirmatory_stats.tex}
+
 \subsection{Task 1: Half-Chain Entropy Regression}
-Table~\ref{tab:t1_r2} presents test $R^2$ performance for Task 1 across sample sizes $N_{\text{tr}}=40$ and $N_{\text{tr}}=160$.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth,height=1.65in,keepaspectratio]{figures/fig_learning_curve_t1.pdf}
+  \caption{Task 1 learning curves: mean test $R^2$ vs.\ $N_{\mathrm{tr}}$ across 20 seeds. Shaded bands show 95\% bootstrap CIs.}
+  \label{fig:t1_lc}
+\end{figure}
+
+Table~\ref{tab:t1_r2} presents test $R^2$ performance for Task 1 across sample sizes $N_{\text{tr}}=40$ and $N_{\text{tr}}=160$ (Fig.~\ref{fig:t1_lc} shows full learning curves).
 
 \input{tables/tab1_t1_r2.tex}
 
@@ -103,8 +113,6 @@ Four primary empirical findings emerge:
     \item \textbf{FQ vs Classical Correlator Ordering (Claim C2):} At $N_{\text{tr}}=40$, the performance hierarchy is $\text{FQ} > \text{E (raw)} > \text{PQK-2nn}$, with FQ achieving mean $R^2 = 0.9902$ versus $0.9872$ for E (raw) and $0.9789$ for PQK-2nn. At $N_{\text{tr}}=160$, the hierarchy reverses to $\text{E (raw)} > \text{FQ} > \text{PQK-2nn}$, with E (raw) reaching $0.9987$ versus $0.9975$ for FQ. All differences between top performers remain small ($\le 0.011$ $R^2$), and the relative ordering is unstable across sample sizes.
     \item \textbf{Hyperparameter Sensitivity (Claim C7):} SVR insensitive band tuning ($\epsilon \in \{0.001, \dots, 0.1\}$) altered test $R^2$ by up to $+0.06$ relative to fixed defaults. At small training sizes ($N_{\text{tr}}=10$), 3-fold inner cross-validation exhibited small-sample overfitting, frequently pegging hyperparameters to search grid boundaries (Table~\ref{tab:grid_boundaries}).
 \end{enumerate}
-
-\input{tables/tab2_confirmatory_stats.tex}
 
 \subsection{Task 2: Contained vs Non-Contained Correlators}
 In Task 2a, evaluating the 2-point correlator $\langle Z_0 Z_{n-1} \rangle$, classical Ridge regression (F std) achieves $R^2 = 1.0000$, winning by construction because the target observable is directly contained within the feature representation.
@@ -121,15 +129,28 @@ This confirmatory test (Claim C3) proves that for non-trivial 4-body correlators
 Evaluating the disordered TFIM ensemble from $n=4$ to $n=14$ reveals no evidence of exponential kernel concentration (Claim C4). Mean off-diagonal elements decay gradually (FQ off-diagonal mean decreases from $0.83$ at $n=4$ to $0.44$ at $n=14$), while variance remains bounded away from zero. Furthermore, across all 8,700 off-diagonal pairs evaluated at $n=14$, exactly zero entries fell below $10^{-3}$ (minimum observed FQ entry $= 0.1616$). Thus, ground-state manifolds of 1D local Hamiltonians avoid barren concentration plateaus up to $n=14$.
 
 \subsection{Task 5: Finite Shots and Depolarizing Channels}
-\input{tables/tab3_shot_costs.tex}
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth,height=1.65in,keepaspectratio]{figures/fig_shots.pdf}
+  \caption{FQ test $R^2$ vs.\ shot budget $S$ (20 seeds, $N_{\mathrm{tr}}=40$). Dashed line: PSD-clipped; solid: unclipped. Bands are 95\% bootstrap CIs.}
+  \label{fig:shots}
+\end{figure}
 
 \subsubsection{Measurement Shot Scaling (Claim C5)}
-As detailed in Table~\ref{tab:shot_costs}, feature-based models require only $480 \cdot S$ to $720 \cdot S$ total shots across $m=240$ states, whereas FQ requires $8{,}780 \cdot S$ deployed shots and $28{,}680 \cdot S$ full Gram shots---a $12.2\times$ to $39.8\times$ shot overhead.
+Feature-based models require only $480 \cdot S$ to $720 \cdot S$ total shots across $m=240$ states, whereas FQ requires $8{,}780 \cdot S$ deployed shots and $28{,}680 \cdot S$ full Gram shots---a $12.2\times$ to $39.8\times$ shot overhead (Fig.~\ref{fig:shots}).
 
 Furthermore, under independent per-entry swap-test sampling with $S \in \{100, 1000, 10000\}$, simulated training Gram matrices $\hat{K}_{\text{train}}$ exhibited negative eigenvalues ($\lambda_{\min} < 0$) across 100\% of seeds (20/20). Unmitigated SVR on indefinite Gram matrices suffered catastrophic degradation ($R^2 < 0$ at $S=100$). Eigenvalue thresholding (PSD clipping: $\lambda_i \leftarrow \max(\lambda_i, 0)$) successfully restored stability ($R^2 > 0.98$ at $S=1000$).
 
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth,height=1.65in,keepaspectratio]{figures/fig_depolarizing_retuned_per_qubit_proxy.pdf}
+  \caption{Test $R^2$ vs.\ depolarizing rate $p$ (20 seeds, $N_{\mathrm{tr}}=40$). Solid: hyperparameters re-tuned at each $p$; dashed: fixed $p=0$ hyperparameters.}
+  \label{fig:depol}
+\end{figure}
+
 \subsubsection{Depolarizing Channel Robustness (Claim C6)}
-Under an idealized per-qubit local depolarizing proxy $\mathcal{E}_k(\rho) = (1-p)\rho + p(I/2)\otimes\text{Tr}_k(\rho)$ at $p=0.08$ with fixed $p=0$ hyperparameters, models incorporating two-body correlators exhibit slight monotonic degradation ($\Delta R^2 = -0.0012$ for PQK-2nn and $-0.0015$ for E2-raw) due to $(1-p)^2 = 0.8464$ observable attenuation. Conversely, single-body (PQK-1) and fidelity kernels (FQ) show negligible degradation ($|\Delta R^2| \le 10^{-4}$). When hyperparameters $(C, c, \epsilon)$ are re-tuned via inner cross-validation at each noise level, bandwidth expansion absorbs the uniform feature shrinkage, keeping all models within their 95\% bootstrap confidence intervals of noiseless performance.
+Under an idealized per-qubit local depolarizing proxy $\mathcal{E}_k(\rho) = (1-p)\rho + p(I/2)\otimes\text{Tr}_k(\rho)$ at $p=0.08$ with fixed $p=0$ hyperparameters, models incorporating two-body correlators exhibit slight monotonic degradation ($\Delta R^2 = -0.0012$ for PQK-2nn and $-0.0015$ for E2-raw) due to $(1-p)^2 = 0.8464$ observable attenuation. Conversely, single-body (PQK-1) and fidelity kernels (FQ) show negligible degradation ($|\Delta R^2| \le 10^{-4}$). When hyperparameters $(C, c, \epsilon)$ are re-tuned via inner cross-validation at each noise level, bandwidth expansion absorbs the uniform feature shrinkage, keeping all models within their 95\% bootstrap confidence intervals of noiseless performance (Fig.~\ref{fig:depol}).
 
 \input{tables/tab4_grid_boundaries.tex}
 
@@ -152,7 +173,7 @@ To prevent over-generalization, we explicitly delineate the negative scope of th
 \end{itemize}
 
 \section{Conclusion \& Reproducibility Statement}
-On exact equilibrium ground states of 1D and 2D spin chains, projected quantum kernels and classical two-body correlator baselines achieve learning performance statistically indistinguishable from full fidelity quantum kernels, while requiring over an order of magnitude fewer measurement shots. All data, analysis scripts, pre-declared statistical logs, and figures are fully reproducible via the accompanying open-source repository.
+On exact equilibrium ground states of 1D and 2D spin chains, projected quantum kernels and classical two-body correlator baselines achieve learning performance statistically indistinguishable from full fidelity quantum kernels, while requiring over an order of magnitude fewer measurement shots. All data, analysis scripts, pre-declared statistical logs, and figures are fully reproducible via the accompanying open-source repository. All figures and tables in this paper are generated programmatically from committed CSV files via \texttt{scripts/make\_tables.py} and the figure-generation scripts, with no hand-typed empirical values.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}
