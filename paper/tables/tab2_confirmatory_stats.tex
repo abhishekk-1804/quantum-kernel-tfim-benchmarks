@@ -2,6 +2,8 @@
 \caption{Pre-declared Confirmatory Paired Comparisons: Wilcoxon Signed-Rank Test and Bootstrap Differences}
 \label{tab:confirmatory_stats}
 \centering
+\begingroup
+\setlength{\tabcolsep}{4.5pt}
 \begin{tabular}{llllcccccc}
 \hline
 \textbf{Task} & \textbf{Lattice} & \textbf{Metric} & \textbf{Pair ($a$ vs $b$)} & \textbf{$N$} & \textbf{Mean Diff} & \textbf{95\% Bootstrap CI} & \textbf{$p_{\text{raw}}$} & \textbf{$p_{\text{holm}}$} & \textbf{Rank-Biserial $r$} \\
@@ -44,4 +46,5 @@ T4b & 3x4 & r2 & PQK-1 vs PQK-2nn & 80 & -0.0107 & [-0.0148, -0.0072] & 3.81e-06
 T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 80 & +0.0001 & [-0.0004, +0.0005] & 0.5153 & 1.0000 & +0.1789 \\
 \hline
 \end{tabular}
+\endgroup
 \end{table*}

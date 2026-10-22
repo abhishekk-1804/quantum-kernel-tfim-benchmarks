@@ -41,6 +41,7 @@ def make_table1():
         r"\caption{Task 1 Half-Chain Entropy Prediction Test $R^2$ (Mean and 95\% Bootstrap CI across 20 Seeds)}",
         r"\label{tab:t1_r2}",
         r"\centering",
+        r"\begingroup",
         r"\begin{tabular}{lcccc}",
         r"\hline",
         r"\textbf{Model / Arm} & \multicolumn{2}{c}{\textbf{$N=40$}} & \multicolumn{2}{c}{\textbf{$N=160$}} \\",
@@ -66,6 +67,7 @@ def make_table1():
     lines.extend([
         r"\hline",
         r"\end{tabular}",
+        r"\endgroup",
         r"\end{table}",
     ])
 
@@ -91,6 +93,8 @@ def make_table2():
         r"\caption{Pre-declared Confirmatory Paired Comparisons: Wilcoxon Signed-Rank Test and Bootstrap Differences}",
         r"\label{tab:confirmatory_stats}",
         r"\centering",
+        r"\begingroup",
+        r"\setlength{\tabcolsep}{4.5pt}",
         r"\begin{tabular}{llllcccccc}",
         r"\hline",
         r"\textbf{Task} & \textbf{Lattice} & \textbf{Metric} & \textbf{Pair ($a$ vs $b$)} & \textbf{$N$} & \textbf{Mean Diff} & \textbf{95\% Bootstrap CI} & \textbf{$p_{\text{raw}}$} & \textbf{$p_{\text{holm}}$} & \textbf{Rank-Biserial $r$} \\",
@@ -113,6 +117,7 @@ def make_table2():
     lines.extend([
         r"\hline",
         r"\end{tabular}",
+        r"\endgroup",
         r"\end{table*}",
     ])
 
@@ -130,6 +135,7 @@ def make_table3():
         r"\caption{Measurement Shot Budget Scaling for $n=8$ TFIM System across Benchmark Arms}",
         r"\label{tab:shot_costs}",
         r"\centering",
+        r"\begingroup",
         r"\begin{tabular}{lcccc}",
         r"\hline",
         r"\textbf{Model / Arm} & \textbf{Observable} & \textbf{Distinct} & \textbf{Deployed Cost} & \textbf{Full Gram Cost} \\",
@@ -143,6 +149,7 @@ def make_table3():
         r"FQ & Swap test & 1 & $8{,}780 \cdot S$ & $28{,}680 \cdot S$ \\",
         r"\hline",
         r"\end{tabular}",
+        r"\endgroup",
         r"\end{table}",
     ]
 
@@ -176,6 +183,8 @@ def make_table4():
         r"\caption{Hyperparameter Search Grid Boundary Pegging ($> 50\%$ of Seeds at Lower or Upper Edge)}",
         r"\label{tab:grid_boundaries}",
         r"\centering",
+        r"\begingroup",
+        r"\setlength{\tabcolsep}{4pt}",
         r"\begin{tabular}{llcccc}",
         r"\hline",
         r"\textbf{Task} & \textbf{Model} & \textbf{Variant} & \textbf{$N$} & \textbf{Boundary Parameter} & \textbf{\% at Edge} \\",
@@ -190,6 +199,7 @@ def make_table4():
     lines.extend([
         r"\hline",
         r"\end{tabular}",
+        r"\endgroup",
         r"\end{table}",
     ])
 
