@@ -1,0 +1,4 @@
+figure,panel,model,shots,mean_abs_lam_min,ci_low,ci_high,frac_seeds_negative,n_seeds,source_file
+F6,main,FQ-raw,100.0,0.5597831502112323,0.5379693604443185,0.5841296634400217,1.0,20,results/t5_noise.csv
+F6,main,FQ-raw,1000.0,0.15836013596987025,0.15128465039785263,0.1649663985404706,1.0,20,results/t5_noise.csv
+F6,main,FQ-raw,10000.0,0.04230724992960656,0.04065011621783873,0.044013648569038034,1.0,20,results/t5_noise.csv

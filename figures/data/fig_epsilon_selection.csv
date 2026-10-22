@@ -1,0 +1,12 @@
+figure,panel,epsilon,count,source_file,model,c_low_pct,c_high_pct,eps_low_pct,eps_high_pct
+F8,left_histogram,0.001,1236.0,results/t1_entropy_gridv3.csv + results/t4_v2_gridv3.csv,,,,,
+F8,left_histogram,0.003,456.0,results/t1_entropy_gridv3.csv + results/t4_v2_gridv3.csv,,,,,
+F8,left_histogram,0.01,630.0,results/t1_entropy_gridv3.csv + results/t4_v2_gridv3.csv,,,,,
+F8,left_histogram,0.03,706.0,results/t1_entropy_gridv3.csv + results/t4_v2_gridv3.csv,,,,,
+F8,left_histogram,0.1,570.0,results/t1_entropy_gridv3.csv + results/t4_v2_gridv3.csv,,,,,
+F8,right_edge_pct,,,results/grid_boundary_post_v3.csv,PQK-1 (== RBF on <X>),1.5384615384615385,9.615384615384615,23.846153846153847,29.23076923076923
+F8,right_edge_pct,,,results/grid_boundary_post_v3.csv,PQK-2nn,2.6923076923076925,0.38461538461538464,36.15384615384615,10.0
+F8,right_edge_pct,,,results/grid_boundary_post_v3.csv,FQ,0.0,0.0,35.38461538461539,13.846153846153847
+F8,right_edge_pct,,,results/grid_boundary_post_v3.csv,E,7.5,0.5769230769230769,42.88461538461539,8.076923076923077
+F8,right_edge_pct,,,results/grid_boundary_post_v3.csv,E2,3.076923076923077,0.38461538461538464,36.53846153846154,11.538461538461538
+F8,right_edge_pct,,,results/grid_boundary_post_v3.csv,F,0.0,0.0,0.0,0.0
