@@ -1,0 +1,14 @@
+=== GIT REV-PARSE HEAD ===
+739a724919f52164193a200b6e07d827fe273c62
+
+=== GIT STATUS --SHORT ===
+?? CONTRIBUTIONS.md
+?? docs/
+?? paper.zip
+?? tests/test_identities_integration.py
+
+=== PYTHON --VERSION ===
+Python 3.12.10
+
+=== TRACKED FILES ASSERTION ===
+PASS: No tracked files are modified.
