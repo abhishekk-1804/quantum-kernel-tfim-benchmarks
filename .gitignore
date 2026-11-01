@@ -1,14 +1,34 @@
+﻿# Virtual environment & bytecode
+qml_env/
+.venv/
+venv/
 __pycache__/
 *.py[cod]
-*.class
-*.log
-.venv/
-qml_env/
-.tmp.*
+
+# Archives & binaries
+paper.zip
+*.zip
+*.tar.gz
+*.npz
+*.npy
+
+# Temporary scratch & test runners
+scripts/audit_s5_*.py
+scripts/run_stage2b_*.py
+scripts/dry_run_test.py
+scripts/test_check.py
+run_stage2b_robust.py
+apply_stage2a_corrections.py
+apply_stage2_patches.py
+pre_snapshot.py
+
+# LaTeX build outputs (keep only source files)
 paper/*.aux
-paper/*.log
-paper/*.out
-paper/*.toc
 paper/*.bbl
 paper/*.blg
+paper/*.log
+paper/*.out
 paper/*.synctex.gz
+paper/*.toc
+paper/*.fls
+paper/*.fdb_latexmk
