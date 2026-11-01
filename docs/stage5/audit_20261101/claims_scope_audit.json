@@ -1,0 +1,160 @@
+{
+  "keyword_claims": [
+    {
+      "keyword": "pre-declared",
+      "line": 33,
+      "quote": "noise. In a pre-declared statistical protocol across 20 fixed seeds for Task~1"
+    },
+    {
+      "keyword": "advantage",
+      "line": 44,
+      "quote": "in equilibrium spin ground states, with zero claims of quantum advantage."
+    },
+    {
+      "keyword": "pre-declared",
+      "line": 57,
+      "quote": "In this work, we conduct a controlled empirical comparison of PQK, FQ, and matched classical correlator architectures on exact ground states of the 1D transverse-field Ising model (TFIM) and frustrated 2D lattices. We enforce a pre-declared statistical analysis protocol with family-wise error rate control, isolate finite-shot measurement sampling from gate synthesis noise, and systematically evaluate susceptibility to local depolarizing noise."
+    },
+    {
+      "keyword": "pre-declared",
+      "line": 63,
+      "quote": "(ii) a pre-declared, 20-seed Wilcoxon protocol on exact TFIM and"
+    },
+    {
+      "keyword": "all",
+      "line": 120,
+      "quote": "To ensure reproducibility and eliminate post-hoc selection bias, all statistical hypothesis tests follow a pre-declared analysis protocol. Model differences $d_i = \\text{metric}(a)_i - \\text{metric}(b)_i$ across 20 fixed seeds are assessed using two-sided Wilcoxon signed-rank tests with 10,000 bootstrap resamples for 95\\"
+    },
+    {
+      "keyword": "pre-declared",
+      "line": 120,
+      "quote": "To ensure reproducibility and eliminate post-hoc selection bias, all statistical hypothesis tests follow a pre-declared analysis protocol. Model differences $d_i = \\text{metric}(a)_i - \\text{metric}(b)_i$ across 20 fixed seeds are assessed using two-sided Wilcoxon signed-rank tests with 10,000 bootstrap resamples for 95\\"
+    },
+    {
+      "keyword": "all",
+      "line": 141,
+      "quote": "\\item \\textbf{PQK Spatial Dimension Hierarchy (Claim C1):} PQK-2nn consistently outperforms PQK-1 across all sample sizes $N_{\\text{tr}} \\in [10, 160]$. At $N_{\\text{tr}}=10$, PQK-2nn exceeds PQK-1 by $\\Delta R^2 = 0.1044$ ($p_{\\text{holm}} = 0.0186$), narrowing to $\\Delta R^2 = 0.0414$ at $N_{\\text{tr}}=160$ ($p_{\\text{holm}} = 1.53 \\times 10^{-5}$). The performance gap ranges from $0.0414$ to $0.1044$ in mean $R^2$, demonstrating that 2-body spatial entanglement information is essential for predicting block entropy."
+    },
+    {
+      "keyword": "all",
+      "line": 149,
+      "quote": "In Task 2b, evaluating the non-contained 4-point correlator $\\langle Z_0 Z_1 Z_{n-2} Z_{n-1} \\rangle$, all models require non-linear feature maps. As reported in Table~\\ref{tab:confirmatory_stats}, at $N_{\\text{tr}}=160$, FQ, E (raw), and PQK-2nn become statistically indistinguishable:"
+    },
+    {
+      "keyword": "indistinguishable",
+      "line": 149,
+      "quote": "In Task 2b, evaluating the non-contained 4-point correlator $\\langle Z_0 Z_1 Z_{n-2} Z_{n-1} \\rangle$, all models require non-linear feature maps. As reported in Table~\\ref{tab:confirmatory_stats}, at $N_{\\text{tr}}=160$, FQ, E (raw), and PQK-2nn become statistically indistinguishable:"
+    },
+    {
+      "keyword": "asymptotic",
+      "line": 155,
+      "quote": "This confirmatory test (Claim C3) proves that for non-trivial 4-body correlators, classical RBF kernels on 2-body expectations attain identical asymptotic accuracy to full fidelity quantum kernels."
+    },
+    {
+      "keyword": "proves",
+      "line": 155,
+      "quote": "This confirmatory test (Claim C3) proves that for non-trivial 4-body correlators, classical RBF kernels on 2-body expectations attain identical asymptotic accuracy to full fidelity quantum kernels."
+    },
+    {
+      "keyword": "all",
+      "line": 158,
+      "quote": "Evaluating the disordered TFIM ensemble from $n=4$ to $n=14$ reveals no evidence of exponential kernel concentration (Claim C4). Mean off-diagonal elements decay gradually (FQ off-diagonal mean decreases from $0.83$ at $n=4$ to $0.44$ at $n=14$), while variance remains bounded away from zero. Furthermore, across all 8,700 off-diagonal pairs evaluated at $n=14$, exactly zero entries fell below $10^{-3}$ (minimum observed FQ entry $= 0.1616$). Thus, ground-state manifolds of 1D local Hamiltonians avoid barren concentration plateaus up to $n=14$."
+    },
+    {
+      "keyword": "only",
+      "line": 170,
+      "quote": "Feature-based models require only $480 \\cdot S$ to $720 \\cdot S$ total shots across $m=240$ states, whereas FQ requires 8,780 $\\cdot S$ deployed shots and 28,680 $\\cdot S$ full Gram shots---a $12.2\\times$ to $39.8\\times$ shot overhead (Fig.~\\ref{fig:shots})."
+    },
+    {
+      "keyword": "all",
+      "line": 182,
+      "quote": "Under an idealized per-qubit local depolarizing proxy $\\mathcal{E}_k(\\rho) = (1-p)\\rho + p(I/2)\\otimes\\text{Tr}_k(\\rho)$ at $p=0.08$ with fixed $p=0$ hyperparameters, models incorporating two-body correlators exhibit slight monotonic degradation ($\\Delta R^2 = -0.0012$ for PQK-2nn and $-0.0015$ for E2-raw) due to $(1-p)^2 = 0.8464$ observable attenuation. Conversely, single-body (PQK-1) and fidelity kernels (FQ) show negligible degradation ($|\\Delta R^2| \\le 10^{-4}$). When hyperparameters $(C, c, \\epsilon)$ are re-tuned via inner cross-validation at each noise level, bandwidth expansion absorbs the uniform feature shrinkage, keeping all models within their 95\\"
+    },
+    {
+      "keyword": "only",
+      "line": 188,
+      "quote": "To assess realistic resource trade-offs on quantum hardware, we evaluate model sample efficiency under equal total measurement shot budgets $B_{\\mathrm{tot}} \\in [10^4, 10^7]$ ($N_{\\mathrm{tr}}=40$, $N_{\\mathrm{te}}=200$, 20 seeds) on 1D TFIM ground states. Because fidelity kernels and projected kernels require fundamentally distinct measurement routines, direct comparison at fixed shots per circuit can obscure experimental cost. Feature models (PQK-2nn) measure $M$ local Pauli expectations per state, allocating $S_{\\mathrm{feat}} = B_{\\mathrm{tot}} / (M \\cdot N_{\\mathrm{tr}})$ shots per observable. In contrast, fidelity kernels require pairwise swap tests on $N_{\\mathrm{tr}}(N_{\\mathrm{tr}}-1)/2$ training pairs, allocating $S_{\\mathrm{swap}} = B_{\\mathrm{tot}} / (N_{\\mathrm{tr}}(N_{\\mathrm{tr}}-1)/2)$ shots per kernel entry (train-only mode)."
+    },
+    {
+      "keyword": "all",
+      "line": 198,
+      "quote": "Due to the fundamental qualitative shift in ground-state entanglement structure and the accompanying shift in mean target values between phases, all evaluated models yield negative test coefficient of determination values ($R^2 < 0$), rendering $R^2$ uninformative for discriminating model performance. We therefore assess generalization using Mean Absolute Error (MAE), summarized in Table~\\ref{tab:ood}. Full fidelity kernels (FQ) achieve a mean OOD MAE of $0.0602 \\pm 0.0085$, compared to $0.1850 \\pm 0.0294$ for PQK-2nn, resulting in a mean paired difference of $\\Delta\\mathrm{MAE} = -0.1248 \\pm 0.0334$. A retrospective paired Wilcoxon signed-rank test on the OOD MAE difference yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p_{\\mathrm{Holm}}=8.51\\times 10^{-4}$ across the pre-declared three-comparison family including Train-Mean and Train-Median baselines), with FQ achieving lower MAE in 16 of 20 seeds."
+    },
+    {
+      "keyword": "pre-declared",
+      "line": 198,
+      "quote": "Due to the fundamental qualitative shift in ground-state entanglement structure and the accompanying shift in mean target values between phases, all evaluated models yield negative test coefficient of determination values ($R^2 < 0$), rendering $R^2$ uninformative for discriminating model performance. We therefore assess generalization using Mean Absolute Error (MAE), summarized in Table~\\ref{tab:ood}. Full fidelity kernels (FQ) achieve a mean OOD MAE of $0.0602 \\pm 0.0085$, compared to $0.1850 \\pm 0.0294$ for PQK-2nn, resulting in a mean paired difference of $\\Delta\\mathrm{MAE} = -0.1248 \\pm 0.0334$. A retrospective paired Wilcoxon signed-rank test on the OOD MAE difference yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p_{\\mathrm{Holm}}=8.51\\times 10^{-4}$ across the pre-declared three-comparison family including Train-Mean and Train-Median baselines), with FQ achieving lower MAE in 16 of 20 seeds."
+    },
+    {
+      "keyword": "only",
+      "line": 200,
+      "quote": "To confirm that models extract genuine inductive physical signal rather than trivial constant predictions, we conducted an intercept-only baseline ablation. Comparing full FQ against the train-mean baseline confirms that FQ reduces prediction error by $-0.4014 \\pm 0.0156$ MAE across 20/20 seeds ($W=0.0, p=1.91\\times 10^{-6}$). Linear Ridge regression on two-body observables is reported for descriptive calibration ($0.1345 \\pm 0.0136$), without confirmatory hypothesis testing. Crucially, this OOD evaluation was performed on exact, noiseless statevectors; whether the observed fidelity-kernel extrapolation advantage survives finite measurement shot sampling or physical open-system decoherence channels remains an open question for future experimental work. This benchmark is classified as exploratory."
+    },
+    {
+      "keyword": "advantage",
+      "line": 200,
+      "quote": "To confirm that models extract genuine inductive physical signal rather than trivial constant predictions, we conducted an intercept-only baseline ablation. Comparing full FQ against the train-mean baseline confirms that FQ reduces prediction error by $-0.4014 \\pm 0.0156$ MAE across 20/20 seeds ($W=0.0, p=1.91\\times 10^{-6}$). Linear Ridge regression on two-body observables is reported for descriptive calibration ($0.1345 \\pm 0.0136$), without confirmatory hypothesis testing. Crucially, this OOD evaluation was performed on exact, noiseless statevectors; whether the observed fidelity-kernel extrapolation advantage survives finite measurement shot sampling or physical open-system decoherence channels remains an open question for future experimental work. This benchmark is classified as exploratory."
+    },
+    {
+      "keyword": "advantage",
+      "line": 213,
+      "quote": "\\item \\textbf{Idealized Statevectors in OOD Shift:} The OOD phase-shift benchmark evaluated exact noiseless statevectors. It does not establish whether FQ's MAE advantage persists under finite measurement shot sampling or open-system noise."
+    },
+    {
+      "keyword": "outperform",
+      "line": 222,
+      "quote": "\\item It does \\textit{not} show that fidelity quantum kernels outperform feature models under realistic finite measurement budgets; rather, under equal total shot budgets $B_{\\mathrm{tot}} \\le 10^7$, feature models achieve superior sample efficiency."
+    },
+    {
+      "keyword": "advantage",
+      "line": 223,
+      "quote": "\\item It does \\textit{not} demonstrate quantum advantage in any tested regime."
+    },
+    {
+      "keyword": "all",
+      "line": 227,
+      "quote": "On exact equilibrium ground states of 1D and 2D spin chains, projected quantum kernels and classical two-body correlator baselines achieve learning performance statistically indistinguishable from full fidelity quantum kernels, while requiring over an order of magnitude fewer measurement shots. That classical two-body correlators track FQ at sample-efficiency parity on equilibrium ground states---where kernel-advantage intuition is strongest---suggests that observed advantages in the literature likely stem from non-equilibrium or non-local structure rather than from fidelity geometry itself. All data, analysis scripts, pre-declared statistical logs, and figures are fully reproducible via the accompanying open-source repository. All figures and tables in this paper are generated programmatically from committed CSV files via \\texttt{scripts/make\\_tables.py} and the figure-generation scripts, with no hand-typed empirical values."
+    },
+    {
+      "keyword": "advantage",
+      "line": 227,
+      "quote": "On exact equilibrium ground states of 1D and 2D spin chains, projected quantum kernels and classical two-body correlator baselines achieve learning performance statistically indistinguishable from full fidelity quantum kernels, while requiring over an order of magnitude fewer measurement shots. That classical two-body correlators track FQ at sample-efficiency parity on equilibrium ground states---where kernel-advantage intuition is strongest---suggests that observed advantages in the literature likely stem from non-equilibrium or non-local structure rather than from fidelity geometry itself. All data, analysis scripts, pre-declared statistical logs, and figures are fully reproducible via the accompanying open-source repository. All figures and tables in this paper are generated programmatically from committed CSV files via \\texttt{scripts/make\\_tables.py} and the figure-generation scripts, with no hand-typed empirical values."
+    },
+    {
+      "keyword": "pre-declared",
+      "line": 227,
+      "quote": "On exact equilibrium ground states of 1D and 2D spin chains, projected quantum kernels and classical two-body correlator baselines achieve learning performance statistically indistinguishable from full fidelity quantum kernels, while requiring over an order of magnitude fewer measurement shots. That classical two-body correlators track FQ at sample-efficiency parity on equilibrium ground states---where kernel-advantage intuition is strongest---suggests that observed advantages in the literature likely stem from non-equilibrium or non-local structure rather than from fidelity geometry itself. All data, analysis scripts, pre-declared statistical logs, and figures are fully reproducible via the accompanying open-source repository. All figures and tables in this paper are generated programmatically from committed CSV files via \\texttt{scripts/make\\_tables.py} and the figure-generation scripts, with no hand-typed empirical values."
+    },
+    {
+      "keyword": "indistinguishable",
+      "line": 227,
+      "quote": "On exact equilibrium ground states of 1D and 2D spin chains, projected quantum kernels and classical two-body correlator baselines achieve learning performance statistically indistinguishable from full fidelity quantum kernels, while requiring over an order of magnitude fewer measurement shots. That classical two-body correlators track FQ at sample-efficiency parity on equilibrium ground states---where kernel-advantage intuition is strongest---suggests that observed advantages in the literature likely stem from non-equilibrium or non-local structure rather than from fidelity geometry itself. All data, analysis scripts, pre-declared statistical logs, and figures are fully reproducible via the accompanying open-source repository. All figures and tables in this paper are generated programmatically from committed CSV files via \\texttt{scripts/make\\_tables.py} and the figure-generation scripts, with no hand-typed empirical values."
+    }
+  ],
+  "psd_repair_analysis": {
+    "repair_none": {
+      "train_block": "K_tr unmodified (identity map)",
+      "test_block": "K_te unmodified (identity map)",
+      "test_influence_on_train": false,
+      "dependency": "Strictly inductive / Independent"
+    },
+    "repair_train_only": {
+      "train_block": "fidelity_clip_psd(K_tr): Symmetrized (0.5*(K+K.T)), eigendecomposed U diag(L) U.T, eigenvalues clipped L_clip = max(L, 0), reconstructed K_clipped, diagonal congruence scaling D^{-1/2} K_clipped D^{-1/2} to enforce diag==1.0",
+      "test_block": "K_te unmodified (raw unclipped test-train block)",
+      "test_influence_on_train": false,
+      "dependency": "Strictly inductive / Test states do not influence training decomposition"
+    },
+    "repair_inductive": {
+      "train_block": "Symmetrized, eigendecomposed, eigenvalues clipped at 0, diagonal congruence scaled",
+      "test_block": "K_te' = K_te @ U @ diag(f) @ U.T where f_i = L_clip_i / L_i if L_i > 1e-10 else 0.0, followed by column scaling by D^{-1/2}",
+      "test_influence_on_train": false,
+      "dependency": "Strictly inductive / Test points transformed only through training eigenbasis"
+    },
+    "repair_joint": {
+      "train_block": "fidelity_clip_psd on full (N_tr + N_te) joint matrix, sliced [:N_tr, :N_tr]",
+      "test_block": "Sliced [N_tr:, :N_tr]",
+      "test_influence_on_train": true,
+      "dependency": "TRANSDUCTIVE: modifying test state alters training Gram block"
+    }
+  }
+}

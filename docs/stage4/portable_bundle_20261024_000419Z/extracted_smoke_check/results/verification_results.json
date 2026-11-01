@@ -1,0 +1,81 @@
+{
+  "checks": {
+    "CHECK_A": {
+      "status": "PASSED",
+      "verified_files_count": 32,
+      "mismatches_count": 0,
+      "mismatches": []
+    },
+    "CHECK_B": {
+      "status": "PASSED",
+      "t6_total_rows": 100,
+      "t6_models_count": 5,
+      "t6_seeds_per_model_verified": true,
+      "t1_total_rows": 980,
+      "t1_cells_count": 49,
+      "t1_seeds_per_cell_verified": true
+    },
+    "CHECK_C": {
+      "status": "PASSED",
+      "all_arrays_finite": true,
+      "all_shapes_exact_100": true,
+      "max_mae_discrepancy": 0.0,
+      "mae_tolerance": 1e-07,
+      "mae_passed": true,
+      "max_r2_discrepancy": 0.0,
+      "r2_tolerance": 1e-06,
+      "r2_passed": true
+    },
+    "CHECK_D": {
+      "status": "PASSED",
+      "pair_count": 20,
+      "mean_paired_difference": -0.12484924959269617,
+      "median_paired_difference": -0.12060778681660722,
+      "sample_sd": 0.1494810192147931,
+      "sample_se": 0.03342497203102296,
+      "negative_count": 16,
+      "positive_count": 4,
+      "zero_count": 0,
+      "positive_seeds": [
+        8,
+        9,
+        11,
+        16
+      ],
+      "mean_match": true,
+      "se_match": true,
+      "counts_match": true
+    },
+    "CHECK_E": {
+      "status": "PASSED",
+      "scipy_version": "1.18.1",
+      "statistic_W": 21.0,
+      "expected_W": 21.0,
+      "p_value": 0.000850677490234375,
+      "expected_p": 0.000850677490234375,
+      "w_match": true,
+      "p_match": true
+    },
+    "CHECK_F": {
+      "status": "PASSED",
+      "cells_evaluated": 49,
+      "mismatches_count": 0,
+      "mismatches": []
+    }
+  },
+  "summary": {
+    "total_checks": 6,
+    "passed_checks": 6,
+    "failed_checks": 0,
+    "blocked_checks": 0
+  },
+  "environment": {
+    "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+    "numpy_version": "2.5.4",
+    "scipy_version": "1.18.1",
+    "bundle_root": "D:\\quantum-kernel-tfim-benchmarks\\docs\\stage4\\portable_bundle_20261024_000419Z\\extracted_smoke_check\\payload",
+    "output_dir": "D:\\quantum-kernel-tfim-benchmarks\\docs\\stage4\\portable_bundle_20261024_000419Z\\extracted_smoke_check\\results"
+  },
+  "execution_seconds": 0.2108,
+  "overall_status": "PASSED"
+}

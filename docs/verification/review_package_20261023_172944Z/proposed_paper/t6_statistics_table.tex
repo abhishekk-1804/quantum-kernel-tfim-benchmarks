@@ -1,0 +1,24 @@
+% ====================================================================
+% PROPOSED LATEX TABLE: TASK 6 OOD STATISTICAL RECONCILIATION
+% ====================================================================
+\begin{table}[t]
+\centering
+\caption{Out-of-Distribution Generalization Performance and Retrospective Statistical Family (Task 6: Disordered TFIM, $n=8$, $N=20$ Seeds)}
+\label{tab:t6_ood_stats}
+\begin{tabular}{lcccccc}
+\toprule
+Model / Comparison & Split & Mean MAE $\pm$ SE & Mean Diff $\pm$ SE & Direction (+ / -) & Wilcoxon $W$ & $p_{\mathrm{holm}}$ \\
+\midrule
+FQ (Fidelity Kernel) & OOD & $0.0602 \pm 0.0085$ & --- & --- & --- & --- \\
+PQK-2nn (2-Local Correlator) & OOD & $0.1850 \pm 0.0294$ & --- & --- & --- & --- \\
+Constant Train-Mean Baseline & OOD & $0.6061 \pm 0.0075$ & --- & --- & --- & --- \\
+Constant Train-Median Baseline & OOD & $0.6121 \pm 0.0086$ & --- & --- & --- & --- \\
+\midrule
+FQ vs PQK-2nn & OOD & --- & $-0.1248 \pm 0.0334$ & 4 / 16 & $21.0$ & $8.51 \times 10^{-4}$ \\
+FQ vs Train-Mean Baseline & OOD & --- & $-0.5459 \pm 0.0075$ & 0 / 20 & $0.0$ & $5.72 \times 10^{-6}$ \\
+FQ vs Train-Median Baseline & OOD & --- & $-0.5520 \pm 0.0086$ & 0 / 20 & $0.0$ & $5.72 \times 10^{-6}$ \\
+\midrule
+FQ Full vs Intercept-Only & OOD & --- & $-0.4014 \pm 0.0156$ & 0 / 20 & $0.0$ & $1.91 \times 10^{-6}$ \\
+\bottomrule
+\end{tabular}
+\end{table}

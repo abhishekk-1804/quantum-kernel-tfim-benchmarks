@@ -1,0 +1,123 @@
+{
+  "artifact_source": "docs/verification/audit_20261023_155335Z/representation_reference_arrays.npz",
+  "selected_states": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "n_qubits": 8,
+  "boundary_condition": "open chain (1D TFIM, n-1=7 edges)",
+  "feature_mode": "2pt_pauli_nn (35 dimensions: 5 observables x 7 edges)",
+  "raw_comparison_formula": "sum_{edges} ||rho_ij(psi) - rho_ij(phi)||_F^2 == 0.25 * ||f_E2(psi) - f_E2(phi)||_2^2",
+  "fixed_tolerance": 1e-12,
+  "pair_checks_10": [
+    {
+      "state_pair": [
+        0,
+        1
+      ],
+      "D_RDM": 0.17104077911912613,
+      "D_E2_div_4": 0.1710407791191261,
+      "abs_residual": 2.7755575615628914e-17,
+      "rel_residual": 1.622746093567406e-16
+    },
+    {
+      "state_pair": [
+        0,
+        2
+      ],
+      "D_RDM": 0.16452456461280723,
+      "D_E2_div_4": 0.1645245646128073,
+      "abs_residual": 5.551115123125783e-17,
+      "rel_residual": 3.3740342277700387e-16
+    },
+    {
+      "state_pair": [
+        0,
+        3
+      ],
+      "D_RDM": 0.12548447109351474,
+      "D_E2_div_4": 0.12548447109351474,
+      "abs_residual": 0.0,
+      "rel_residual": 0.0
+    },
+    {
+      "state_pair": [
+        0,
+        4
+      ],
+      "D_RDM": 0.08044887602045891,
+      "D_E2_div_4": 0.0804488760204589,
+      "abs_residual": 1.3877787807814457e-17,
+      "rel_residual": 1.725044338007287e-16
+    },
+    {
+      "state_pair": [
+        1,
+        2
+      ],
+      "D_RDM": 0.06863582243528214,
+      "D_E2_div_4": 0.06863582243528214,
+      "abs_residual": 0.0,
+      "rel_residual": 0.0
+    },
+    {
+      "state_pair": [
+        1,
+        3
+      ],
+      "D_RDM": 0.2778505476806383,
+      "D_E2_div_4": 0.2778505476806383,
+      "abs_residual": 0.0,
+      "rel_residual": 0.0
+    },
+    {
+      "state_pair": [
+        1,
+        4
+      ],
+      "D_RDM": 0.13944707845815812,
+      "D_E2_div_4": 0.13944707845815812,
+      "abs_residual": 0.0,
+      "rel_residual": 0.0
+    },
+    {
+      "state_pair": [
+        2,
+        3
+      ],
+      "D_RDM": 0.18836746381212938,
+      "D_E2_div_4": 0.18836746381212935,
+      "abs_residual": 2.7755575615628914e-17,
+      "rel_residual": 1.4734803481407562e-16
+    },
+    {
+      "state_pair": [
+        2,
+        4
+      ],
+      "D_RDM": 0.1112437711925452,
+      "D_E2_div_4": 0.11124377119254518,
+      "abs_residual": 1.3877787807814457e-17,
+      "rel_residual": 1.2475114479707901e-16
+    },
+    {
+      "state_pair": [
+        3,
+        4
+      ],
+      "D_RDM": 0.1779914911729364,
+      "D_E2_div_4": 0.17799149117293633,
+      "abs_residual": 5.551115123125783e-17,
+      "rel_residual": 3.1187530856361515e-16
+    }
+  ],
+  "max_abs_residual_10_pairs": 5.551115123125783e-17,
+  "max_rel_residual_10_pairs": 3.3740342277700387e-16,
+  "max_abs_residual_all_45_pairs": 1.3322676295501878e-15,
+  "negative_control_max_abs_flawed": 0.0424099473880972,
+  "multiplicity_explanation": "In 1D open chain, boundary sites 0 and n-1 have degree 1 (appear in 1 edge), while interior sites 1..n-2 have degree 2 (appear in 2 edges). The 35D vector repeats interior single-site terms twice, providing the exact sqrt(deg_i) = sqrt(2) multiplicity weight required to match the edge-summed 2-RDM Frobenius distance. Omitting degree weighting produces a large residual (up to 0.5614).",
+  "status": "CONSISTENT"
+}

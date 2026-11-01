@@ -1,0 +1,18 @@
+{
+  "seed_column": "seed",
+  "model_column": "model",
+  "variant_column": "variant",
+  "ood_mae_column": "ood_mae",
+  "fq_model_label": "FQ",
+  "fq_variant_label": "none",
+  "pqk2_model_label": "PQK-2nn",
+  "pqk2_variant_label": "none",
+  "npz_ood_target_key": "y_ood",
+  "npz_fq_ood_prediction_key": "fq_pred_ood",
+  "npz_pqk2_ood_prediction_key": "pqk2_pred_ood",
+  "domain_evidence": {
+    "ID_meaning": "Paramagnetic & critical regime (h in [0.8, 1.5]), documented in docs/stage3/ood_protocol.md Sec 2",
+    "OOD_meaning": "Ordered ferromagnetic regime (h in [0.2, 0.7]), documented in docs/stage3/ood_protocol.md Sec 2",
+    "Target_observable": "Half-chain bipartite entanglement entropy S_{n/2}(psi) at n=8"
+  }
+}

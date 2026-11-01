@@ -1,0 +1,31 @@
+ M paper/main.tex
+ M paper/references.bib
+?? docs/finalization/
+?? docs/provenance/
+?? docs/stage4/
+?? docs/stage5/
+?? docs/stage6/
+?? docs/verification/
+?? paper/tables/tab_equal_budget.tex
+?? paper/tables/tab_ood.tex
+?? scripts/audit_representation_identity.py
+?? scripts/audit_s5_anchors.py
+?? scripts/audit_s5_baseline.py
+?? scripts/audit_s5_claims_audit.py
+?? scripts/audit_s5_distance_check.py
+?? scripts/audit_s5_fig_details.py
+?? scripts/audit_s5_figures.py
+?? scripts/audit_s5_generate_patch_plan.py
+?? scripts/audit_s5_generate_reconciliation.py
+?? scripts/audit_s5_numerical_claims.py
+?? scripts/audit_s5_p1_fig2.py
+?? scripts/audit_s5_p2_ood.py
+?? scripts/audit_s5_reconciliation.py
+?? scripts/audit_s5_reconciliation_p1.py
+?? scripts/audit_s5_stage0_stage1.py
+?? scripts/audit_s5_stage2_3_chronology.py
+?? scripts/audit_s5_statistical_provenance.py
+?? scripts/audit_s5_tasks.py
+?? scripts/audit_s5_trace_figs.py
+?? scripts/audit_stage2_sampling.py
+?? scripts/audit_stage3_metrics.py

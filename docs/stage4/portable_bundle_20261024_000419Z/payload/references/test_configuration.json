@@ -1,0 +1,77 @@
+{
+  "inspected_script_calls": [
+    {
+      "script": "scripts/audit_stage3_metrics.py",
+      "line_range": "239-245",
+      "metric": "OOD MAE paired differences",
+      "call_string": "stats.wilcoxon(diff_array, alternative=\"two-sided\")",
+      "zero_method": "wilcox (default)",
+      "alternative": "two-sided",
+      "correction": "False (default)",
+      "method": "auto (default)",
+      "rounding": "None (unrounded double precision floats)"
+    },
+    {
+      "script": "scripts/stage3_analysis.py",
+      "line_range": "138-142",
+      "metric": "OOD R^2 paired differences",
+      "call_string": "stats.wilcoxon(model_data[m_a][\"ood_r2\"], model_data[m_b][\"ood_r2\"])",
+      "zero_method": "wilcox (default)",
+      "alternative": "two-sided (default)",
+      "correction": "False (default)",
+      "method": "auto (default)",
+      "rounding": "None"
+    },
+    {
+      "script": "docs/verification/closure_20261023_163403Z/scripts/step5_mae_family_reconciliation.py",
+      "line_range": "64-67",
+      "metric": "OOD MAE paired differences",
+      "call_string": "stats.wilcoxon(diff_array, alternative=\"two-sided\")",
+      "zero_method": "wilcox",
+      "alternative": "two-sided",
+      "correction": "False",
+      "method": "auto",
+      "rounding": "None"
+    }
+  ],
+  "installed_scipy_version": "1.18.1",
+  "scipy_wilcoxon_signature": "scipy.stats.wilcoxon(x, y=None, zero_method='wilcox', correction=False, alternative='two-sided', method='auto', axis=0, nan_policy='propagate', keepdims=False)",
+  "reproduced_default_call": {
+    "arguments": {
+      "x": "diffs_arr",
+      "alternative": "two-sided",
+      "method": "auto (default)"
+    },
+    "statistic": 21.0,
+    "p_value": 0.000850677490234375,
+    "p_value_formatted_8.51e-4": "8.51e-04",
+    "warnings": [],
+    "resolved_internal_method": "exact (SciPy auto selects exact for N=20 with zero ties and zero zeros)"
+  },
+  "exact_method_sensitivity": {
+    "arguments": {
+      "x": "diffs_arr",
+      "alternative": "two-sided",
+      "method": "exact"
+    },
+    "statistic": 21.0,
+    "p_value": 0.000850677490234375,
+    "notes": "Identical to auto call because exact permutation is the default when ties/zeros are absent"
+  },
+  "approx_method_sensitivity": {
+    "arguments": {
+      "x": "diffs_arr",
+      "alternative": "two-sided",
+      "method": "approx"
+    },
+    "statistic": 21.0,
+    "p_value": 0.0017130176382195042,
+    "notes": "Asymptotic normal approximation without continuity correction"
+  },
+  "statistical_scope_notes": [
+    "This reconciliation is retrospective, extracting and verifying historical computational artifacts.",
+    "Software Wilcoxon calculation assumes exchangeability and continuous symmetric distributions under H0.",
+    "The statement 'FQ lower in every seed' is FALSE. In fact, FQ is lower in 16 seeds and higher in 4 seeds (Seeds 8, 9, 11, 16).",
+    "Matching a p-value to software precision establishes reproducibility of the numerical calculation, not external scientific validity or prospective pre-registration."
+  ]
+}

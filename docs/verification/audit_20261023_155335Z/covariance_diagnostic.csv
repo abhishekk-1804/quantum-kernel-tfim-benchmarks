@@ -1,0 +1,2 @@
+trials_K,shots_S,rng_seed,eigenpair_residual,exact_exp_X0,exact_exp_X1,exact_exp_X0X1,theoretical_covariance,production_empirical_cov,production_cov_se,production_z_score,independent_empirical_cov,independent_cov_se,classification
+5000,100,42,2.930836992775701e-14,0.8386044901483384,0.7175297334783369,0.8096857978191206,0.00038523587817882674,0.0003860343268653725,4.475177310887958e-05,0.017841721416521978,-0.00012930046809361866,4.472375733146449e-05,Shared-setting covariance represented

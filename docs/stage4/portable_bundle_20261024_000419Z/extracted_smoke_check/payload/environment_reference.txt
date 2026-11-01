@@ -1,0 +1,14 @@
+# Environment Reference for Portable Saved-Artifact Verification Bundle
+# Generated: 2026-10-24 00:08:44 UTC
+
+OS: Windows (Platform-portable Python runner; compatible with Linux/macOS)
+Python Version: 3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]
+NumPy Version: 2.5.4
+SciPy Version: scipy.stats (scipy unknown)
+
+Minimum Requirements:
+- Python 3.8+
+- NumPy >= 1.20
+- SciPy >= 1.7.0
+
+No other packages are required (standard library used for CSV, JSON, hashing, and argument parsing).

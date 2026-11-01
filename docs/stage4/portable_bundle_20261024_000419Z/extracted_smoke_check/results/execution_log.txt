@@ -1,0 +1,32 @@
+======================================================================
+PORTABLE SAVED-ARTIFACT VERIFICATION RUNNER
+Bundle Root: D:\quantum-kernel-tfim-benchmarks\docs\stage4\portable_bundle_20261024_000419Z\extracted_smoke_check\payload
+Output Dir:  D:\quantum-kernel-tfim-benchmarks\docs\stage4\portable_bundle_20261024_000419Z\extracted_smoke_check\results
+Python:      3.12.10
+NumPy:       2.5.4
+SciPy:       1.18.1
+======================================================================
+
+--- CHECK A: PAYLOAD INTEGRITY ---
+  Verified 32 payload files against manifest. Mismatches: 0
+--- CHECK B: CSV KEY INTEGRITY ---
+  t6_ood_shift.csv: 100 rows across 5 models. All 20 unique seeds: True
+  t1_equal_budget.csv: 980 rows across 49 cells. All 20 unique seeds: True
+--- CHECK C: ARRAY METRICS REPRODUCTION ---
+  Shapes and finiteness verified across all 20 seed NPZ files.
+  Max MAE Discrepancy: 0.00e+00 (tolerance: 1e-07) -> PASS: True
+  Max R2 Discrepancy:  0.00e+00 (tolerance: 1e-06) -> PASS: True
+--- CHECK D: PAIRED SUMMARY REPRODUCTION ---
+  Pair Count: 20
+  Mean Paired Diff: -0.12484925 (expected: -0.12484925)
+  Paired SE:        0.03342497 (expected: 0.03342497)
+  Neg Count (FQ lower): 16, Pos Count (PQK lower): 4, Zero Count: 0
+  Positive Seeds: [8, 9, 11, 16] (expected: [8, 9, 11, 16])
+--- CHECK E: WILCOXON SIGNED-RANK TEST ---
+  Observed W: 21.0 (expected: 21.0)
+  Observed p: 8.50677490e-04 (expected: 8.50677490e-04)
+  Match: True
+--- CHECK F: STAGE 2 INDEPENDENT AGGREGATION ---
+  Aggregated 49 cells from raw data. Mismatches against reference: 0
+
+Verification finished in 0.211s. Overall Status: PASSED

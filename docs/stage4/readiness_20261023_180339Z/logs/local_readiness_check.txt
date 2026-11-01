@@ -1,0 +1,57 @@
+Automated local readiness check; not independent human approval.
+
+Command: D:\qml_env\Scripts\python.exe docs/verification/review_package_20261023_172944Z/scripts/reviewer_checks.py
+Exit Code: 0
+Elapsed Time: 3.150 s
+
+=== STDOUT ===
+=== INDEPENDENT CONTRIBUTOR REVIEW CHECKS (TASK 6) ===
+Repository Root: D:\quantum-kernel-tfim-benchmarks
+Python Executable: D:\qml_env\Scripts\python.exe
+SciPy Version: 1.18.1
+
+[CHECK 1] Original CSV Pairing & Model Variants
+  FQ row count: 20, PQK-2nn row count: 20
+  PASS: Exactly 20 matching seeds found without duplicates.
+
+[CHECK 2] Reconstruction of FQ-Favoring Seed (Seed 00)
+  Seed 00 Array MAE: FQ=0.030009, PQK2=0.199973 (Diff=-0.169964)
+  CSV vs Array Discrepancy: FQ=6.25e-17, PQK2=8.33e-17
+  PASS: Seed 00 verifies FQ superiority and matches CSV to machine precision.
+
+[CHECK 3] Reconstruction of PQK2-Favoring Seed (Seed 08)
+  Seed 08 Array MAE: FQ=0.070931, PQK2=0.054557 (Diff=+0.016374)
+  CSV vs Array Discrepancy: FQ=2.78e-17, PQK2=4.16e-17
+  PASS: Seed 08 verifies PQK-2nn superiority and matches CSV to machine precision.
+
+[CHECK 4] Mean Paired Difference & Paired Sample SE
+  Mean FQ OOD MAE: 0.060181 ± 0.008519
+  Mean PQK2 OOD MAE: 0.185030 ± 0.029440
+  Mean Paired Diff: -0.124849 ± 0.033425 (sample SD = 0.149481)
+  PASS: Mean diff is -0.1248 ± 0.0334 (reproduced exactly).
+
+[CHECK 5] Wilcoxon Signed-Rank Test Configuration & Result
+  Wilcoxon Statistic: W = 21.0
+  Wilcoxon p-value: p = 8.50677490e-04
+  PASS: W = 21.0 and p = 8.51e-4 reproduced exactly.
+
+[CHECK 6] Independent Holm-Bonferroni Calculation
+  FQ vs Train-Mean: raw_p=1.9073e-06, multiplier=3, holm_p=5.7220e-06
+  FQ vs Train-Median: raw_p=1.9073e-06, multiplier=2, holm_p=5.7220e-06
+  FQ vs PQK2: raw_p=8.5068e-04, multiplier=1, holm_p=8.5068e-04
+  PASS: Holm-adjusted p-values verified across the 3-comparison family.
+
+[CHECK 7] Full SVR Predictor vs Constant Intercept Baseline
+  Full FQ MAE: 0.0602 ± 0.0085
+  Intercept MAE: 0.4616 ± 0.0162
+  Mean Improvement (Full - Intercept): -0.4014 ± 0.0156
+  Seeds where Full Model has lower MAE: 20/20 (100%)
+  PASS: Full model improves MAE over intercept in 20/20 seeds.
+
+=======================================================
+ALL 7 CHECKS PASSED. OBSERVATIONS LOGGED.
+Independent Contributor Review Pending.
+=======================================================
+
+=== STDERR ===
+

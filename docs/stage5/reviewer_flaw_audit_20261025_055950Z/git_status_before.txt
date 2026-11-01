@@ -1,0 +1,12 @@
+ M paper/main.tex
+ M paper/references.bib
+?? docs/provenance/
+?? docs/stage4/
+?? docs/stage5/
+?? docs/stage6/
+?? docs/verification/
+?? paper/tables/tab_equal_budget.tex
+?? paper/tables/tab_ood.tex
+?? scripts/audit_representation_identity.py
+?? scripts/audit_stage2_sampling.py
+?? scripts/audit_stage3_metrics.py

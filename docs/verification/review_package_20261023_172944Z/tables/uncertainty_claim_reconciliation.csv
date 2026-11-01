@@ -1,0 +1,5 @@
+quantity,historical_claimed_se,actual_calculated_se,actual_sample_sd,classification,notes
+FQ OOD MAE Standard Error,0.0039,0.008519,0.038100,Does not reproduce,"Actual SE is 0.008519 (SD=0.038100, N=20). The claimed value 0.0039 was likely an in-distribution ID MAE value or parameter string (gamma=0.0039)."
+PQK-2nn OOD MAE Standard Error,0.0154,0.029440,0.131658,Does not reproduce,"Actual SE is 0.029440 (SD=0.131658, N=20). The claimed value 0.0154 does not reproduce from the 20-seed OOD MAE sample variance."
+Paired Difference Standard Error (FQ - PQK2),0.0166,0.033425,0.149481,Does not reproduce,"Actual SE from the paired difference vector is 0.033425 (SD=0.149481, N=20). 0.0166 is approximately half the true SE (or SD/sqrt(80))."
+FQ Intercept-Only OOD MAE Standard Error,0.0042,0.016209,0.072487,Does not reproduce,"Actual SE is 0.016209 (SD=0.072487, N=20). The claimed 0.0042 was an in-distribution ID MAE value for FQ (seed 0 id_mae = 0.004204)."

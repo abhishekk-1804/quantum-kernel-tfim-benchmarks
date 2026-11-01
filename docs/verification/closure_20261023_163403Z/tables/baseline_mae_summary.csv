@@ -1,0 +1,5 @@
+model_or_baseline,mean_ood_mae,std_ood_mae,median_ood_mae,min_ood_mae,max_ood_mae,iqr_ood_mae
+FQ (Fidelity Quantum Kernel),0.060181,0.038100,0.050817,0.026945,0.186101,0.035038
+PQK-2nn (Projected Quantum Kernel 2-local),0.185030,0.131658,0.173700,0.032773,0.502865,0.142365
+Train-Mean Constant Baseline,0.606095,0.025523,0.601508,0.562067,0.672046,0.030176
+Train-Median Constant Baseline,0.612131,0.035959,0.606392,0.564887,0.690508,0.050208

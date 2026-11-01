@@ -1,0 +1,37 @@
+{
+  "audit_id": "audit_20261023_155335Z",
+  "seeds_replayed": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "models_evaluated": [
+    "FQ",
+    "PQK-1",
+    "PQK-2nn",
+    "E2 (4n)",
+    "Linear_Ridge"
+  ],
+  "total_metric_comparisons": 500,
+  "max_absolute_metric_diff": 4.547473508864641e-13,
+  "comparison_tolerance": 1e-07,
+  "gate_status": "ALL_PASSED",
+  "archived_arrays_dir": "D:\\quantum-kernel-tfim-benchmarks\\docs\\verification\\audit_20261023_155335Z\\predictions"
+}

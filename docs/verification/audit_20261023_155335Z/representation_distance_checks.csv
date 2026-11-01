@@ -1,0 +1,5 @@
+comparison,max_abs_error,max_rel_error,target_tolerance,status,interpretation
+D_RDM vs D_reference (Deduplicated Pauli with sqrt(deg)),1.3322676295501878e-15,7.961608352793176e-16,1e-12,PASS (Exact algebraic equivalence confirmed),Direct 2-RDM Frobenius distance identically matches deduplicated Pauli correlator distance.
+D_RDM vs D_prod_pqk2 (Production X_e2 / 2.0),1.3322676295501878e-15,5.742632340591684e-16,1e-12,PASS (Exact match to production PQK-2nn),Production 35-dim feature scaling (X_e2 / 2.0) exactly yields RDM Frobenius distances.
+D_prod_pqk2 vs D_prod_e2 / 4.0 (Production Identity B == C),0.0,0.0,1e-12,PASS (Exact B == C identity confirmed),||X_e2 / 2 - X_e2' / 2||^2 == ||X_e2 - X_e2'||^2 / 4 to machine precision.
+NEGATIVE CONTROL: D_RDM vs D_flawed (Missing sqrt(deg) weights),0.5614244485056914,0.3796413751417846,1e-12,CONFIRMED SENSITIVE (Discrepancy strongly detected),Diagnostic test detects incorrect feature weighting with high sensitivity.

@@ -1,0 +1,12 @@
+item_id,file,status,description
+H,paper/main.tex,APPLIED,Abstract: Described raw and training-Gram-corrected matrices; replaced blanket budget superiority with evaluated budget points; removed 'severe phase-shift' wording
+A,paper/main.tex,APPLIED,Section II-B: Repaired missing closing math delimiter in $\rho_i = \frac{1}{2}(I + \langle X_i \rangle X_i)$
+E,paper/main.tex,APPLIED,Section II-B: Removed unverified 0.5614; changed non-vanishing to potentially nonzero; unified site indexing description; preserved exact squared distance identity
+J_Task2b,paper/main.tex,APPLIED,Section III-B: Identified rows 112-114 supporting Claim C3; distinguished saved confirmatory label from prospective protocol timing certification
+I,paper/main.tex,APPLIED,Section III-E: Bounded budget scope to evaluated points; stated exploratory status without referencing unverified preregistration manifest; clarified FQ PSD cross-blocks
+C,paper/main.tex,APPLIED,Section III-F: Removed unsupported phase-boundary/paramagnetic/ferromagnetic wording; used verified higher-field to lower-field ranges with J=1.0
+G_F,paper/main.tex,APPLIED,Section III-F: Removed uninformative R^2 assertion; stated R^2 retained while MAE is primary metric; explicitly stated SE uncertainty convention distinct from bootstrap CIs
+D,paper/main.tex,APPLIED,Section III-F: Removed genuine inductive signal/confirms active features/zero-parameter wording; used training-mean constant predictor and post-fit intercept-only ablation
+B_Table4,paper/tables/tab_equal_budget.tex,APPLIED,Table IV: Replaced FQ (train_only) with wrapped shortstack FQ (training-Gram PSD clipping); documented training vs cross-block shot accounting and exploratory timing
+C_Table5,paper/tables/tab_ood.tex,APPLIED,Table V: Removed paramagnetic/ferromagnetic descriptors; stated higher-field to lower-field ranges with J=1.0; clarified SE uncertainty
+K_Bib,paper/references.bib,APPLIED,Verified Shaydulin2022importance removed while shaydulin2022 and Canatar2023bandwidth retained; reconciled HEAD vs pre-Stage-2 diffs

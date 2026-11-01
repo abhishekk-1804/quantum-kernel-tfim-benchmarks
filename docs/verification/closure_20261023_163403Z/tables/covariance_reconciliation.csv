@@ -1,0 +1,8 @@
+parameter,authoritative_csv_value,authoritative_rounded,narrative_verif_report,stage2_sampling_audit_text,closure_reconciled,status
+"Theoretical Covariance Cov(X0, X0 X1)",3.85235878178800e-04,3.852359e-4,3.852e-4,3.852359e-04,3.85235878178800e-04,Verified: matches analytical formula exactly
+Production Empirical Covariance,3.86034326865300e-04,3.860343e-4,3.864e-4,3.860343e-04,3.86034326865300e-04,Discrepancy: narrative had transcription error (3.864 instead of 3.860)
+Uncertainty (Monte Carlo SE),4.47517731088796e-05,0.447518e-4,0.147e-4,4.475177e-05,4.47517731088796e-05,Discrepancy: narrative cited 0.147e-4; CSV SE is 0.4475e-4
+Absolute Discrepancy |Emp - Theo|,7.98448686499997e-07,0.007984e-4,0.012e-4,7.984487e-07,7.98448686499997e-07,Reconciled from authoritative CSV values
+Relative Discrepancy (|Emp - Theo| / Theo),0.002073 (0.207%),0.207%,0.31%,0.207%,0.002073 (0.207%),Reconciled
+Standardized Discrepancy (z-score),0.01784172141652,0.0178,0.58 (implied ~0.082),0.02,0.017842,"Corrected reporting error: true z is 0.0178 (~0.02), not 0.58"
+"Sample Size / Trials (K, S)","K=5000, S=100","K=5000, S=100","K=5000, S=100","K=5000, S=100","K=5000, S=100",Consistent across all artifacts

@@ -1,0 +1,177 @@
+{
+  "stage2_csv": {
+    "path": "results/stage2/t1_equal_budget.csv",
+    "sha256": "22d66cd6e27372a53936b7d7aa4d9317878367aefebc0560a8be0a6bbbf955bd",
+    "size_bytes": 127468,
+    "mtime_iso": "2026-10-23T14:53:44.928762+00:00",
+    "rows": 980,
+    "columns": [
+      "seed",
+      "B_tot",
+      "model",
+      "variant",
+      "S_per_setting",
+      "test_r2",
+      "test_mae",
+      "best_params",
+      "inner_cv_score",
+      "is_feasible"
+    ],
+    "budgets": [
+      10000,
+      30000,
+      100000,
+      300000,
+      1000000,
+      3000000,
+      10000000
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "models": [
+      "PQK-1",
+      "PQK-2nn",
+      "E2",
+      "FQ"
+    ],
+    "variants": [
+      "3basis",
+      "x_only",
+      "none",
+      "raw_4n_grid",
+      "train_only",
+      "inductive"
+    ],
+    "git_log": [
+      {
+        "commit": "dff0171183c99c43f9555964ba0a88731ddc98cf",
+        "author": "ABHISHEK K",
+        "date": "2026-10-23T20:32:50+05:30",
+        "subject": "feat(stage2): complete equal-total-budget benchmark and crossover analysis"
+      }
+    ]
+  },
+  "stage3_csv": {
+    "path": "results/stage3/t6_ood_shift.csv",
+    "sha256": "81908f5a14f0c7c262b1647964b02fbd7570ba737a2dd4f3420659be8da139cb",
+    "size_bytes": 15981,
+    "mtime_iso": "2026-10-23T15:33:35.527962+00:00",
+    "rows": 100,
+    "columns": [
+      "seed",
+      "model",
+      "variant",
+      "id_r2",
+      "id_mae",
+      "ood_r2",
+      "ood_mae",
+      "delta_r2",
+      "best_params",
+      "inner_cv_score"
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "models": [
+      "FQ",
+      "PQK-1",
+      "PQK-2nn",
+      "E2 (4n)",
+      "Linear_Ridge"
+    ],
+    "variants": [
+      "none",
+      "raw_4n_grid"
+    ],
+    "git_log": [
+      {
+        "commit": "292d689dd845f6228fae6265cffe83b81d5f0f66",
+        "author": "ABHISHEK K",
+        "date": "2026-10-23T21:11:11+05:30",
+        "subject": "feat(stage3): complete controlled OOD phase-shift generalization benchmark"
+      }
+    ]
+  },
+  "scripts_git_log": {
+    "scripts/stage2_equal_budget.py": [
+      {
+        "commit": "dff0171183c99c43f9555964ba0a88731ddc98cf",
+        "author": "ABHISHEK K",
+        "date": "2026-10-23T20:32:50+05:30",
+        "subject": "feat(stage2): complete equal-total-budget benchmark and crossover analysis"
+      }
+    ],
+    "scripts/stage3_ood_shift.py": [
+      {
+        "commit": "292d689dd845f6228fae6265cffe83b81d5f0f66",
+        "author": "ABHISHEK K",
+        "date": "2026-10-23T21:11:11+05:30",
+        "subject": "feat(stage3): complete controlled OOD phase-shift generalization benchmark"
+      }
+    ],
+    "docs/stage3/ood_protocol.md": [
+      {
+        "commit": "292d689dd845f6228fae6265cffe83b81d5f0f66",
+        "author": "ABHISHEK K",
+        "date": "2026-10-23T21:11:11+05:30",
+        "subject": "feat(stage3): complete controlled OOD phase-shift generalization benchmark"
+      }
+    ]
+  },
+  "protocol_docs": {
+    "docs/stage3/ood_protocol.md": {
+      "size": 7739,
+      "mtime": "2026-10-23T15:21:02.355779+00:00",
+      "head": "# STAGE 3 PROTOCOL: Controlled Out-of-Distribution (OOD) Phase-Shift Generalization\n\n**Statistical Classification:** CONFIRMATORY (Stage 3 Frozen Protocol)  \n**Task Designation:** Task 6: Out-of-Distribution Phase-Shift Generalization  \n**Physical System:** Disordered 1D Transverse-Field Ising Model ($n = 8$ spins, open boundary conditions)  \n**Target Observable:** Half-chain bipartite entanglement entropy $S_{n/2}(\\psi)$ across cut at $n/2 = 4$  \n\n---\n\n## 1. Physical Formulation & Phase Diagram\n\nThe transverse-field Ising model (TFIM) on an open 1D chain of $n$ qubits is governed by the Hamiltonian:\n$$H = -\\sum_{i=0}^{n-2} J_{i, i+1} Z_i Z_{i+1} - \\sum_{i=0}^{n-1} h_i X_i$$\nwith disordered ferromagnetic exchange couplings $J_{i, i+1} \\sim \\mathcal{U}(0.5, 1.5)$ and disordered transverse fields $h_i > 0$.\n\nIn the clean limit ($J_{i, i+1} = J = 1.0$, $h_i = h$), the model exhibits a continuous quantum phase transition at critical field $h_c = 1.0$:\n- **Paramagnetic / Disordered Phase ($h > 1.0$):** Transverse alignment dominates along the $X$-axis ($\\langle X_i \\rangle \\to 1$), while longitudinal two-point correlations decay exponentially ($\\langle Z_i Z_j \\rangle \\to 0$ for $|i - j| \\gg 1$). The ground state is non-degenerate and symmetric.\n- **Ferromagnetic / Ordered Phase ($h < 1.0$):** Longitudinal exchange dominates along the $Z$-axis, generating spontaneous $\\mathbb{Z}_2$ symmetry breaking in the thermodynamic limit. In finite systems with open boundaries, ground states "
+    },
+    "docs/stage5/stage2_3_provenance_check.md": {
+      "size": 5181,
+      "mtime": "2026-10-23T18:51:51.386772+00:00",
+      "head": "# Stage 2 & 3 Protocol Provenance and Timing Verification Report\n**Workspace:** `D:\\quantum-kernel-tfim-benchmarks`  \n**Audit Date:** 2026-10-23 18:51:50Z  \n**Auditor:** Automated forensic timing audit  \n\n---\n\n## 1. Executive Summary & Provenance Classifications\n\nPer project governance rules, an experiment can be classified as **'Confirmatory (prospectively frozen protocol)'** ONLY IF timing establishes that the protocol was formally committed/frozen *prior* to data generation.\nIf a protocol was committed atomically with the results or generated after the benchmark execution, the protocol must be formally classified as **'Exploratory (documented protocol, timing not established)'**.\n\n### Formal Classifications:\n- **Stage 2 (Equal-Total-Budget Experiment):**\n  * **Classification:** **`Exploratory (documented protocol, timing not established)`**\n  * **Rationale:** In Git, all 6 Stage 2 artifacts (scripts, tests, results, and summary) were committed **atomically** in a single commit (`dff0171183c99c43f9555964ba0a88731ddc98cf`). Furthermore, file-system timestamps show that the summary report (`equal_budget_summary.md`, mtime 14:56:39 UTC) was created *after* the results CSV (`t1_equal_budget.csv`, mtime 14:53:44 UTC). No prior Git commit froze the protocol prospectively.\n- **Stage 3 (Controlled OOD Phase-Shift Generalization):**\n  * **Classification:** **`Exploratory (documented protocol, timing not established)`**\n  * **Rationale:** In Git, all 6 Stage 3 artifacts (`ood_protoco"
+    },
+    "docs/verification/closure_20261023_163403Z/reports/protocol_provenance.md": {
+      "size": 5582,
+      "mtime": "2026-10-23T16:47:40.680868+00:00",
+      "head": "# Protocol Provenance and Preregistration Analysis Report\n\n## 1. Methodological Principles of Provenance Evaluation\n\nTo adhere to the highest scientific standards of reproducibility and evidentiary rigor, we evaluate the prospective vs retrospective status of all benchmark stages using strict evidentiary criteria:\n1. **Weak Evidence:** Local file timestamps (`mtime`) and post-run snapshot directories do NOT establish prospective protocol freezing.\n2. **Git Commit Timing:** A Git commit created *after* experimental execution does NOT prove that the protocol was pre-registered prior to data collection.\n3. **Epistemic Classification Standard:** In the absence of an independent, cryptographically timestamped pre-commitment (e.g. OSF, public pre-run commit SHA, or external registry), a documented protocol must be classified as **`Documented protocol; timing not established`**, rather than falsely claiming external pre-registration or dismissively labeling it purely ad-hoc.\n\n## 2. Protocol Provenance Ledger\n\n| stage_id | git_commit_sha | git_commit_timestamp_utc | protocol_document | classification | experiment_definition | primary_outcome | comparisons | thresholds_cutoffs | subsequent_additions | provenance_assessment |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| Stage 2: Equal-Total-Budget Benchmark | dff0171183c99c43f9555964ba0a88731ddc98cf | 2026-10-23T15:02:50Z | docs/stage2/equal_budget_summary.md (in-repo) | Documented protocol; timing not establis"
+    }
+  }
+}

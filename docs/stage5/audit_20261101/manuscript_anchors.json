@@ -1,0 +1,239 @@
+[
+  {
+    "type": "section",
+    "title": "Introduction",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 52,
+    "raw": "\\section{Introduction}"
+  },
+  {
+    "type": "section",
+    "title": "Problem Formulation \\& Architectures",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 72,
+    "raw": "\\section{Problem Formulation \\& Architectures}"
+  },
+  {
+    "type": "subsection",
+    "title": "Physical Hamiltonian and State Ensembles",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 74,
+    "raw": "\\subsection{Physical Hamiltonian and State Ensembles}"
+  },
+  {
+    "type": "subsection",
+    "title": "Kernel Representations \\& Exact Symmetries",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 90,
+    "raw": "\\subsection{Kernel Representations \\& Exact Symmetries}"
+  },
+  {
+    "type": "subsection",
+    "title": "Noise and Measurement Models",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 112,
+    "raw": "\\subsection{Noise and Measurement Models}"
+  },
+  {
+    "type": "subsubsection",
+    "title": "Finite Measurement Shots",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 113,
+    "raw": "\\subsubsection{Finite Measurement Shots}"
+  },
+  {
+    "type": "subsubsection",
+    "title": "Physical Depolarizing Channel",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 116,
+    "raw": "\\subsubsection{Physical Depolarizing Channel}"
+  },
+  {
+    "type": "subsection",
+    "title": "Statistical Protocol and Pre-Declaration",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 119,
+    "raw": "\\subsection{Statistical Protocol and Pre-Declaration}"
+  },
+  {
+    "type": "section",
+    "title": "Empirical Results",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 122,
+    "raw": "\\section{Empirical Results}"
+  },
+  {
+    "type": "input",
+    "command": "input",
+    "target": "tables/tab2_confirmatory_stats.tex",
+    "resolved_path": "paper/tables/tab2_confirmatory_stats.tex",
+    "exists": true,
+    "file": "paper/main.tex",
+    "line": 124,
+    "raw": "\\input{tables/tab2_confirmatory_stats.tex}"
+  },
+  {
+    "type": "subsection",
+    "title": "Task 1: Half-Chain Entropy Regression",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 126,
+    "raw": "\\subsection{Task 1: Half-Chain Entropy Regression}"
+  },
+  {
+    "type": "includegraphics",
+    "target": "figures/fig_learning_curve_t1.pdf",
+    "resolved_path": "paper/figures/fig_learning_curve_t1.pdf",
+    "exists": true,
+    "file": "paper/main.tex",
+    "line": 130,
+    "raw": "\\includegraphics[width=\\columnwidth,height=1.45in,keepaspectratio]{figures/fig_learning_curve_t1.pdf}"
+  },
+  {
+    "type": "input",
+    "command": "input",
+    "target": "tables/tab1_t1_r2.tex",
+    "resolved_path": "paper/tables/tab1_t1_r2.tex",
+    "exists": true,
+    "file": "paper/main.tex",
+    "line": 137,
+    "raw": "\\input{tables/tab1_t1_r2.tex}"
+  },
+  {
+    "type": "subsection",
+    "title": "Task 2: Contained vs Non-Contained Correlators",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 146,
+    "raw": "\\subsection{Task 2: Contained vs Non-Contained Correlators}"
+  },
+  {
+    "type": "subsection",
+    "title": "Task 3: Absence of Kernel Concentration",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 157,
+    "raw": "\\subsection{Task 3: Absence of Kernel Concentration}"
+  },
+  {
+    "type": "subsection",
+    "title": "Noise and Measurement Shot Budgets",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 160,
+    "raw": "\\subsection{Noise and Measurement Shot Budgets}"
+  },
+  {
+    "type": "includegraphics",
+    "target": "figures/fig_shots.pdf",
+    "resolved_path": "paper/figures/fig_shots.pdf",
+    "exists": true,
+    "file": "paper/main.tex",
+    "line": 164,
+    "raw": "\\includegraphics[width=\\columnwidth,height=1.45in,keepaspectratio]{figures/fig_shots.pdf}"
+  },
+  {
+    "type": "subsubsection",
+    "title": "Measurement Shot Scaling (Claim C5)",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 169,
+    "raw": "\\subsubsection{Measurement Shot Scaling (Claim C5)}"
+  },
+  {
+    "type": "includegraphics",
+    "target": "figures/fig_depolarizing_retuned_per_qubit_proxy.pdf",
+    "resolved_path": "paper/figures/fig_depolarizing_retuned_per_qubit_proxy.pdf",
+    "exists": true,
+    "file": "paper/main.tex",
+    "line": 176,
+    "raw": "\\includegraphics[width=\\columnwidth,height=1.45in,keepaspectratio]{figures/fig_depolarizing_retuned_per_qubit_proxy.pdf}"
+  },
+  {
+    "type": "subsubsection",
+    "title": "Depolarizing Channel Robustness (Claim C6)",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 181,
+    "raw": "\\subsubsection{Depolarizing Channel Robustness (Claim C6)}"
+  },
+  {
+    "type": "input",
+    "command": "input",
+    "target": "tables/tab4_grid_boundaries.tex",
+    "resolved_path": "paper/tables/tab4_grid_boundaries.tex",
+    "exists": true,
+    "file": "paper/main.tex",
+    "line": 184,
+    "raw": "\\input{tables/tab4_grid_boundaries.tex}"
+  },
+  {
+    "type": "subsection",
+    "title": "Equal-Total-Budget Measurement Scaling",
+    "label": "sec:equal_budget",
+    "file": "paper/main.tex",
+    "line": 186,
+    "raw": "\\subsection{Equal-Total-Budget Measurement Scaling}"
+  },
+  {
+    "type": "input",
+    "command": "input",
+    "target": "tables/tab_equal_budget.tex",
+    "resolved_path": "paper/tables/tab_equal_budget.tex",
+    "exists": true,
+    "file": "paper/main.tex",
+    "line": 192,
+    "raw": "\\input{tables/tab_equal_budget.tex}"
+  },
+  {
+    "type": "subsection",
+    "title": "Controlled Out-of-Distribution Phase-Shift Generalization",
+    "label": "sec:ood",
+    "file": "paper/main.tex",
+    "line": 194,
+    "raw": "\\subsection{Controlled Out-of-Distribution Phase-Shift Generalization}"
+  },
+  {
+    "type": "input",
+    "command": "input",
+    "target": "tables/tab_ood.tex",
+    "resolved_path": "paper/tables/tab_ood.tex",
+    "exists": true,
+    "file": "paper/main.tex",
+    "line": 202,
+    "raw": "\\input{tables/tab_ood.tex}"
+  },
+  {
+    "type": "section",
+    "title": "Limitations \\& Threats to Validity",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 204,
+    "raw": "\\section{Limitations \\& Threats to Validity}"
+  },
+  {
+    "type": "section",
+    "title": "What This Study Does NOT Show",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 216,
+    "raw": "\\section{What This Study Does NOT Show}"
+  },
+  {
+    "type": "section",
+    "title": "Conclusion \\& Reproducibility Statement",
+    "label": null,
+    "file": "paper/main.tex",
+    "line": 226,
+    "raw": "\\section{Conclusion \\& Reproducibility Statement}"
+  }
+]

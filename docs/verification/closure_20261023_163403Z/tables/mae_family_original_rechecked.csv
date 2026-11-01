@@ -1,0 +1,4 @@
+comparison_id,pair_count,mean_paired_diff,median_paired_diff,se_diff,ci_95_bootstrap_pointwise,wilcoxon_stat,raw_pval,zero_tie_handling,inference_library,holm_pval_3_comp_family
+FQ vs PQK-2nn,20,-0.124849,-0.120608,0.033425,"[-0.191997, -0.062419]",21.0,8.50677490e-04,Wilcoxon method 'wilcox' (exact distribution for N=20),scipy 1.18.1,8.50677490e-04
+FQ vs Train-Mean Baseline,20,-0.545914,-0.552580,0.007495,"[-0.559466, -0.531140]",0.0,1.90734863e-06,Wilcoxon method 'wilcox' (exact distribution for N=20),scipy 1.18.1,5.72204590e-06
+FQ vs Train-Median Baseline,20,-0.551950,-0.553779,0.008570,"[-0.568018, -0.535501]",0.0,1.90734863e-06,Wilcoxon method 'wilcox' (exact distribution for N=20),scipy 1.18.1,5.72204590e-06

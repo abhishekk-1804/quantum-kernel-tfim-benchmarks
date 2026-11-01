@@ -1,0 +1,338 @@
+{
+  "inspection_protocol": "allow_pickle=False enforced on all numpy loads",
+  "total_array_files": 20,
+  "seed_range": [
+    0,
+    19
+  ],
+  "common_keys": [
+    "e2_pred_id",
+    "e2_pred_ood",
+    "fq_K_id",
+    "fq_K_ood",
+    "fq_K_tr",
+    "fq_dual_coef",
+    "fq_intercept",
+    "fq_pred_id",
+    "fq_pred_ood",
+    "fq_support",
+    "pqk1_pred_id",
+    "pqk1_pred_ood",
+    "pqk2_K_id",
+    "pqk2_K_ood",
+    "pqk2_K_tr",
+    "pqk2_dual_coef",
+    "pqk2_intercept",
+    "pqk2_pred_id",
+    "pqk2_pred_ood",
+    "pqk2_support",
+    "ridge_pred_id",
+    "ridge_pred_ood",
+    "y_id",
+    "y_ood",
+    "y_train"
+  ],
+  "key_descriptions": {
+    "y_train": {
+      "shape": [
+        40
+      ],
+      "dtype": "float64",
+      "description": "Training ground-state half-chain entanglement entropies S_{n/2}"
+    },
+    "y_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "In-distribution test ground-state entanglement entropies (h in [0.8, 1.5])"
+    },
+    "y_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "Out-of-distribution test ground-state entanglement entropies (h in [0.2, 0.7])"
+    },
+    "fq_pred_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "Full Quantum Fidelity Kernel SVR predictions on ID test set"
+    },
+    "fq_pred_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "Full Quantum Fidelity Kernel SVR predictions on OOD test set"
+    },
+    "pqk1_pred_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "PQK-1 (RBF on <X_i>) SVR predictions on ID test set"
+    },
+    "pqk1_pred_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "PQK-1 (RBF on <X_i>) SVR predictions on OOD test set"
+    },
+    "pqk2_pred_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "PQK-2nn (2-local Correlator) SVR predictions on ID test set"
+    },
+    "pqk2_pred_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "PQK-2nn (2-local Correlator) SVR predictions on OOD test set"
+    },
+    "e2_pred_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "E2 (4n grid raw correlator) SVR predictions on ID test set"
+    },
+    "e2_pred_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "E2 (4n grid raw correlator) SVR predictions on OOD test set"
+    },
+    "ridge_pred_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "Linear Ridge regression predictions on ID test set"
+    },
+    "ridge_pred_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64",
+      "description": "Linear Ridge regression predictions on OOD test set"
+    },
+    "fq_K_tr": {
+      "shape": [
+        40,
+        40
+      ],
+      "dtype": "float64",
+      "description": "FQ Training Gram matrix (Fidelity overlaps)"
+    },
+    "fq_K_id": {
+      "shape": [
+        100,
+        40
+      ],
+      "dtype": "float64",
+      "description": "FQ Test-ID to Train Kernel matrix"
+    },
+    "fq_K_ood": {
+      "shape": [
+        100,
+        40
+      ],
+      "dtype": "float64",
+      "description": "FQ Test-OOD to Train Kernel matrix"
+    },
+    "pqk2_K_tr": {
+      "shape": [
+        40,
+        40
+      ],
+      "dtype": "float64",
+      "description": "PQK-2nn Training Gram matrix"
+    },
+    "pqk2_K_id": {
+      "shape": [
+        100,
+        40
+      ],
+      "dtype": "float64",
+      "description": "PQK-2nn Test-ID to Train Kernel matrix"
+    },
+    "pqk2_K_ood": {
+      "shape": [
+        100,
+        40
+      ],
+      "dtype": "float64",
+      "description": "PQK-2nn Test-OOD to Train Kernel matrix"
+    }
+  },
+  "per_seed_summary": [
+    {
+      "seed": 0,
+      "filename": "seed_00_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 29,
+      "pqk2_support_vectors_count": 34,
+      "all_finite": true
+    },
+    {
+      "seed": 1,
+      "filename": "seed_01_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 34,
+      "pqk2_support_vectors_count": 27,
+      "all_finite": true
+    },
+    {
+      "seed": 2,
+      "filename": "seed_02_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 29,
+      "pqk2_support_vectors_count": 24,
+      "all_finite": true
+    },
+    {
+      "seed": 3,
+      "filename": "seed_03_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 36,
+      "pqk2_support_vectors_count": 39,
+      "all_finite": true
+    },
+    {
+      "seed": 4,
+      "filename": "seed_04_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 33,
+      "pqk2_support_vectors_count": 39,
+      "all_finite": true
+    },
+    {
+      "seed": 5,
+      "filename": "seed_05_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 32,
+      "pqk2_support_vectors_count": 27,
+      "all_finite": true
+    },
+    {
+      "seed": 6,
+      "filename": "seed_06_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 39,
+      "pqk2_support_vectors_count": 39,
+      "all_finite": true
+    },
+    {
+      "seed": 7,
+      "filename": "seed_07_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 40,
+      "pqk2_support_vectors_count": 34,
+      "all_finite": true
+    },
+    {
+      "seed": 8,
+      "filename": "seed_08_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 29,
+      "pqk2_support_vectors_count": 38,
+      "all_finite": true
+    },
+    {
+      "seed": 9,
+      "filename": "seed_09_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 40,
+      "pqk2_support_vectors_count": 33,
+      "all_finite": true
+    },
+    {
+      "seed": 10,
+      "filename": "seed_10_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 38,
+      "pqk2_support_vectors_count": 39,
+      "all_finite": true
+    },
+    {
+      "seed": 11,
+      "filename": "seed_11_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 30,
+      "pqk2_support_vectors_count": 24,
+      "all_finite": true
+    },
+    {
+      "seed": 12,
+      "filename": "seed_12_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 29,
+      "pqk2_support_vectors_count": 38,
+      "all_finite": true
+    },
+    {
+      "seed": 13,
+      "filename": "seed_13_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 38,
+      "pqk2_support_vectors_count": 40,
+      "all_finite": true
+    },
+    {
+      "seed": 14,
+      "filename": "seed_14_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 35,
+      "pqk2_support_vectors_count": 35,
+      "all_finite": true
+    },
+    {
+      "seed": 15,
+      "filename": "seed_15_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 40,
+      "pqk2_support_vectors_count": 35,
+      "all_finite": true
+    },
+    {
+      "seed": 16,
+      "filename": "seed_16_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 39,
+      "pqk2_support_vectors_count": 34,
+      "all_finite": true
+    },
+    {
+      "seed": 17,
+      "filename": "seed_17_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 38,
+      "pqk2_support_vectors_count": 40,
+      "all_finite": true
+    },
+    {
+      "seed": 18,
+      "filename": "seed_18_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 39,
+      "pqk2_support_vectors_count": 31,
+      "all_finite": true
+    },
+    {
+      "seed": 19,
+      "filename": "seed_19_arrays.npz",
+      "keys_count": 25,
+      "fq_support_vectors_count": 33,
+      "pqk2_support_vectors_count": 35,
+      "all_finite": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+manuscript_statement,source_artifact,status,exact_numbers
+Higher-field paramagnetic training vs lower-field ferromagnetic testing,docs/stage3/ood_protocol.md Section 2,"Verified: h in [0.8, 1.5] (train) vs h in [0.2, 0.7] (test)","N_tr=40, N_te=100"
+FQ OOD MAE is 0.0602 +- 0.0085,results/stage3/t6_ood_shift.csv (model == 'FQ'),"Verified: Mean = 0.060181, SE = 0.008519",0.0602 +- 0.0085
+PQK-2nn OOD MAE is 0.1850 +- 0.0294,results/stage3/t6_ood_shift.csv (model == 'PQK-2nn'),"Verified: Mean = 0.185030, SE = 0.029440",0.1850 +- 0.0294
+Mean paired difference is -0.1248 +- 0.0334,paired_mae_original.csv,"Verified: Mean = -0.124849, SE = 0.033425",-0.1248 +- 0.0334
+"Seed direction breakdown: 16 FQ superior, 4 PQK-2nn superior (Seeds 8, 9, 11, 16)",paired_mae_original.csv,Verified: exactly 4 positive and 16 negative differences,"Seeds 8, 9, 11, 16"
+"Wilcoxon test statistic W = 21.0, raw p = 8.51e-4, Holm p = 8.51e-4",statistical_results.csv,"Verified: W = 21.0, p_raw = 8.5068e-4, p_holm = 8.5068e-4","W=21.0, p=8.51e-4"
+Full FQ improves MAE over constant intercept in 20/20 seeds (mean diff -0.4014 +- 0.0156),full_vs_intercept_per_seed.csv,"Verified: Full MAE = 0.0602, Intercept MAE = 0.4616",diff = -0.4014 +- 0.0156
+"Small SST increases sensitivity to residual error, causing negative R^2",stage3_target_diagnostics.csv,Verified: Var(y_ood) = 0.000405 vs Var(y_id) = 0.0213,SST ~ 0.040

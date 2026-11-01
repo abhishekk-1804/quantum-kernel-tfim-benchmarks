@@ -1,0 +1,108 @@
+{
+  "fig_learning_curve_t1.pdf": {
+    "tex_line": 130,
+    "label": "fig:t1_lc",
+    "func": "make_f1",
+    "pdf_size": 21540,
+    "pdf_mtime": "2026-10-22T15:16:54.632715+00:00",
+    "pdf_sha256": "bbb34eb581c9bb4bae8c6d4a8f7113bb601259e14650f3494e75210c81d2425f",
+    "pdf_exists": true
+  },
+  "fig_shots.pdf": {
+    "tex_line": 164,
+    "label": "fig:shots",
+    "func": "make_f5",
+    "pdf_size": 27001,
+    "pdf_mtime": "2026-10-22T15:17:12.561906+00:00",
+    "pdf_sha256": "7439b06fabb4b14392f4c9a6814f1ac5d5d13f790308aa64b9ea1f8462a20682",
+    "pdf_exists": true
+  },
+  "fig_depolarizing_retuned_per_qubit_proxy.pdf": {
+    "tex_line": 176,
+    "label": "fig:depol",
+    "func": "make_f7",
+    "pdf_size": 23968,
+    "pdf_mtime": "2026-10-22T15:17:18.579110+00:00",
+    "pdf_sha256": "2e89c51b68760f7dc4d5abfedad027ca183cfa57808475900f6b4ca608a78316",
+    "pdf_exists": true
+  },
+  "t5_noise_shots_metadata": {
+    "total_rows": 1280,
+    "columns": [
+      "experiment",
+      "noise_param",
+      "noise_level",
+      "seed",
+      "n",
+      "N_train",
+      "model",
+      "variant",
+      "metric",
+      "value",
+      "best_params",
+      "inner_cv_score",
+      "lam_min",
+      "train_shots",
+      "predict_shots",
+      "total_shots",
+      "fit_seconds"
+    ],
+    "models": [
+      "E",
+      "E2",
+      "F",
+      "FQ-clipped",
+      "FQ-raw",
+      "PQK-1",
+      "PQK-2nn"
+    ],
+    "noise_levels": [
+      "100.0",
+      "1000.0",
+      "10000.0",
+      "inf"
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "n_train_recorded": [
+      40
+    ]
+  },
+  "run_t5_noise_n_train_evidence": [
+    "Evaluates Task 1 Half-chain entropy regression (n=8, N_train=40, N_test=200, 20 seeds):",
+    "\"experiment\", \"noise_param\", \"noise_level\", \"seed\", \"n\", \"N_train\",",
+    "N_train = 40",
+    "m = N_train + N_test",
+    "print(f\"\\n--- [Seed {seed:2d}] Generating ground states (n=8, N_train=40, N_test=200) ---\", flush=True)",
+    "tr_states, tr_targets, te_states, te_targets, _ = make_split(\"t1\", n=n, N=N_train, seed=seed)",
+    "sub_s0 = df_noiseless[(df_noiseless[\"seed\"] == 0) & (df_noiseless[\"N_train\"] == 40) & (df_noiseless[\"metric\"] == \"r2\")]",
+    "pure_x_all[:N_train], y_tr_z, tr_targets, pure_x_all[N_train:], te_targets,",
+    "sub_ref = df_noiseless[(df_noiseless[\"seed\"] == seed) & (df_noiseless[\"N_train\"] == 40)]",
+    "target_models.append((\"PQK-1\", \"none\", 2 * N_train, 2 * N_test, 2 * m))",
+    "target_models.append((\"PQK-2nn\", \"none\", 3 * N_train, 3 * N_test, 3 * m))",
+    "target_models.append((\"E\", \"raw\", 3 * N_train, 3 * N_test, 3 * m))",
+    "target_models.append((\"E\", \"std\", 3 * N_train, 3 * N_test, 3 * m))",
+    "target_models.append((\"E2\", \"raw\", 3 * N_train, 3 * N_test, 3 * m))",
+    "target_models.append((\"F\", \"std\", 3 * N_train, 3 * N_test, 3 * m))"
+  ]
+}

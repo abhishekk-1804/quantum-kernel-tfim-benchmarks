@@ -1,0 +1,27 @@
+# Protocol Provenance and Preregistration Analysis Report
+
+## 1. Methodological Principles of Provenance Evaluation
+
+To adhere to the highest scientific standards of reproducibility and evidentiary rigor, we evaluate the prospective vs retrospective status of all benchmark stages using strict evidentiary criteria:
+1. **Weak Evidence:** Local file timestamps (`mtime`) and post-run snapshot directories do NOT establish prospective protocol freezing.
+2. **Git Commit Timing:** A Git commit created *after* experimental execution does NOT prove that the protocol was pre-registered prior to data collection.
+3. **Epistemic Classification Standard:** In the absence of an independent, cryptographically timestamped pre-commitment (e.g. OSF, public pre-run commit SHA, or external registry), a documented protocol must be classified as **`Documented protocol; timing not established`**, rather than falsely claiming external pre-registration or dismissively labeling it purely ad-hoc.
+
+## 2. Protocol Provenance Ledger
+
+| stage_id | git_commit_sha | git_commit_timestamp_utc | protocol_document | classification | experiment_definition | primary_outcome | comparisons | thresholds_cutoffs | subsequent_additions | provenance_assessment |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Stage 2: Equal-Total-Budget Benchmark | dff0171183c99c43f9555964ba0a88731ddc98cf | 2026-10-23T15:02:50Z | docs/stage2/equal_budget_summary.md (in-repo) | Documented protocol; timing not established | Fixed budget B_tot = M * S trade-off at B_tot in {1e3..1e6} on T1 disordered TFIM ground state energy | R^2 metric vs total budget B_tot and shot count S | PQK-1 vs PQK-2nn vs FQ across measurement budgets | Crossover point where shot noise dominates representation capacity | Retrospective covariance diagnostic (K=5000) and resource accounting audit | The protocol was specified in user prompt directives and documented in equal_budget_summary.md, but committed atomically with results in git commit dff0171. Pre-execution git commit absent. |
+| Stage 3: Controlled OOD Phase-Shift Generalization | 292d689dd845f6228fae6265cffe83b81d5f0f66 | 2026-10-23T15:41:11Z | docs/stage3/ood_protocol.md | Documented protocol; timing not established | Controlled OOD phase shift from paramagnetic (h in [0.8, 1.5]) to ferromagnetic (h in [0.2, 0.7]) predicting entanglement entropy | In-distribution and out-of-distribution R^2 and MAE across 20 random seeds | FQ vs PQK-2nn vs Classical Ridge on 2-point correlators | R^2 sign (positive vs negative) and paired MAE difference | Addition of Train-Mean/Train-Median constant baselines, Holm adjustment across expanded family, and SVR intercept/kernel decompositions (Audit 20261023_155335Z) | The formal protocol was written in ood_protocol.md labeled 'CONFIRMATORY', but committed atomically with benchmark results in git commit 292d689. Pre-execution git commit absent. |
+| Audit & Evidence Reconciliation (Audit 20261023_155335Z & Closure) | Uncommitted working tree additions | N/A (working tree) | docs/verification/closure_20261023_163403Z/task_specification.txt | Explicitly retrospective / post-hoc audit | Forensic audit of sampling covariance, RDM representations, metrics, constant baselines, SVR decompositions, and protocol provenance | Identification of supported vs qualified claims, correction of narrative reporting errors, and reconciliation of mathematical quantities | Authoritative CSV values vs narrative reports; full models vs intercept-only predictors; full 3-comparison family | z < 3.0 for sampling covariance, p_holm < 0.05 for pairwise differences | Closure package (closure_20261023_163403Z) | Fully post-hoc forensic audit executed after benchmark completion to establish rigor and boundaries. |
+
+## 3. Detailed Stage-by-Stage Provenance Assessment
+
+### 3.1 Stage 2: Equal-Total-Budget Benchmark
+- **Git Provenance:** All Stage 2 files (`docs/stage2/equal_budget_summary.md`, `results/stage2/t1_equal_budget.csv`, `scripts/stage2_equal_budget.py`) were committed atomically in commit `dff0171` (2026-10-23 20:32:50 +0530 / 15:02:50Z).
+- **Protocol Status:** The experimental parameters ($B_{\text{tot}} = M \cdot S$, shot grids, observable cliques) were defined in user prompt specifications prior to execution, and the summary document states frozen rules. However, because no pre-execution Git tag or commit exists in the repo history, its provenance is formally classified as **Documented protocol; timing not established**.
+
+### 3.2 Stage 3: Controlled OOD Phase-Shift Generalization
+- **Git Provenance:** All Stage 3 files (`docs/stage3/ood_protocol.md`, `results/stage3/t6_ood_shift.csv`, `scripts/stage3_ood_shift.py`, `tests/test_stage3_ood.py`) were committed atomically in commit `292d689` (2026-10-23 21:11:11 +0530 / 15:41:11Z).
+- **Protocol Status:** The file `docs/stage3/ood_protocol.md` contains an extensive, mathematically rigorous protocol header declaring `CONFIRMATORY (Stage 3 Frozen Protocol)`. The core hypotheses (FQ vs PQK-2nn, domain partitions $h \in [0.8, 1.5]$ vs $[0.2, 0.7]$) were followed as written. However, because it was committed simultaneously with the results, the timing cannot be externally proven from git history alone. It is classified as **Documented protocol; timing not established**.
+- **Retrospective Additions:** The inclusion of training-set constant baselines (`Train-Mean` and `Train-Median`), Holm family expansion, and SVR intercept/kernel decompositions performed during the audit are explicitly retrospective additions.

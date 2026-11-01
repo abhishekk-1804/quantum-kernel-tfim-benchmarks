@@ -1,0 +1,26 @@
+\begin{table*}[!t]
+\caption{Stage 2 Equal-Total-Budget Evaluation ($N_{\mathrm{tr}}=40$, $N_{\mathrm{te}}=200$, 20 seeds) [Exploratory: results/stage2/t1_equal_budget.csv, 980 rows]}
+\label{tab:equal_budget}
+\centering
+\begingroup
+\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{@{}rcccccccl@{}}
+\toprule
+\textbf{Budget} $B_{\mathrm{tot}}$ & \multicolumn{2}{c}{\textbf{Shots/Setting}} & \multicolumn{2}{c}{\textbf{PQK-2nn}} & \multicolumn{2}{c}{\textbf{FQ (train\_only)}} & \textbf{Paired Diff} $\Delta R^2$ & \textbf{Verdict} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-8}
+ & $S_{\mathrm{feat}}$ & $S_{\mathrm{swap}}$ & Mean $R^2$ & SE & Mean $R^2$ & SE & (FQ $-$ PQK-2nn) & \\
+\midrule
+10,000 & 13 & 0 & 0.4637 & $\pm 0.0284$ & \multicolumn{2}{c}{\textit{Excluded under minimum-shot policy}} & \textit{N/A} & Excluded under minimum-shot policy ($S_{\mathrm{swap}} < 10$) \\
+30,000 & 41 & 0 & 0.7289 & $\pm 0.0133$ & \multicolumn{2}{c}{\textit{Excluded under minimum-shot policy}} & \textit{N/A} & Excluded under minimum-shot policy ($S_{\mathrm{swap}} < 10$) \\
+100,000 & 138 & 11 & 0.8814 & $\pm 0.0088$ & 0.0932 & $\pm 0.0534$ & -0.7882 $\pm 0.0560$ & PQK-2nn Higher Observed Performance \\
+300,000 & 416 & 34 & 0.9380 & $\pm 0.0034$ & 0.6459 & $\pm 0.0164$ & -0.2921 $\pm 0.0171$ & PQK-2nn Higher Observed Performance \\
+1,000,000 & 1388 & 113 & 0.9575 & $\pm 0.0026$ & 0.8288 & $\pm 0.0067$ & -0.1287 $\pm 0.0067$ & PQK-2nn Higher Observed Performance \\
+3,000,000 & 4166 & 341 & 0.9703 & $\pm 0.0027$ & 0.8777 & $\pm 0.0074$ & -0.0926 $\pm 0.0073$ & PQK-2nn Higher Observed Performance \\
+10,000,000 & 13888 & 1138 & 0.9753 & $\pm 0.0024$ & 0.8828 & $\pm 0.0130$ & -0.0924 $\pm 0.0126$ & PQK-2nn Higher Observed Performance \\
+\bottomrule
+\end{tabular}
+\endgroup
+\vspace{1ex}
+{\raggedright \footnotesize \textbf{Notes:} Evaluated on Disordered 1D TFIM ground states ($n=8$, $N_{\mathrm{tr}}=40$, $N_{\mathrm{te}}=200$) across 20 independent seeds. Reported metrics represent sample mean and standard error ($\mathrm{SE} = s / \sqrt{n}$, $n=20$). Paired difference direction is defined as $\Delta R^2 = R^2(\mathrm{FQ}) - R^2(\mathrm{PQK\text{-}2nn})$. At $B_{\mathrm{tot}} \in \{10{,}000, 30{,}000\}$, FQ circuit execution is excluded under the study's minimum-shot policy ($S_{\mathrm{swap}} < 10$). Feature models exhibit higher observed performance at the evaluated measurement budgets ($B_{\mathrm{tot}} \le 10^7$). Prospective protocol timing not established from inspected records (classified as Exploratory).\par}
+\end{table*}

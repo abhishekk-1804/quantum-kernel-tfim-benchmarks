@@ -1,0 +1,22 @@
+B_tot,architecture,settings,allocated_shots_per_setting,circuit_repetitions_consumed,input_state_copies_consumed,unused_budget_shots,efficiency_percent,feasibility_status
+10000,"3-basis Features (PQK-1 3b, PQK-2nn, E2)",720,13,9360,9360,640,93.60000000000001,Feasible
+10000,1-basis Feature (PQK-1 x_only),240,41,9840,9840,160,98.4,Feasible
+10000,FQ (Pairwise Swap Test),8780,1,8780,17560,1220,87.8,Excluded by study minimum-shot policy (S_swap < 10)
+30000,"3-basis Features (PQK-1 3b, PQK-2nn, E2)",720,41,29520,29520,480,98.4,Feasible
+30000,1-basis Feature (PQK-1 x_only),240,125,30000,30000,0,100.0,Feasible
+30000,FQ (Pairwise Swap Test),8780,3,26340,52680,3660,87.8,Excluded by study minimum-shot policy (S_swap < 10)
+100000,"3-basis Features (PQK-1 3b, PQK-2nn, E2)",720,138,99360,99360,640,99.36,Feasible
+100000,1-basis Feature (PQK-1 x_only),240,416,99840,99840,160,99.83999999999999,Feasible
+100000,FQ (Pairwise Swap Test),8780,11,96580,193160,3420,96.58,Feasible
+300000,"3-basis Features (PQK-1 3b, PQK-2nn, E2)",720,416,299520,299520,480,99.83999999999999,Feasible
+300000,1-basis Feature (PQK-1 x_only),240,1250,300000,300000,0,100.0,Feasible
+300000,FQ (Pairwise Swap Test),8780,34,298520,597040,1480,99.50666666666666,Feasible
+1000000,"3-basis Features (PQK-1 3b, PQK-2nn, E2)",720,1388,999360,999360,640,99.936,Feasible
+1000000,1-basis Feature (PQK-1 x_only),240,4166,999840,999840,160,99.984,Feasible
+1000000,FQ (Pairwise Swap Test),8780,113,992140,1984280,7860,99.214,Feasible
+3000000,"3-basis Features (PQK-1 3b, PQK-2nn, E2)",720,4166,2999520,2999520,480,99.984,Feasible
+3000000,1-basis Feature (PQK-1 x_only),240,12500,3000000,3000000,0,100.0,Feasible
+3000000,FQ (Pairwise Swap Test),8780,341,2993980,5987960,6020,99.79933333333332,Feasible
+10000000,"3-basis Features (PQK-1 3b, PQK-2nn, E2)",720,13888,9999360,9999360,640,99.9936,Feasible
+10000000,1-basis Feature (PQK-1 x_only),240,41666,9999840,9999840,160,99.9984,Feasible
+10000000,FQ (Pairwise Swap Test),8780,1138,9991640,19983280,8360,99.91640000000001,Feasible

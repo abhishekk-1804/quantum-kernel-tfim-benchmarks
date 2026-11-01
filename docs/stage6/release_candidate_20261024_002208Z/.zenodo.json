@@ -1,0 +1,34 @@
+{
+  "title": "Benchmarking Quantum Kernels and Classical Correlator Baselines on Disordered TFIM Chains",
+  "description": "Comprehensive benchmark and reproducibility release evaluating projected quantum kernels (PQK), fidelity quantum kernels (FQ), and matched classical correlator baselines on exact ground states of the 1D transverse-field Ising model (TFIM) and frustrated 2D J1-J2 lattices. Includes exact numerical diagonalization statevectors, finite measurement shot scaling models, depolarizing noise simulations, controlled out-of-distribution (OOD) phase-shift evaluations, and full statistical verification artifacts.",
+  "creators": [
+    {
+      "name": "Doddagoudar, Abhishek K.",
+      "affiliation": "Department of Computer Science & Engineering, Presidency University, Bengaluru, India",
+      "orcid": "0009-0000-0000-0000"
+    }
+  ],
+  "keywords": [
+    "quantum machine learning",
+    "projected quantum kernels",
+    "fidelity quantum kernels",
+    "support vector regression",
+    "transverse-field ising model",
+    "spin chains",
+    "measurement shot budget",
+    "out-of-distribution generalization",
+    "barren plateaus",
+    "reproducible research"
+  ],
+  "license": "Apache-2.0",
+  "upload_type": "software",
+  "access_right": "open",
+  "version": "v1.0.0-rc1",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/Abhishek-Doddagoudar/quantum-kernel-tfim-benchmarks",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}

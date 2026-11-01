@@ -1,0 +1,16 @@
+=== STAGE 2B CITATION INTEGRITY AUDIT ===
+
+Total unique cited keys in main.tex: 6
+Cited keys: ['Canatar2023bandwidth', 'havlicek2019', 'huang2021', 'schuld2019', 'shaydulin2022', 'thanasilp2024']
+
+Total entry keys in references.bib: 6
+Bib entry keys: ['Canatar2023bandwidth', 'havlicek2019', 'huang2021', 'schuld2019', 'shaydulin2022', 'thanasilp2024']
+
+Missing keys in references.bib (Must be 0): 0
+  PASS: 100% of cited keys exist in references.bib.
+
+Unused keys in references.bib: 0
+  Unused: []
+
+Shaydulin duplicate check: 'Shaydulin2022importance' in bib = False
+Canonical 'shaydulin2022' in bib = True

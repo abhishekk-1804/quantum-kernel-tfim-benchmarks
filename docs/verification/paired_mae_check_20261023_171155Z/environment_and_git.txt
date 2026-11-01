@@ -1,0 +1,119 @@
+=== ENVIRONMENT AND GIT SNAPSHOT ===
+Actual UTC Start Time: 2026-10-23T17:18:05.068663+00:00
+Repository Root: D:\quantum-kernel-tfim-benchmarks
+HEAD Commit: 292d689dd845f6228fae6265cffe83b81d5f0f66
+Branch / Detached State: main
+Python Executable: D:\qml_env\Scripts\python.exe
+Python Version: 3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]
+NumPy Version: 2.5.4
+Pandas Version: 3.0.6
+SciPy Version: 1.18.1
+
+--- git status --short --untracked-files=all ---
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/docs/stage2/equal_budget_summary.md
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/docs/stage2/fig_equal_budget_curve.csv
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/docs/stage3/ood_findings.md
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/docs/stage3/ood_protocol.md
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/environment_context.txt
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/git_baseline.txt
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/manifest_sha256.csv
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/requirements.txt
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/results/stage2/t1_equal_budget.csv
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/results/stage3/t6_ood_shift.csv
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/scripts/ablation_r3_repairs.py
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/scripts/common.py
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/scripts/stage2_analysis.py
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/scripts/stage2_equal_budget.py
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/scripts/stage3_analysis.py
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/scripts/stage3_ood_shift.py
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/snapshot_scope.md
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/src/hamiltonians.py
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/src/kernels.py
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/src/noise.py
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/tests/test_stage2_budget.py
+?? docs/provenance/snapshot_20261023_155335Z_candidate_v1/tests/test_stage3_ood.py
+?? docs/verification/audit_20261023_155335Z/VERIFICATION_REPORT.md
+?? docs/verification/audit_20261023_155335Z/covariance_diagnostic.csv
+?? docs/verification/audit_20261023_155335Z/input_inspection.md
+?? docs/verification/audit_20261023_155335Z/input_integrity.csv
+?? docs/verification/audit_20261023_155335Z/input_schema.json
+?? docs/verification/audit_20261023_155335Z/kernel_summary.csv
+?? docs/verification/audit_20261023_155335Z/measurement_manifest.csv
+?? docs/verification/audit_20261023_155335Z/predictions/seed_00_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_01_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_02_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_03_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_04_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_05_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_06_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_07_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_08_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_09_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_10_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_11_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_12_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_13_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_14_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_15_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_16_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_17_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_18_arrays.npz
+?? docs/verification/audit_20261023_155335Z/predictions/seed_19_arrays.npz
+?? docs/verification/audit_20261023_155335Z/repair_and_cv_audit.md
+?? docs/verification/audit_20261023_155335Z/replay_metric_comparison.csv
+?? docs/verification/audit_20261023_155335Z/replay_status.md
+?? docs/verification/audit_20261023_155335Z/representation_audit.md
+?? docs/verification/audit_20261023_155335Z/representation_distance_checks.csv
+?? docs/verification/audit_20261023_155335Z/representation_reference_arrays.npz
+?? docs/verification/audit_20261023_155335Z/resource_accounting.csv
+?? docs/verification/audit_20261023_155335Z/stage2_sampling_audit.md
+?? docs/verification/audit_20261023_155335Z/stage3_baselines.csv
+?? docs/verification/audit_20261023_155335Z/stage3_mae_comparisons.csv
+?? docs/verification/audit_20261023_155335Z/stage3_metric_audit.md
+?? docs/verification/audit_20261023_155335Z/stage3_replay_manifest.json
+?? docs/verification/audit_20261023_155335Z/stage3_svr_decomposition.csv
+?? docs/verification/audit_20261023_155335Z/stage3_svr_decomposition.md
+?? docs/verification/audit_20261023_155335Z/stage3_target_diagnostics.csv
+?? docs/verification/closure_20261023_163403Z/logs/environment_and_git.txt
+?? docs/verification/closure_20261023_163403Z/reports/AUDIT_CLOSURE_REPORT.md
+?? docs/verification/closure_20261023_163403Z/reports/INDEPENDENT_REVIEW_CHECKLIST.md
+?? docs/verification/closure_20261023_163403Z/reports/REVIEW_SIGNOFF_TEMPLATE.md
+?? docs/verification/closure_20261023_163403Z/reports/audit_development_history.md
+?? docs/verification/closure_20261023_163403Z/reports/covariance_reconciliation.md
+?? docs/verification/closure_20261023_163403Z/reports/input_inventory.md
+?? docs/verification/closure_20261023_163403Z/reports/kernel_summary_reconciliation.md
+?? docs/verification/closure_20261023_163403Z/reports/mae_family_reconciliation.md
+?? docs/verification/closure_20261023_163403Z/reports/prediction_decomposition_closure.md
+?? docs/verification/closure_20261023_163403Z/reports/protocol_provenance.md
+?? docs/verification/closure_20261023_163403Z/reports/repair_cv_closure.md
+?? docs/verification/closure_20261023_163403Z/scripts/step10_final_closure_report.py
+?? docs/verification/closure_20261023_163403Z/scripts/step1_inventory_and_baseline.py
+?? docs/verification/closure_20261023_163403Z/scripts/step2_covariance_reconciliation.py
+?? docs/verification/closure_20261023_163403Z/scripts/step3_kernel_reconciliation.py
+?? docs/verification/closure_20261023_163403Z/scripts/step4_full_vs_intercept.py
+?? docs/verification/closure_20261023_163403Z/scripts/step5_mae_family_reconciliation.py
+?? docs/verification/closure_20261023_163403Z/scripts/step6_protocol_provenance.py
+?? docs/verification/closure_20261023_163403Z/scripts/step7_repair_cv_closure.py
+?? docs/verification/closure_20261023_163403Z/scripts/step8_audit_history.py
+?? docs/verification/closure_20261023_163403Z/scripts/step9_review_package.py
+?? docs/verification/closure_20261023_163403Z/tables/baseline_mae_summary.csv
+?? docs/verification/closure_20261023_163403Z/tables/closure_input_hashes.csv
+?? docs/verification/closure_20261023_163403Z/tables/covariance_reconciliation.csv
+?? docs/verification/closure_20261023_163403Z/tables/full_vs_intercept_per_seed.csv
+?? docs/verification/closure_20261023_163403Z/tables/full_vs_intercept_summary.csv
+?? docs/verification/closure_20261023_163403Z/tables/kernel_quantity_definitions.csv
+?? docs/verification/closure_20261023_163403Z/tables/kernel_summary_reconciled.csv
+?? docs/verification/closure_20261023_163403Z/tables/mae_family_original_rechecked.csv
+?? docs/verification/closure_20261023_163403Z/tables/mae_family_revised_retrospective.csv
+?? docs/verification/closure_20261023_163403Z/tables/protocol_provenance_ledger.csv
+?? docs/verification/closure_20261023_163403Z/tables/repair_cv_dataflow.csv
+?? docs/verification/paired_mae_check_20261023_171155Z/reconcile_paired_mae.py
+?? scripts/audit_representation_identity.py
+?? scripts/audit_stage2_sampling.py
+?? scripts/audit_stage3_metrics.py
+
+--- git diff --stat ---
+
+
+--- git diff --cached --stat ---
+

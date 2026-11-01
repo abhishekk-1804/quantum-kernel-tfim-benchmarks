@@ -1,0 +1,173 @@
+{
+  "audit_id": "audit_20261023_155335Z",
+  "stage2": {
+    "path": "D:\\quantum-kernel-tfim-benchmarks\\results\\stage2\\t1_equal_budget.csv",
+    "row_count": 980,
+    "columns": [
+      "seed",
+      "B_tot",
+      "model",
+      "variant",
+      "S_per_setting",
+      "test_r2",
+      "test_mae",
+      "best_params",
+      "inner_cv_score",
+      "is_feasible"
+    ],
+    "types": {
+      "seed": "int64",
+      "B_tot": "int64",
+      "model": "str",
+      "variant": "str",
+      "S_per_setting": "int64",
+      "test_r2": "float64",
+      "test_mae": "float64",
+      "best_params": "str",
+      "inner_cv_score": "float64",
+      "is_feasible": "bool"
+    },
+    "null_counts": {
+      "seed": 0,
+      "B_tot": 0,
+      "model": 0,
+      "variant": 0,
+      "S_per_setting": 0,
+      "test_r2": 120,
+      "test_mae": 120,
+      "best_params": 0,
+      "inner_cv_score": 120,
+      "is_feasible": 0
+    },
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "budgets": [
+      10000,
+      30000,
+      100000,
+      300000,
+      1000000,
+      3000000,
+      10000000
+    ],
+    "models": [
+      "E2",
+      "FQ",
+      "PQK-1",
+      "PQK-2nn"
+    ],
+    "variants": [
+      "3basis",
+      "inductive",
+      "none",
+      "raw_4n_grid",
+      "train_only",
+      "x_only"
+    ],
+    "composite_key": [
+      "seed",
+      "B_tot",
+      "model",
+      "variant"
+    ],
+    "structural_infeasible_rows": 120
+  },
+  "stage3": {
+    "path": "D:\\quantum-kernel-tfim-benchmarks\\results\\stage3\\t6_ood_shift.csv",
+    "row_count": 100,
+    "columns": [
+      "seed",
+      "model",
+      "variant",
+      "id_r2",
+      "id_mae",
+      "ood_r2",
+      "ood_mae",
+      "delta_r2",
+      "best_params",
+      "inner_cv_score"
+    ],
+    "types": {
+      "seed": "int64",
+      "model": "str",
+      "variant": "str",
+      "id_r2": "float64",
+      "id_mae": "float64",
+      "ood_r2": "float64",
+      "ood_mae": "float64",
+      "delta_r2": "float64",
+      "best_params": "str",
+      "inner_cv_score": "float64"
+    },
+    "null_counts": {
+      "seed": 0,
+      "model": 0,
+      "variant": 0,
+      "id_r2": 0,
+      "id_mae": 0,
+      "ood_r2": 0,
+      "ood_mae": 0,
+      "delta_r2": 0,
+      "best_params": 0,
+      "inner_cv_score": 0
+    },
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "models": [
+      "E2 (4n)",
+      "FQ",
+      "Linear_Ridge",
+      "PQK-1",
+      "PQK-2nn"
+    ],
+    "variants": [
+      "none",
+      "raw_4n_grid"
+    ],
+    "composite_key": [
+      "seed",
+      "model"
+    ],
+    "total_nulls": 0
+  }
+}

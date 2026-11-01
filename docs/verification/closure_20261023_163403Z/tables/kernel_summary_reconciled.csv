@@ -1,0 +1,9 @@
+metric,across_seed_mean,across_seed_std,across_seed_median,across_seed_min,across_seed_max,interquartile_range
+K_id_mean,0.932609,0.002881,0.932389,0.925628,0.937798,0.002943
+K_id_median,0.940116,0.002717,0.939796,0.934413,0.945157,0.002815
+K_id_max,0.995626,0.001125,0.995583,0.993706,0.997749,0.001796
+K_ood_mean,0.431281,0.015717,0.430809,0.401520,0.467863,0.019126
+K_ood_median,0.419004,0.016861,0.418731,0.386667,0.459188,0.020515
+K_ood_max,0.867791,0.038965,0.859169,0.805246,0.944754,0.057288
+K_attenuation_ratio,0.462441,0.016669,0.461868,0.430961,0.502009,0.016327
+ratio_of_aggregate_means (mean(K_ood) / mean(K_id)),0.462446,N/A,N/A,N/A,N/A,N/A

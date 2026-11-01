@@ -1,0 +1,44 @@
+{
+  "seed_mapping_rule": "seed_XX_arrays.npz corresponds to CSV row where seed == int(XX)",
+  "ood_target_key": "y_ood",
+  "id_target_key": "y_id",
+  "model_key_mapping": {
+    "FQ": {
+      "pred_id": "fq_pred_id",
+      "pred_ood": "fq_pred_ood",
+      "variant": "none"
+    },
+    "PQK-1": {
+      "pred_id": "pqk1_pred_id",
+      "pred_ood": "pqk1_pred_ood",
+      "variant": "none"
+    },
+    "PQK-2nn": {
+      "pred_id": "pqk2_pred_id",
+      "pred_ood": "pqk2_pred_ood",
+      "variant": "none"
+    },
+    "E2 (4n)": {
+      "pred_id": "e2_pred_id",
+      "pred_ood": "e2_pred_ood",
+      "variant": "raw_4n_grid"
+    },
+    "Linear_Ridge": {
+      "pred_id": "ridge_pred_id",
+      "pred_ood": "ridge_pred_ood",
+      "variant": "none"
+    }
+  },
+  "tolerances": {
+    "mae_atol": 1e-07,
+    "mae_rtol": 0.0,
+    "r2_atol": 1e-06,
+    "r2_rtol": 0.0
+  },
+  "statistical_protocol": {
+    "paired_difference": "diff = FQ_mae - PQK2_mae",
+    "wilcoxon_test": "scipy.stats.wilcoxon(diff, alternative='two-sided')",
+    "historical_W": 21.0,
+    "historical_p": 0.000850677490234375
+  }
+}

@@ -1,0 +1,10 @@
+table,row_id,raw_float_value,formatter_code,formatted_string,displayed_text,expected_round_half_even,absolute_difference,classification,explanation
+Table II (tab2_confirmatory_stats.tex),T4a 2x4 accuracy FQ vs E (raw) N=40 CI upper,0.01575,"f""{val:+.4f}""",+0.0158,[+0.0158],+0.0158,5e-05,Formatting-consistent rounding difference (not a numerical error),"IEEE 754 binary floating-point representation of 0.01575 is strictly greater than 0.01575 by ~1.1e-18, causing Python standard float formatter f'{val:.4f}' to round up to 0.0158."
+Table II (tab2_confirmatory_stats.tex),T4a 2x4 accuracy FQ vs E (raw) N=80 Mean diff,0.00075,"f""{val:+.4f}""",+0.0008,+0.0008,+0.0008,5e-05,Formatting-consistent rounding difference (not a numerical error),"IEEE 754 binary floating-point representation of 0.00075 is strictly greater than 0.00075 by ~2.2e-20, causing Python standard float formatter f'{val:.4f}' to round up to 0.0008."
+Table I (tab1_t1_r2.tex),FQ N=40 Mean R2,0.9902426284587857,"f""{val:.4f}""",0.9902,0.9902,0.9902,0.0,Exact match,Matches source CSV exactly.
+Table I (tab1_t1_r2.tex),FQ N=160 Mean R2,0.9975315509496199,"f""{val:.4f}""",0.9975,0.9975,0.9975,0.0,Exact match,Matches source CSV exactly.
+Table I (tab1_t1_r2.tex),PQK-2nn N=40 Mean R2,0.9788894452348156,"f""{val:.4f}""",0.9789,0.9789,0.9789,0.0,Exact match,Matches source CSV exactly.
+Stage 2 Table,PQK-2nn B=100k Mean R2,0.8814328864757345,"f""{val:.4f}""",0.8814,0.8814,0.8814,0.0,Exact match,Matches source CSV exactly.
+Stage 2 Table,FQ (train_only) B=100k Mean R2,0.0932264871031388,"f""{val:.4f}""",0.0932,0.0932,0.0932,0.0,Exact match,Matches source CSV exactly.
+Stage 3 Table,FQ OOD MAE Mean,0.06018072408309485,"f""{val:.4f}""",0.0602,0.0602,0.0602,0.0,Exact match,Matches source CSV exactly.
+Stage 3 Table,PQK-2nn OOD MAE Mean,0.18502997367579102,"f""{val:.4f}""",0.1850,0.1850,0.1850,0.0,Exact match,Matches source CSV exactly.

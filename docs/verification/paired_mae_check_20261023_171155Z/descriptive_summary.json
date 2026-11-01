@@ -1,0 +1,62 @@
+{
+  "pair_count": 20,
+  "seed_list": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "mean_fq_mae": 0.0601807240830949,
+  "mean_pqk2_mae": 0.18502997367579105,
+  "mean_difference": -0.12484924959269617,
+  "diff_of_means": -0.12484924959269615,
+  "mean_identity_discrepancy": 1.3877787807814457e-17,
+  "median_difference": -0.12060778681660722,
+  "min_difference": -0.4449190081724129,
+  "max_difference": 0.15332854316709393,
+  "negative_difference_count (FQ < PQK2)": 16,
+  "positive_difference_count (FQ > PQK2)": 4,
+  "zero_difference_count": 0,
+  "number_of_absolute_ties": 0,
+  "absolute_tie_structure": {},
+  "positive_rank_sum_W_plus": 21.0,
+  "negative_rank_sum_W_minus": 189.0,
+  "total_rank_sum": 210.0,
+  "expected_rank_sum_N_N_plus_1_div_2": 210.0,
+  "historical_comparisons": {
+    "mean_fq_mae_historical_0.0602": {
+      "historical_value": 0.0602,
+      "exact_unrounded": 0.0601807240830949,
+      "rounded_4_decimals": 0.0602,
+      "assessment": "Reproduces after rounding"
+    },
+    "mean_pqk2_mae_historical_0.1850": {
+      "historical_value": 0.185,
+      "exact_unrounded": 0.18502997367579105,
+      "rounded_4_decimals": 0.185,
+      "assessment": "Reproduces after rounding"
+    },
+    "mean_difference_historical_-0.1248": {
+      "historical_value": -0.1248,
+      "exact_unrounded": -0.12484924959269617,
+      "rounded_4_decimals": -0.1248,
+      "assessment": "Reproduces after rounding"
+    }
+  }
+}

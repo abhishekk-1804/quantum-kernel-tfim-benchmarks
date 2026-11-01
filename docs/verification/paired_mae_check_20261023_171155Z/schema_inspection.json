@@ -1,0 +1,231 @@
+{
+  "csv_path": "results/stage3/t6_ood_shift.csv",
+  "row_count": 100,
+  "column_names": [
+    "seed",
+    "model",
+    "variant",
+    "id_r2",
+    "id_mae",
+    "ood_r2",
+    "ood_mae",
+    "delta_r2",
+    "best_params",
+    "inner_cv_score"
+  ],
+  "models": [
+    "FQ",
+    "PQK-1",
+    "PQK-2nn",
+    "E2 (4n)",
+    "Linear_Ridge"
+  ],
+  "variants": [
+    "none",
+    "raw_4n_grid"
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "null_counts": {
+    "seed": 0,
+    "model": 0,
+    "variant": 0,
+    "id_r2": 0,
+    "id_mae": 0,
+    "ood_r2": 0,
+    "ood_mae": 0,
+    "delta_r2": 0,
+    "best_params": 0,
+    "inner_cv_score": 0
+  },
+  "nonfinite_counts": {
+    "seed": 0,
+    "id_r2": 0,
+    "id_mae": 0,
+    "ood_r2": 0,
+    "ood_mae": 0,
+    "delta_r2": 0,
+    "inner_cv_score": 0
+  },
+  "candidate_metric_columns": [
+    "id_r2",
+    "id_mae",
+    "ood_r2",
+    "ood_mae",
+    "delta_r2"
+  ],
+  "npz_sample_keys": {
+    "y_train": {
+      "shape": [
+        40
+      ],
+      "dtype": "float64"
+    },
+    "y_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "y_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "fq_pred_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "fq_pred_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "pqk1_pred_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "pqk1_pred_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "pqk2_pred_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "pqk2_pred_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "e2_pred_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "e2_pred_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "ridge_pred_id": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "ridge_pred_ood": {
+      "shape": [
+        100
+      ],
+      "dtype": "float64"
+    },
+    "fq_dual_coef": {
+      "shape": [
+        29
+      ],
+      "dtype": "float64"
+    },
+    "fq_support": {
+      "shape": [
+        29
+      ],
+      "dtype": "int32"
+    },
+    "fq_intercept": {
+      "shape": [],
+      "dtype": "float64"
+    },
+    "fq_K_tr": {
+      "shape": [
+        40,
+        40
+      ],
+      "dtype": "float64"
+    },
+    "fq_K_id": {
+      "shape": [
+        100,
+        40
+      ],
+      "dtype": "float64"
+    },
+    "fq_K_ood": {
+      "shape": [
+        100,
+        40
+      ],
+      "dtype": "float64"
+    },
+    "pqk2_dual_coef": {
+      "shape": [
+        34
+      ],
+      "dtype": "float64"
+    },
+    "pqk2_support": {
+      "shape": [
+        34
+      ],
+      "dtype": "int32"
+    },
+    "pqk2_intercept": {
+      "shape": [],
+      "dtype": "float64"
+    },
+    "pqk2_K_tr": {
+      "shape": [
+        40,
+        40
+      ],
+      "dtype": "float64"
+    },
+    "pqk2_K_id": {
+      "shape": [
+        100,
+        40
+      ],
+      "dtype": "float64"
+    },
+    "pqk2_K_ood": {
+      "shape": [
+        100,
+        40
+      ],
+      "dtype": "float64"
+    }
+  }
+}

@@ -1,0 +1,220 @@
+{
+  "manuscript_quotes": [
+    {
+      "line": 29,
+      "text": "and matched classical correlator baselines for predicting ground-state"
+    },
+    {
+      "line": 35,
+      "text": "kernels (PQK-2nn) and classical two-body correlator features (E-raw) track"
+    },
+    {
+      "line": 43,
+      "text": "absolute error. Physical correlator baselines match quantum kernel sample efficiency"
+    },
+    {
+      "line": 57,
+      "text": "In this work, we conduct a controlled empirical comparison of PQK, FQ, and matched classical correlator architectures on exact ground states of the 1D transverse-field Ising model (TFIM) and frustrated 2D lattices. We enforce a pre-declared statistical analysis protocol with family-wise error rate control, isolate finite-shot measurement sampling from gate synthesis noise, and systematically evaluate susceptibility to local depolarizing noise."
+    },
+    {
+      "line": 66,
+      "text": "and classical two-body correlators match FQ within $-0.0012$ to $+0.0032$"
+    },
+    {
+      "line": 85,
+      "text": "\\item \\textbf{Task 2 (T2):} Spin correlators at $n=8$. T2a evaluates the 2-point end-to-end correlator $\\langle Z_0 Z_{n-1} \\rangle$, serving as a ``contained control'' where classical ridge regression on two-point observables wins by construction. T2b evaluates the non-contained 4-point correlator $\\langle Z_0 Z_1 Z_{n-2} Z_{n-1} \\rangle$."
+    },
+    {
+      "line": 105,
+      "text": "We compare these quantum kernels against classical linear and non-linear correlator baselines:"
+    },
+    {
+      "line": 109,
+      "text": "\\item \\textbf{F (std):} Classical Ridge regression ($\\ell_2$-regularized linear model) on full 2-body correlators."
+    },
+    {
+      "line": 146,
+      "text": "\\subsection{Task 2: Contained vs Non-Contained Correlators}"
+    },
+    {
+      "line": 147,
+      "text": "In Task 2a, evaluating the 2-point correlator $\\langle Z_0 Z_{n-1} \\rangle$, classical Ridge regression (F std) achieves $R^2 = 1.0000$, winning by construction because the target observable is directly contained within the feature representation."
+    },
+    {
+      "line": 149,
+      "text": "In Task 2b, evaluating the non-contained 4-point correlator $\\langle Z_0 Z_1 Z_{n-2} Z_{n-1} \\rangle$, all models require non-linear feature maps. As reported in Table~\\ref{tab:confirmatory_stats}, at $N_{\\text{tr}}=160$, FQ, E (raw), and PQK-2nn become statistically indistinguishable:"
+    },
+    {
+      "line": 155,
+      "text": "This confirmatory test (Claim C3) proves that for non-trivial 4-body correlators, classical RBF kernels on 2-body expectations attain identical asymptotic accuracy to full fidelity quantum kernels."
+    },
+    {
+      "line": 182,
+      "text": "Under an idealized per-qubit local depolarizing proxy $\\mathcal{E}_k(\\rho) = (1-p)\\rho + p(I/2)\\otimes\\text{Tr}_k(\\rho)$ at $p=0.08$ with fixed $p=0$ hyperparameters, models incorporating two-body correlators exhibit slight monotonic degradation ($\\Delta R^2 = -0.0012$ for PQK-2nn and $-0.0015$ for E2-raw) due to $(1-p)^2 = 0.8464$ observable attenuation. Conversely, single-body (PQK-1) and fidelity kernels (FQ) show negligible degradation ($|\\Delta R^2| \\le 10^{-4}$). When hyperparameters $(C, c, \\epsilon)$ are re-tuned via inner cross-validation at each noise level, bandwidth expansion absorbs the uniform feature shrinkage, keeping all models within their 95\\% bootstrap confidence intervals of noiseless performance (Fig.~\\ref{fig:depol})."
+    },
+    {
+      "line": 219,
+      "text": "\\item This study does \\textit{not} show that classical correlators match quantum kernels on non-equilibrium quantum dynamics or chaotic time evolution."
+    },
+    {
+      "line": 227,
+      "text": "On exact equilibrium ground states of 1D and 2D spin chains, projected quantum kernels and classical two-body correlator baselines achieve learning performance statistically indistinguishable from full fidelity quantum kernels, while requiring over an order of magnitude fewer measurement shots. That classical two-body correlators track FQ at sample-efficiency parity on equilibrium ground states---where kernel-advantage intuition is strongest---suggests that observed advantages in the literature likely stem from non-equilibrium or non-local structure rather than from fidelity geometry itself. All data, analysis scripts, pre-declared statistical logs, and figures are fully reproducible via the accompanying open-source repository. All figures and tables in this paper are generated programmatically from committed CSV files via \\texttt{scripts/make\\_tables.py} and the figure-generation scripts, with no hand-typed empirical values."
+    }
+  ],
+  "hamiltonians_py": [
+    {
+      "line": 446,
+      "function_head": "def expect_zz(psi, n, i, j):",
+      "block": "def expect_zz(psi, n, i, j):\n    \"\"\"\n    Compute \u27e8\u03c8| Z_i Z_j |\u03c8\u27e9.\n\n    When i == j, Z_i\u00b2 = I analytically, returning \u2016\u03c8\u2016\u00b2 = 1 for any\n    normalised state without constructing the full operator.\n    Evaluated via the diagonal representation in the computational basis:\n        \u27e8\u03c8| Z_i Z_j |\u03c8\u27e9 = \u2211_s |\u03c8_s|\u00b2 (-1)^{b_i(s) \u2295 b_j(s)}\n    \"\"\"\n    if i == j:\n        return float(np.real(np.dot(psi.conj(), psi)))\n    dim = 2 ** n\n    s = np.arange(dim)\n    bi = (s >> (n - 1 - i)) & 1\n    bj = (s >> (n - 1 - j)) & 1\n    signs = 1.0 - 2.0 * ((bi ^ bj) & 1)\n    return float(np.sum(np.abs(psi) ** 2 * signs))\n\n\ndef expect_zzzz(psi, n, i, j, k, l):\n    \"\"\"\n    Compute \u27e8\u03c8| Z_i Z_j Z_k Z_l |\u03c8\u27e9.\n\n    Evaluated via the diagonal representation in the computational basis:\n        \u27e8\u03c8| Z_i Z_j Z_k Z_l |\u03c8\u27e9 = \u2211_s |\u03c8_s|\u00b2 (-1)^{b_i(s) \u2295 b_j(s) \u2295 b_k(s) \u2295 b_l(s)}\n    respecting qubit 0 as the most significant tensor factor (big-endian)."
+    },
+    {
+      "line": 465,
+      "function_head": "def expect_zzzz(psi, n, i, j, k, l):",
+      "block": "def expect_zzzz(psi, n, i, j, k, l):\n    \"\"\"\n    Compute \u27e8\u03c8| Z_i Z_j Z_k Z_l |\u03c8\u27e9.\n\n    Evaluated via the diagonal representation in the computational basis:\n        \u27e8\u03c8| Z_i Z_j Z_k Z_l |\u03c8\u27e9 = \u2211_s |\u03c8_s|\u00b2 (-1)^{b_i(s) \u2295 b_j(s) \u2295 b_k(s) \u2295 b_l(s)}\n    respecting qubit 0 as the most significant tensor factor (big-endian).\n    \"\"\"\n    s = np.arange(2 ** n)\n    bi = (s >> (n - 1 - i)) & 1\n    bj = (s >> (n - 1 - j)) & 1\n    bk = (s >> (n - 1 - k)) & 1\n    bl = (s >> (n - 1 - l)) & 1\n    signs = 1.0 - 2.0 * ((bi ^ bj ^ bk ^ bl) & 1)\n    return float(np.sum(np.abs(psi) ** 2 * signs))\n\n\ndef correlation_matrix(psi, n):\n    \"\"\"\n    Compute the n\u00d7n matrix  C_{ij} = \u27e8\u03c8| Z_i Z_j |\u03c8\u27e9.\n    \"\"\"\n    C = np.zeros((n, n), dtype=float)\n    for i in range(n):\n        for j in range(n):\n            C[i, j] = expect_zz(psi, n, i, j)\n    return C"
+    }
+  ],
+  "common_py": [
+    {
+      "line": 44,
+      "text": "expect_zzzz,"
+    },
+    {
+      "line": 166,
+      "text": "z0zn = []"
+    },
+    {
+      "line": 167,
+      "text": "zzzz = []"
+    },
+    {
+      "line": 176,
+      "text": "z0zn.append(expect_zz(psi, n, 0, n - 1))"
+    },
+    {
+      "line": 177,
+      "text": "zzzz.append(expect_zzzz(psi, n, 0, 1, n - 2, n - 1))"
+    },
+    {
+      "line": 182,
+      "text": "\"z0zn\": np.array(z0zn, dtype=float),"
+    },
+    {
+      "line": 183,
+      "text": "\"zzzz\": np.array(zzzz, dtype=float),"
+    },
+    {
+      "line": 234,
+      "text": "if t_lower in (\"t1\", \"t1_entropy\", \"t2\", \"t2_correlators\", \"t2a\", \"t2b\"):"
+    },
+    {
+      "line": 239,
+      "text": "elif target_name in (\"z0zn\", \"z0_zn\"):"
+    },
+    {
+      "line": 240,
+      "text": "targets = ensemble[\"z0zn\"]"
+    },
+    {
+      "line": 241,
+      "text": "elif target_name in (\"zzzz\", \"z0_z1_zn2_zn1\"):"
+    },
+    {
+      "line": 242,
+      "text": "targets = ensemble[\"zzzz\"]"
+    }
+  ],
+  "run_t2_py": [
+    {
+      "line": 5,
+      "text": "- Target T2a: 2-point end-to-end correlator <Z_0 Z_{n-1}> (tag: \"contained\")"
+    },
+    {
+      "line": 6,
+      "text": "- Target T2b: 4-point correlator <Z_0 Z_1 Z_{n-2} Z_{n-1}> (tag: \"not_contained\")"
+    },
+    {
+      "line": 75,
+      "text": "# Check if all blocks for both targets in this seed are already completed"
+    },
+    {
+      "line": 76,
+      "text": "needed_a = [N for N in n_train_list if (\"T2a\", seed, N) not in completed_blocks]"
+    },
+    {
+      "line": 77,
+      "text": "needed_b = [N for N in n_train_list if (\"T2b\", seed, N) not in completed_blocks]"
+    },
+    {
+      "line": 85,
+      "text": "# --- T2a: 2-point end-to-end correlator (contained) ---"
+    },
+    {
+      "line": 86,
+      "text": "if (\"T2a\", seed, N) not in completed_blocks:"
+    },
+    {
+      "line": 87,
+      "text": "tr_states_a, tr_targets_a, te_states_a, te_targets_a, _ = make_split("
+    },
+    {
+      "line": 88,
+      "text": "task=\"t2\", n=n, N=N, seed=seed, target_name=\"z0zn\""
+    },
+    {
+      "line": 91,
+      "text": "task=\"T2a\","
+    },
+    {
+      "line": 92,
+      "text": "target=\"z0_zn\","
+    },
+    {
+      "line": 98,
+      "text": "train_targets=tr_targets_a,"
+    },
+    {
+      "line": 100,
+      "text": "test_targets=te_targets_a,"
+    },
+    {
+      "line": 105,
+      "text": "completed_blocks.add((\"T2a\", seed, N))"
+    },
+    {
+      "line": 107,
+      "text": "# --- T2b: 4-point correlator (not_contained) ---"
+    },
+    {
+      "line": 108,
+      "text": "if (\"T2b\", seed, N) not in completed_blocks:"
+    },
+    {
+      "line": 109,
+      "text": "tr_states_b, tr_targets_b, te_states_b, te_targets_b, _ = make_split("
+    },
+    {
+      "line": 110,
+      "text": "task=\"t2\", n=n, N=N, seed=seed, target_name=\"zzzz\""
+    },
+    {
+      "line": 113,
+      "text": "task=\"T2b\","
+    },
+    {
+      "line": 114,
+      "text": "target=\"z0_z1_zn2_zn1\","
+    },
+    {
+      "line": 120,
+      "text": "train_targets=tr_targets_b,"
+    },
+    {
+      "line": 122,
+      "text": "test_targets=te_targets_b,"
+    },
+    {
+      "line": 127,
+      "text": "completed_blocks.add((\"T2b\", seed, N))"
+    }
+  ]
+}

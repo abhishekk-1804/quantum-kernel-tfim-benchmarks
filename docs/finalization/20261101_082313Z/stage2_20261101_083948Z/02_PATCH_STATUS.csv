@@ -1,0 +1,15 @@
+patch_id,file,status,description
+P01,paper/main.tex,APPLIED,Abstract: Quantitative differences and task-dependent ordering
+P02,paper/main.tex,APPLIED,Section II-B: TFIM Symmetry (parity and reality derivation)
+P03,paper/main.tex,APPLIED,Section II-B: Exact squared-distance identity and interior weighting
+P04,paper/main.tex,APPLIED,Section III-B: Task 2b statistical wording
+P05,paper/main.tex,APPLIED,Section III-B: Claim C3 qualified language
+P06,paper/main.tex,APPLIED,Section III-C: Figure 2 caption styling and axes
+P07,paper/main.tex,APPLIED,Section III-C: Verified finite-shot numbers and PSD cross-block description
+P08,paper/main.tex,APPLIED,Section III-E: Deployed budget accounting and shared bitstrings
+P09,paper/main.tex,APPLIED,Section III-F: Retrospective OOD family wording
+P10,paper/main.tex,APPLIED,Section III-F: OOD baseline mislabeling fix and omission disclosures
+P11,paper/main.tex,APPLIED,Section IV: Approved Conclusion text
+P12,paper/references.bib,APPLIED,Removed duplicate Shaydulin2022importance (shaydulin2022 retained)
+P13,paper/tables/tab_equal_budget.tex,APPLIED,"Table IV layout formatting: tabcolsep 3.0pt, streamlined column 9"
+P14,paper/tables/tab_ood.tex,APPLIED,Table V footnote: retrospective comparison family classification

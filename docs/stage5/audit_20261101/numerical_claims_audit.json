@@ -1,0 +1,3224 @@
+[
+  {
+    "file": "paper/main.tex",
+    "line": 36,
+    "literal": "-0.0012",
+    "numeric_value": -0.0012,
+    "type": "decimal",
+    "context": "full fidelity kernels within $-0.0012$ to $+0.0032$ mean $R^2$, while requiring",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 36,
+    "literal": "+0.0032",
+    "numeric_value": 0.0032,
+    "type": "decimal",
+    "context": "full fidelity kernels within $-0.0012$ to $+0.0032$ mean $R^2$, while requiring",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 37,
+    "literal": "12.2",
+    "numeric_value": 12.2,
+    "type": "decimal",
+    "context": "$12.2\\times$ to $39.8\\times$ fewer measurement shots. Rankings vary across tasks",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 37,
+    "literal": "39.8",
+    "numeric_value": 39.8,
+    "type": "decimal",
+    "context": "$12.2\\times$ to $39.8\\times$ fewer measurement shots. Rankings vary across tasks",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 66,
+    "literal": "-0.0012",
+    "numeric_value": -0.0012,
+    "type": "decimal",
+    "context": "and classical two-body correlators match FQ within $-0.0012$ to $+0.0032$",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 66,
+    "literal": "+0.0032",
+    "numeric_value": 0.0032,
+    "type": "decimal",
+    "context": "and classical two-body correlators match FQ within $-0.0012$ to $+0.0032$",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 68,
+    "literal": "12.2",
+    "numeric_value": 12.2,
+    "type": "decimal",
+    "context": "varying across tasks and sample sizes; and (iii) a $12.2\\times$--$39.8\\times$ FQ",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 68,
+    "literal": "39.8",
+    "numeric_value": 39.8,
+    "type": "decimal",
+    "context": "varying across tasks and sample sizes; and (iii) a $12.2\\times$--$39.8\\times$ FQ",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 86,
+    "literal": "0.5",
+    "numeric_value": 0.5,
+    "type": "decimal",
+    "context": "\\item \\textbf{Task 3 (T3):} Kernel concentration scaling across $n \\in \\{4, 6, 8, 10, 12, 14\\}$ on disordered TFIM ensembles ($h_i \\sim \\text{Uniform}(0.5, 1.5)$).",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 86,
+    "literal": "1.5",
+    "numeric_value": 1.5,
+    "type": "decimal",
+    "context": "\\item \\textbf{Task 3 (T3):} Kernel concentration scaling across $n \\in \\{4, 6, 8, 10, 12, 14\\}$ on disordered TFIM ensembles ($h_i \\sim \\text{Uniform}(0.5, 1.5)$).",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 103,
+    "literal": "1.33 \\times 10^{-15}",
+    "numeric_value": 1.3300000000000001e-15,
+    "type": "scientific",
+    "context": "Similarly, the 2-body nearest-neighbor projected kernel PQK-2nn evaluates 2-qubit reduced density matrices over graph edges $\\mathcal{E}$. Due to $\\mathbb{Z}_2$ parity symmetry, the 2-body reduced states decompose into identity, local $X_i$, and two-body components $X_i X_j$, $Y_i Y_j$, and $Z_i Z_j$. The squared Frobenius distance between reduced density matrices algebraically satisfies $\\|\\rho_{ij}(\\psi) - \\rho_{ij}(\\phi)\\|_F^2 = \\frac{1}{4}\\sum_{O \\in \\{X_i, X_j, X_i X_j, Y_i Y_j, Z_i Z_j\\}} (\\langle O \\rangle_\\psi - \\langle O \\rangle_\\phi)^2$. Consequently, PQK-2nn is algebraically identical to a classical RBF kernel on nearest-neighbor Pauli expectations with bandwidth scaled by $1/4$. When identical normalizers are used (e.g., $4n=32$ for $n=8$), the pairwise squared distance matrices match to machine precision ($|D^2_{\\mathrm{RDM}} - D^2_{\\mathrm{Pauli}}| \\le 1.33 \\times 10^{-15}$). Any minor divergence observed in historical heuristic hyperparameter sweeps between PQK-2nn and E2 (raw) is entirely an artifact of differing grid normalizers ($c/32$ for $4n$ vs $c/35$ for $5(n-1)=35$) rather than distinct physical representation geometry~\\cite{Canatar2023bandwidth}.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 117,
+    "literal": "0.00",
+    "numeric_value": 0.0,
+    "type": "decimal",
+    "context": "Each of the $n = 8$ qubits undergoes an independent depolarizing channel $\\mathcal{E}(\\rho) = (1-p)\\rho + p(I/2) \\otimes \\text{Tr}(\\rho)$, so a Pauli expectation of weight $k$ scales exactly by $(1-p)^k$; fidelity-kernel overlaps were computed from the explicitly evolved density matrices and normalized to unit diagonal. Hyperparameters were re-tuned by inner cross-validation at every $p$, so this experiment measures the effect of the channel after retuning, not on fixed models. In addition, an unmitigated control evaluating fixed $p=0.00$ optimal hyperparameters was executed to quantify intrinsic channel attenuation without adaptive compensation.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 141,
+    "literal": "1.53 \\times 10^{-5}",
+    "numeric_value": 1.5300000000000003e-05,
+    "type": "scientific",
+    "context": "\\item \\textbf{PQK Spatial Dimension Hierarchy (Claim C1):} PQK-2nn consistently outperforms PQK-1 across all sample sizes $N_{\\text{tr}} \\in [10, 160]$. At $N_{\\text{tr}}=10$, PQK-2nn exceeds PQK-1 by $\\Delta R^2 = 0.1044$ ($p_{\\text{holm}} = 0.0186$), narrowing to $\\Delta R^2 = 0.0414$ at $N_{\\text{tr}}=160$ ($p_{\\text{holm}} = 1.53 \\times 10^{-5}$). The performance gap ranges from $0.0414$ to $0.1044$ in mean $R^2$, demonstrating that 2-body spatial entanglement information is essential for predicting block entropy.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 141,
+    "literal": "0.1044",
+    "numeric_value": 0.1044,
+    "type": "decimal",
+    "context": "\\item \\textbf{PQK Spatial Dimension Hierarchy (Claim C1):} PQK-2nn consistently outperforms PQK-1 across all sample sizes $N_{\\text{tr}} \\in [10, 160]$. At $N_{\\text{tr}}=10$, PQK-2nn exceeds PQK-1 by $\\Delta R^2 = 0.1044$ ($p_{\\text{holm}} = 0.0186$), narrowing to $\\Delta R^2 = 0.0414$ at $N_{\\text{tr}}=160$ ($p_{\\text{holm}} = 1.53 \\times 10^{-5}$). The performance gap ranges from $0.0414$ to $0.1044$ in mean $R^2$, demonstrating that 2-body spatial entanglement information is essential for predicting block entropy.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 141,
+    "literal": "0.0186",
+    "numeric_value": 0.0186,
+    "type": "decimal",
+    "context": "\\item \\textbf{PQK Spatial Dimension Hierarchy (Claim C1):} PQK-2nn consistently outperforms PQK-1 across all sample sizes $N_{\\text{tr}} \\in [10, 160]$. At $N_{\\text{tr}}=10$, PQK-2nn exceeds PQK-1 by $\\Delta R^2 = 0.1044$ ($p_{\\text{holm}} = 0.0186$), narrowing to $\\Delta R^2 = 0.0414$ at $N_{\\text{tr}}=160$ ($p_{\\text{holm}} = 1.53 \\times 10^{-5}$). The performance gap ranges from $0.0414$ to $0.1044$ in mean $R^2$, demonstrating that 2-body spatial entanglement information is essential for predicting block entropy.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 141,
+    "literal": "0.0414",
+    "numeric_value": 0.0414,
+    "type": "decimal",
+    "context": "\\item \\textbf{PQK Spatial Dimension Hierarchy (Claim C1):} PQK-2nn consistently outperforms PQK-1 across all sample sizes $N_{\\text{tr}} \\in [10, 160]$. At $N_{\\text{tr}}=10$, PQK-2nn exceeds PQK-1 by $\\Delta R^2 = 0.1044$ ($p_{\\text{holm}} = 0.0186$), narrowing to $\\Delta R^2 = 0.0414$ at $N_{\\text{tr}}=160$ ($p_{\\text{holm}} = 1.53 \\times 10^{-5}$). The performance gap ranges from $0.0414$ to $0.1044$ in mean $R^2$, demonstrating that 2-body spatial entanglement information is essential for predicting block entropy.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 142,
+    "literal": "0.9902",
+    "numeric_value": 0.9902,
+    "type": "decimal",
+    "context": "\\item \\textbf{FQ vs Classical Correlator Ordering (Claim C2):} At $N_{\\text{tr}}=40$, the performance hierarchy is $\\text{FQ} > \\text{E (raw)} > \\text{PQK-2nn}$, with FQ achieving mean $R^2 = 0.9902$ versus $0.9872$ for E (raw) and $0.9789$ for PQK-2nn. At $N_{\\text{tr}}=160$, the hierarchy reverses to $\\text{E (raw)} > \\text{FQ} > \\text{PQK-2nn}$, with E (raw) reaching $0.9987$ versus $0.9975$ for FQ. For half-chain entropy at $N_{\\mathrm{tr}}=160$, observed mean $R^2$ differences were $-0.0012$ for FQ $-$ E(raw) and $+0.0032$ for FQ $-$ PQK-2nn (Table~\\ref{tab:t1_r2}), demonstrating near-parity among top performers, while relative ranking varies across tasks and sample sizes.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 142,
+    "literal": "0.9872",
+    "numeric_value": 0.9872,
+    "type": "decimal",
+    "context": "\\item \\textbf{FQ vs Classical Correlator Ordering (Claim C2):} At $N_{\\text{tr}}=40$, the performance hierarchy is $\\text{FQ} > \\text{E (raw)} > \\text{PQK-2nn}$, with FQ achieving mean $R^2 = 0.9902$ versus $0.9872$ for E (raw) and $0.9789$ for PQK-2nn. At $N_{\\text{tr}}=160$, the hierarchy reverses to $\\text{E (raw)} > \\text{FQ} > \\text{PQK-2nn}$, with E (raw) reaching $0.9987$ versus $0.9975$ for FQ. For half-chain entropy at $N_{\\mathrm{tr}}=160$, observed mean $R^2$ differences were $-0.0012$ for FQ $-$ E(raw) and $+0.0032$ for FQ $-$ PQK-2nn (Table~\\ref{tab:t1_r2}), demonstrating near-parity among top performers, while relative ranking varies across tasks and sample sizes.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 142,
+    "literal": "0.9789",
+    "numeric_value": 0.9789,
+    "type": "decimal",
+    "context": "\\item \\textbf{FQ vs Classical Correlator Ordering (Claim C2):} At $N_{\\text{tr}}=40$, the performance hierarchy is $\\text{FQ} > \\text{E (raw)} > \\text{PQK-2nn}$, with FQ achieving mean $R^2 = 0.9902$ versus $0.9872$ for E (raw) and $0.9789$ for PQK-2nn. At $N_{\\text{tr}}=160$, the hierarchy reverses to $\\text{E (raw)} > \\text{FQ} > \\text{PQK-2nn}$, with E (raw) reaching $0.9987$ versus $0.9975$ for FQ. For half-chain entropy at $N_{\\mathrm{tr}}=160$, observed mean $R^2$ differences were $-0.0012$ for FQ $-$ E(raw) and $+0.0032$ for FQ $-$ PQK-2nn (Table~\\ref{tab:t1_r2}), demonstrating near-parity among top performers, while relative ranking varies across tasks and sample sizes.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 142,
+    "literal": "0.9987",
+    "numeric_value": 0.9987,
+    "type": "decimal",
+    "context": "\\item \\textbf{FQ vs Classical Correlator Ordering (Claim C2):} At $N_{\\text{tr}}=40$, the performance hierarchy is $\\text{FQ} > \\text{E (raw)} > \\text{PQK-2nn}$, with FQ achieving mean $R^2 = 0.9902$ versus $0.9872$ for E (raw) and $0.9789$ for PQK-2nn. At $N_{\\text{tr}}=160$, the hierarchy reverses to $\\text{E (raw)} > \\text{FQ} > \\text{PQK-2nn}$, with E (raw) reaching $0.9987$ versus $0.9975$ for FQ. For half-chain entropy at $N_{\\mathrm{tr}}=160$, observed mean $R^2$ differences were $-0.0012$ for FQ $-$ E(raw) and $+0.0032$ for FQ $-$ PQK-2nn (Table~\\ref{tab:t1_r2}), demonstrating near-parity among top performers, while relative ranking varies across tasks and sample sizes.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 142,
+    "literal": "0.9975",
+    "numeric_value": 0.9975,
+    "type": "decimal",
+    "context": "\\item \\textbf{FQ vs Classical Correlator Ordering (Claim C2):} At $N_{\\text{tr}}=40$, the performance hierarchy is $\\text{FQ} > \\text{E (raw)} > \\text{PQK-2nn}$, with FQ achieving mean $R^2 = 0.9902$ versus $0.9872$ for E (raw) and $0.9789$ for PQK-2nn. At $N_{\\text{tr}}=160$, the hierarchy reverses to $\\text{E (raw)} > \\text{FQ} > \\text{PQK-2nn}$, with E (raw) reaching $0.9987$ versus $0.9975$ for FQ. For half-chain entropy at $N_{\\mathrm{tr}}=160$, observed mean $R^2$ differences were $-0.0012$ for FQ $-$ E(raw) and $+0.0032$ for FQ $-$ PQK-2nn (Table~\\ref{tab:t1_r2}), demonstrating near-parity among top performers, while relative ranking varies across tasks and sample sizes.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 142,
+    "literal": "-0.0012",
+    "numeric_value": -0.0012,
+    "type": "decimal",
+    "context": "\\item \\textbf{FQ vs Classical Correlator Ordering (Claim C2):} At $N_{\\text{tr}}=40$, the performance hierarchy is $\\text{FQ} > \\text{E (raw)} > \\text{PQK-2nn}$, with FQ achieving mean $R^2 = 0.9902$ versus $0.9872$ for E (raw) and $0.9789$ for PQK-2nn. At $N_{\\text{tr}}=160$, the hierarchy reverses to $\\text{E (raw)} > \\text{FQ} > \\text{PQK-2nn}$, with E (raw) reaching $0.9987$ versus $0.9975$ for FQ. For half-chain entropy at $N_{\\mathrm{tr}}=160$, observed mean $R^2$ differences were $-0.0012$ for FQ $-$ E(raw) and $+0.0032$ for FQ $-$ PQK-2nn (Table~\\ref{tab:t1_r2}), demonstrating near-parity among top performers, while relative ranking varies across tasks and sample sizes.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 142,
+    "literal": "+0.0032",
+    "numeric_value": 0.0032,
+    "type": "decimal",
+    "context": "\\item \\textbf{FQ vs Classical Correlator Ordering (Claim C2):} At $N_{\\text{tr}}=40$, the performance hierarchy is $\\text{FQ} > \\text{E (raw)} > \\text{PQK-2nn}$, with FQ achieving mean $R^2 = 0.9902$ versus $0.9872$ for E (raw) and $0.9789$ for PQK-2nn. At $N_{\\text{tr}}=160$, the hierarchy reverses to $\\text{E (raw)} > \\text{FQ} > \\text{PQK-2nn}$, with E (raw) reaching $0.9987$ versus $0.9975$ for FQ. For half-chain entropy at $N_{\\mathrm{tr}}=160$, observed mean $R^2$ differences were $-0.0012$ for FQ $-$ E(raw) and $+0.0032$ for FQ $-$ PQK-2nn (Table~\\ref{tab:t1_r2}), demonstrating near-parity among top performers, while relative ranking varies across tasks and sample sizes.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 143,
+    "literal": "0.001",
+    "numeric_value": 0.001,
+    "type": "decimal",
+    "context": "\\item \\textbf{Hyperparameter Sensitivity (Claim C7):} SVR insensitive band tuning ($\\epsilon \\in \\{0.001, \\dots, 0.1\\}$) altered test $R^2$ by up to $+0.06$ relative to fixed defaults. At small training sizes ($N_{\\text{tr}}=10$), 3-fold inner cross-validation exhibited small-sample overfitting, frequently pegging hyperparameters to search grid boundaries (Table~\\ref{tab:grid_boundaries}).",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 143,
+    "literal": "0.1",
+    "numeric_value": 0.1,
+    "type": "decimal",
+    "context": "\\item \\textbf{Hyperparameter Sensitivity (Claim C7):} SVR insensitive band tuning ($\\epsilon \\in \\{0.001, \\dots, 0.1\\}$) altered test $R^2$ by up to $+0.06$ relative to fixed defaults. At small training sizes ($N_{\\text{tr}}=10$), 3-fold inner cross-validation exhibited small-sample overfitting, frequently pegging hyperparameters to search grid boundaries (Table~\\ref{tab:grid_boundaries}).",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 143,
+    "literal": "+0.06",
+    "numeric_value": 0.06,
+    "type": "decimal",
+    "context": "\\item \\textbf{Hyperparameter Sensitivity (Claim C7):} SVR insensitive band tuning ($\\epsilon \\in \\{0.001, \\dots, 0.1\\}$) altered test $R^2$ by up to $+0.06$ relative to fixed defaults. At small training sizes ($N_{\\text{tr}}=10$), 3-fold inner cross-validation exhibited small-sample overfitting, frequently pegging hyperparameters to search grid boundaries (Table~\\ref{tab:grid_boundaries}).",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 147,
+    "literal": "1.0000",
+    "numeric_value": 1.0,
+    "type": "decimal",
+    "context": "In Task 2a, evaluating the 2-point correlator $\\langle Z_0 Z_{n-1} \\rangle$, classical Ridge regression (F std) achieves $R^2 = 1.0000$, winning by construction because the target observable is directly contained within the feature representation.",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 151,
+    "literal": "+0.0000",
+    "numeric_value": 0.0,
+    "type": "decimal",
+    "context": "\\item FQ vs E (raw): Mean diff $+0.0000$, 95\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 152,
+    "literal": "-0.0001",
+    "numeric_value": -0.0001,
+    "type": "decimal",
+    "context": "\\item PQK-2nn vs E (raw): Mean diff $-0.0001$, 95\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 153,
+    "literal": "-0.0001",
+    "numeric_value": -0.0001,
+    "type": "decimal",
+    "context": "\\item PQK-2nn vs FQ: Mean diff $-0.0001$, 95\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 158,
+    "literal": "0.83",
+    "numeric_value": 0.83,
+    "type": "decimal",
+    "context": "Evaluating the disordered TFIM ensemble from $n=4$ to $n=14$ reveals no evidence of exponential kernel concentration (Claim C4). Mean off-diagonal elements decay gradually (FQ off-diagonal mean decreases from $0.83$ at $n=4$ to $0.44$ at $n=14$), while variance remains bounded away from zero. Furthermore, across all 8,700 off-diagonal pairs evaluated at $n=14$, exactly zero entries fell below $10^{-3}$ (minimum observed FQ entry $= 0.1616$). Thus, ground-state manifolds of 1D local Hamiltonians avoid barren concentration plateaus up to $n=14$.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 158,
+    "literal": "0.44",
+    "numeric_value": 0.44,
+    "type": "decimal",
+    "context": "Evaluating the disordered TFIM ensemble from $n=4$ to $n=14$ reveals no evidence of exponential kernel concentration (Claim C4). Mean off-diagonal elements decay gradually (FQ off-diagonal mean decreases from $0.83$ at $n=4$ to $0.44$ at $n=14$), while variance remains bounded away from zero. Furthermore, across all 8,700 off-diagonal pairs evaluated at $n=14$, exactly zero entries fell below $10^{-3}$ (minimum observed FQ entry $= 0.1616$). Thus, ground-state manifolds of 1D local Hamiltonians avoid barren concentration plateaus up to $n=14$.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 158,
+    "literal": "0.1616",
+    "numeric_value": 0.1616,
+    "type": "decimal",
+    "context": "Evaluating the disordered TFIM ensemble from $n=4$ to $n=14$ reveals no evidence of exponential kernel concentration (Claim C4). Mean off-diagonal elements decay gradually (FQ off-diagonal mean decreases from $0.83$ at $n=4$ to $0.44$ at $n=14$), while variance remains bounded away from zero. Furthermore, across all 8,700 off-diagonal pairs evaluated at $n=14$, exactly zero entries fell below $10^{-3}$ (minimum observed FQ entry $= 0.1616$). Thus, ground-state manifolds of 1D local Hamiltonians avoid barren concentration plateaus up to $n=14$.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 170,
+    "literal": "12.2",
+    "numeric_value": 12.2,
+    "type": "decimal",
+    "context": "Feature-based models require only $480 \\cdot S$ to $720 \\cdot S$ total shots across $m=240$ states, whereas FQ requires 8,780 $\\cdot S$ deployed shots and 28,680 $\\cdot S$ full Gram shots---a $12.2\\times$ to $39.8\\times$ shot overhead (Fig.~\\ref{fig:shots}).",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 170,
+    "literal": "39.8",
+    "numeric_value": 39.8,
+    "type": "decimal",
+    "context": "Feature-based models require only $480 \\cdot S$ to $720 \\cdot S$ total shots across $m=240$ states, whereas FQ requires 8,780 $\\cdot S$ deployed shots and 28,680 $\\cdot S$ full Gram shots---a $12.2\\times$ to $39.8\\times$ shot overhead (Fig.~\\ref{fig:shots}).",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 182,
+    "literal": "0.08",
+    "numeric_value": 0.08,
+    "type": "decimal",
+    "context": "Under an idealized per-qubit local depolarizing proxy $\\mathcal{E}_k(\\rho) = (1-p)\\rho + p(I/2)\\otimes\\text{Tr}_k(\\rho)$ at $p=0.08$ with fixed $p=0$ hyperparameters, models incorporating two-body correlators exhibit slight monotonic degradation ($\\Delta R^2 = -0.0012$ for PQK-2nn and $-0.0015$ for E2-raw) due to $(1-p)^2 = 0.8464$ observable attenuation. Conversely, single-body (PQK-1) and fidelity kernels (FQ) show negligible degradation ($|\\Delta R^2| \\le 10^{-4}$). When hyperparameters $(C, c, \\epsilon)$ are re-tuned via inner cross-validation at each noise level, bandwidth expansion absorbs the uniform feature shrinkage, keeping all models within their 95\\",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 182,
+    "literal": "-0.0012",
+    "numeric_value": -0.0012,
+    "type": "decimal",
+    "context": "Under an idealized per-qubit local depolarizing proxy $\\mathcal{E}_k(\\rho) = (1-p)\\rho + p(I/2)\\otimes\\text{Tr}_k(\\rho)$ at $p=0.08$ with fixed $p=0$ hyperparameters, models incorporating two-body correlators exhibit slight monotonic degradation ($\\Delta R^2 = -0.0012$ for PQK-2nn and $-0.0015$ for E2-raw) due to $(1-p)^2 = 0.8464$ observable attenuation. Conversely, single-body (PQK-1) and fidelity kernels (FQ) show negligible degradation ($|\\Delta R^2| \\le 10^{-4}$). When hyperparameters $(C, c, \\epsilon)$ are re-tuned via inner cross-validation at each noise level, bandwidth expansion absorbs the uniform feature shrinkage, keeping all models within their 95\\",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 182,
+    "literal": "-0.0015",
+    "numeric_value": -0.0015,
+    "type": "decimal",
+    "context": "Under an idealized per-qubit local depolarizing proxy $\\mathcal{E}_k(\\rho) = (1-p)\\rho + p(I/2)\\otimes\\text{Tr}_k(\\rho)$ at $p=0.08$ with fixed $p=0$ hyperparameters, models incorporating two-body correlators exhibit slight monotonic degradation ($\\Delta R^2 = -0.0012$ for PQK-2nn and $-0.0015$ for E2-raw) due to $(1-p)^2 = 0.8464$ observable attenuation. Conversely, single-body (PQK-1) and fidelity kernels (FQ) show negligible degradation ($|\\Delta R^2| \\le 10^{-4}$). When hyperparameters $(C, c, \\epsilon)$ are re-tuned via inner cross-validation at each noise level, bandwidth expansion absorbs the uniform feature shrinkage, keeping all models within their 95\\",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 182,
+    "literal": "0.8464",
+    "numeric_value": 0.8464,
+    "type": "decimal",
+    "context": "Under an idealized per-qubit local depolarizing proxy $\\mathcal{E}_k(\\rho) = (1-p)\\rho + p(I/2)\\otimes\\text{Tr}_k(\\rho)$ at $p=0.08$ with fixed $p=0$ hyperparameters, models incorporating two-body correlators exhibit slight monotonic degradation ($\\Delta R^2 = -0.0012$ for PQK-2nn and $-0.0015$ for E2-raw) due to $(1-p)^2 = 0.8464$ observable attenuation. Conversely, single-body (PQK-1) and fidelity kernels (FQ) show negligible degradation ($|\\Delta R^2| \\le 10^{-4}$). When hyperparameters $(C, c, \\epsilon)$ are re-tuned via inner cross-validation at each noise level, bandwidth expansion absorbs the uniform feature shrinkage, keeping all models within their 95\\",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 190,
+    "literal": "0.9575",
+    "numeric_value": 0.9575,
+    "type": "decimal",
+    "context": "Table~\\ref{tab:equal_budget} presents the empirical scaling results. At low budgets $B_{\\mathrm{tot}} \\le 30{,}000$, FQ circuits are excluded under the study's minimum-shot protocol policy ($S_{\\mathrm{swap}} < 10$), where swap-test sampling yields fewer than 10 shots per entry. Across the operational scaling regime $B_{\\mathrm{tot}} \\in [10^5, 10^7]$, PQK-2nn consistently achieves higher observed sample efficiency than FQ. At $B_{\\mathrm{tot}}=10^6$, PQK-2nn obtains mean $R^2 = 0.9575 \\pm 0.0026$ compared to $0.8288 \\pm 0.0067$ for FQ (paired $\\Delta R^2 = -0.1287 \\pm 0.0067$). At $B_{\\mathrm{tot}}=10^7$, PQK-2nn attains $0.9753 \\pm 0.0024$ versus $0.8828 \\pm 0.0130$ for FQ ($\\Delta R^2 = -0.0924 \\pm 0.0126$). These results demonstrate that when total measurement expenditure is constrained, feature-based quantum representations provide substantially higher prediction accuracy per shot than full-state swap tests. Because prospective protocol timing was not recorded in the initial pre-registration manifest, this evaluation is explicitly classified as exploratory.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 190,
+    "literal": "0.0026",
+    "numeric_value": 0.0026,
+    "type": "decimal",
+    "context": "Table~\\ref{tab:equal_budget} presents the empirical scaling results. At low budgets $B_{\\mathrm{tot}} \\le 30{,}000$, FQ circuits are excluded under the study's minimum-shot protocol policy ($S_{\\mathrm{swap}} < 10$), where swap-test sampling yields fewer than 10 shots per entry. Across the operational scaling regime $B_{\\mathrm{tot}} \\in [10^5, 10^7]$, PQK-2nn consistently achieves higher observed sample efficiency than FQ. At $B_{\\mathrm{tot}}=10^6$, PQK-2nn obtains mean $R^2 = 0.9575 \\pm 0.0026$ compared to $0.8288 \\pm 0.0067$ for FQ (paired $\\Delta R^2 = -0.1287 \\pm 0.0067$). At $B_{\\mathrm{tot}}=10^7$, PQK-2nn attains $0.9753 \\pm 0.0024$ versus $0.8828 \\pm 0.0130$ for FQ ($\\Delta R^2 = -0.0924 \\pm 0.0126$). These results demonstrate that when total measurement expenditure is constrained, feature-based quantum representations provide substantially higher prediction accuracy per shot than full-state swap tests. Because prospective protocol timing was not recorded in the initial pre-registration manifest, this evaluation is explicitly classified as exploratory.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 190,
+    "literal": "0.8288",
+    "numeric_value": 0.8288,
+    "type": "decimal",
+    "context": "Table~\\ref{tab:equal_budget} presents the empirical scaling results. At low budgets $B_{\\mathrm{tot}} \\le 30{,}000$, FQ circuits are excluded under the study's minimum-shot protocol policy ($S_{\\mathrm{swap}} < 10$), where swap-test sampling yields fewer than 10 shots per entry. Across the operational scaling regime $B_{\\mathrm{tot}} \\in [10^5, 10^7]$, PQK-2nn consistently achieves higher observed sample efficiency than FQ. At $B_{\\mathrm{tot}}=10^6$, PQK-2nn obtains mean $R^2 = 0.9575 \\pm 0.0026$ compared to $0.8288 \\pm 0.0067$ for FQ (paired $\\Delta R^2 = -0.1287 \\pm 0.0067$). At $B_{\\mathrm{tot}}=10^7$, PQK-2nn attains $0.9753 \\pm 0.0024$ versus $0.8828 \\pm 0.0130$ for FQ ($\\Delta R^2 = -0.0924 \\pm 0.0126$). These results demonstrate that when total measurement expenditure is constrained, feature-based quantum representations provide substantially higher prediction accuracy per shot than full-state swap tests. Because prospective protocol timing was not recorded in the initial pre-registration manifest, this evaluation is explicitly classified as exploratory.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 190,
+    "literal": "0.0067",
+    "numeric_value": 0.0067,
+    "type": "decimal",
+    "context": "Table~\\ref{tab:equal_budget} presents the empirical scaling results. At low budgets $B_{\\mathrm{tot}} \\le 30{,}000$, FQ circuits are excluded under the study's minimum-shot protocol policy ($S_{\\mathrm{swap}} < 10$), where swap-test sampling yields fewer than 10 shots per entry. Across the operational scaling regime $B_{\\mathrm{tot}} \\in [10^5, 10^7]$, PQK-2nn consistently achieves higher observed sample efficiency than FQ. At $B_{\\mathrm{tot}}=10^6$, PQK-2nn obtains mean $R^2 = 0.9575 \\pm 0.0026$ compared to $0.8288 \\pm 0.0067$ for FQ (paired $\\Delta R^2 = -0.1287 \\pm 0.0067$). At $B_{\\mathrm{tot}}=10^7$, PQK-2nn attains $0.9753 \\pm 0.0024$ versus $0.8828 \\pm 0.0130$ for FQ ($\\Delta R^2 = -0.0924 \\pm 0.0126$). These results demonstrate that when total measurement expenditure is constrained, feature-based quantum representations provide substantially higher prediction accuracy per shot than full-state swap tests. Because prospective protocol timing was not recorded in the initial pre-registration manifest, this evaluation is explicitly classified as exploratory.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 190,
+    "literal": "-0.1287",
+    "numeric_value": -0.1287,
+    "type": "decimal",
+    "context": "Table~\\ref{tab:equal_budget} presents the empirical scaling results. At low budgets $B_{\\mathrm{tot}} \\le 30{,}000$, FQ circuits are excluded under the study's minimum-shot protocol policy ($S_{\\mathrm{swap}} < 10$), where swap-test sampling yields fewer than 10 shots per entry. Across the operational scaling regime $B_{\\mathrm{tot}} \\in [10^5, 10^7]$, PQK-2nn consistently achieves higher observed sample efficiency than FQ. At $B_{\\mathrm{tot}}=10^6$, PQK-2nn obtains mean $R^2 = 0.9575 \\pm 0.0026$ compared to $0.8288 \\pm 0.0067$ for FQ (paired $\\Delta R^2 = -0.1287 \\pm 0.0067$). At $B_{\\mathrm{tot}}=10^7$, PQK-2nn attains $0.9753 \\pm 0.0024$ versus $0.8828 \\pm 0.0130$ for FQ ($\\Delta R^2 = -0.0924 \\pm 0.0126$). These results demonstrate that when total measurement expenditure is constrained, feature-based quantum representations provide substantially higher prediction accuracy per shot than full-state swap tests. Because prospective protocol timing was not recorded in the initial pre-registration manifest, this evaluation is explicitly classified as exploratory.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 190,
+    "literal": "0.9753",
+    "numeric_value": 0.9753,
+    "type": "decimal",
+    "context": "Table~\\ref{tab:equal_budget} presents the empirical scaling results. At low budgets $B_{\\mathrm{tot}} \\le 30{,}000$, FQ circuits are excluded under the study's minimum-shot protocol policy ($S_{\\mathrm{swap}} < 10$), where swap-test sampling yields fewer than 10 shots per entry. Across the operational scaling regime $B_{\\mathrm{tot}} \\in [10^5, 10^7]$, PQK-2nn consistently achieves higher observed sample efficiency than FQ. At $B_{\\mathrm{tot}}=10^6$, PQK-2nn obtains mean $R^2 = 0.9575 \\pm 0.0026$ compared to $0.8288 \\pm 0.0067$ for FQ (paired $\\Delta R^2 = -0.1287 \\pm 0.0067$). At $B_{\\mathrm{tot}}=10^7$, PQK-2nn attains $0.9753 \\pm 0.0024$ versus $0.8828 \\pm 0.0130$ for FQ ($\\Delta R^2 = -0.0924 \\pm 0.0126$). These results demonstrate that when total measurement expenditure is constrained, feature-based quantum representations provide substantially higher prediction accuracy per shot than full-state swap tests. Because prospective protocol timing was not recorded in the initial pre-registration manifest, this evaluation is explicitly classified as exploratory.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 190,
+    "literal": "0.0024",
+    "numeric_value": 0.0024,
+    "type": "decimal",
+    "context": "Table~\\ref{tab:equal_budget} presents the empirical scaling results. At low budgets $B_{\\mathrm{tot}} \\le 30{,}000$, FQ circuits are excluded under the study's minimum-shot protocol policy ($S_{\\mathrm{swap}} < 10$), where swap-test sampling yields fewer than 10 shots per entry. Across the operational scaling regime $B_{\\mathrm{tot}} \\in [10^5, 10^7]$, PQK-2nn consistently achieves higher observed sample efficiency than FQ. At $B_{\\mathrm{tot}}=10^6$, PQK-2nn obtains mean $R^2 = 0.9575 \\pm 0.0026$ compared to $0.8288 \\pm 0.0067$ for FQ (paired $\\Delta R^2 = -0.1287 \\pm 0.0067$). At $B_{\\mathrm{tot}}=10^7$, PQK-2nn attains $0.9753 \\pm 0.0024$ versus $0.8828 \\pm 0.0130$ for FQ ($\\Delta R^2 = -0.0924 \\pm 0.0126$). These results demonstrate that when total measurement expenditure is constrained, feature-based quantum representations provide substantially higher prediction accuracy per shot than full-state swap tests. Because prospective protocol timing was not recorded in the initial pre-registration manifest, this evaluation is explicitly classified as exploratory.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 190,
+    "literal": "0.8828",
+    "numeric_value": 0.8828,
+    "type": "decimal",
+    "context": "Table~\\ref{tab:equal_budget} presents the empirical scaling results. At low budgets $B_{\\mathrm{tot}} \\le 30{,}000$, FQ circuits are excluded under the study's minimum-shot protocol policy ($S_{\\mathrm{swap}} < 10$), where swap-test sampling yields fewer than 10 shots per entry. Across the operational scaling regime $B_{\\mathrm{tot}} \\in [10^5, 10^7]$, PQK-2nn consistently achieves higher observed sample efficiency than FQ. At $B_{\\mathrm{tot}}=10^6$, PQK-2nn obtains mean $R^2 = 0.9575 \\pm 0.0026$ compared to $0.8288 \\pm 0.0067$ for FQ (paired $\\Delta R^2 = -0.1287 \\pm 0.0067$). At $B_{\\mathrm{tot}}=10^7$, PQK-2nn attains $0.9753 \\pm 0.0024$ versus $0.8828 \\pm 0.0130$ for FQ ($\\Delta R^2 = -0.0924 \\pm 0.0126$). These results demonstrate that when total measurement expenditure is constrained, feature-based quantum representations provide substantially higher prediction accuracy per shot than full-state swap tests. Because prospective protocol timing was not recorded in the initial pre-registration manifest, this evaluation is explicitly classified as exploratory.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 190,
+    "literal": "0.0130",
+    "numeric_value": 0.013,
+    "type": "decimal",
+    "context": "Table~\\ref{tab:equal_budget} presents the empirical scaling results. At low budgets $B_{\\mathrm{tot}} \\le 30{,}000$, FQ circuits are excluded under the study's minimum-shot protocol policy ($S_{\\mathrm{swap}} < 10$), where swap-test sampling yields fewer than 10 shots per entry. Across the operational scaling regime $B_{\\mathrm{tot}} \\in [10^5, 10^7]$, PQK-2nn consistently achieves higher observed sample efficiency than FQ. At $B_{\\mathrm{tot}}=10^6$, PQK-2nn obtains mean $R^2 = 0.9575 \\pm 0.0026$ compared to $0.8288 \\pm 0.0067$ for FQ (paired $\\Delta R^2 = -0.1287 \\pm 0.0067$). At $B_{\\mathrm{tot}}=10^7$, PQK-2nn attains $0.9753 \\pm 0.0024$ versus $0.8828 \\pm 0.0130$ for FQ ($\\Delta R^2 = -0.0924 \\pm 0.0126$). These results demonstrate that when total measurement expenditure is constrained, feature-based quantum representations provide substantially higher prediction accuracy per shot than full-state swap tests. Because prospective protocol timing was not recorded in the initial pre-registration manifest, this evaluation is explicitly classified as exploratory.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 190,
+    "literal": "-0.0924",
+    "numeric_value": -0.0924,
+    "type": "decimal",
+    "context": "Table~\\ref{tab:equal_budget} presents the empirical scaling results. At low budgets $B_{\\mathrm{tot}} \\le 30{,}000$, FQ circuits are excluded under the study's minimum-shot protocol policy ($S_{\\mathrm{swap}} < 10$), where swap-test sampling yields fewer than 10 shots per entry. Across the operational scaling regime $B_{\\mathrm{tot}} \\in [10^5, 10^7]$, PQK-2nn consistently achieves higher observed sample efficiency than FQ. At $B_{\\mathrm{tot}}=10^6$, PQK-2nn obtains mean $R^2 = 0.9575 \\pm 0.0026$ compared to $0.8288 \\pm 0.0067$ for FQ (paired $\\Delta R^2 = -0.1287 \\pm 0.0067$). At $B_{\\mathrm{tot}}=10^7$, PQK-2nn attains $0.9753 \\pm 0.0024$ versus $0.8828 \\pm 0.0130$ for FQ ($\\Delta R^2 = -0.0924 \\pm 0.0126$). These results demonstrate that when total measurement expenditure is constrained, feature-based quantum representations provide substantially higher prediction accuracy per shot than full-state swap tests. Because prospective protocol timing was not recorded in the initial pre-registration manifest, this evaluation is explicitly classified as exploratory.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 190,
+    "literal": "0.0126",
+    "numeric_value": 0.0126,
+    "type": "decimal",
+    "context": "Table~\\ref{tab:equal_budget} presents the empirical scaling results. At low budgets $B_{\\mathrm{tot}} \\le 30{,}000$, FQ circuits are excluded under the study's minimum-shot protocol policy ($S_{\\mathrm{swap}} < 10$), where swap-test sampling yields fewer than 10 shots per entry. Across the operational scaling regime $B_{\\mathrm{tot}} \\in [10^5, 10^7]$, PQK-2nn consistently achieves higher observed sample efficiency than FQ. At $B_{\\mathrm{tot}}=10^6$, PQK-2nn obtains mean $R^2 = 0.9575 \\pm 0.0026$ compared to $0.8288 \\pm 0.0067$ for FQ (paired $\\Delta R^2 = -0.1287 \\pm 0.0067$). At $B_{\\mathrm{tot}}=10^7$, PQK-2nn attains $0.9753 \\pm 0.0024$ versus $0.8828 \\pm 0.0130$ for FQ ($\\Delta R^2 = -0.0924 \\pm 0.0126$). These results demonstrate that when total measurement expenditure is constrained, feature-based quantum representations provide substantially higher prediction accuracy per shot than full-state swap tests. Because prospective protocol timing was not recorded in the initial pre-registration manifest, this evaluation is explicitly classified as exploratory.",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 196,
+    "literal": "0.8",
+    "numeric_value": 0.8,
+    "type": "decimal",
+    "context": "We further evaluate model generalization under an out-of-distribution (OOD) physical distribution shift across the transverse-field Ising phase boundary ($n=8$, $N_{\\mathrm{tr}}=40$, $N_{\\mathrm{te}}=100$, 20 seeds). Training ensembles are drawn exclusively from the paramagnetic regime ($h_i \\in [0.8, 1.5]$), while test ensembles are drawn from the ferromagnetic regime ($h_i \\in [0.2, 0.7]$).",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 196,
+    "literal": "1.5",
+    "numeric_value": 1.5,
+    "type": "decimal",
+    "context": "We further evaluate model generalization under an out-of-distribution (OOD) physical distribution shift across the transverse-field Ising phase boundary ($n=8$, $N_{\\mathrm{tr}}=40$, $N_{\\mathrm{te}}=100$, 20 seeds). Training ensembles are drawn exclusively from the paramagnetic regime ($h_i \\in [0.8, 1.5]$), while test ensembles are drawn from the ferromagnetic regime ($h_i \\in [0.2, 0.7]$).",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 196,
+    "literal": "0.2",
+    "numeric_value": 0.2,
+    "type": "decimal",
+    "context": "We further evaluate model generalization under an out-of-distribution (OOD) physical distribution shift across the transverse-field Ising phase boundary ($n=8$, $N_{\\mathrm{tr}}=40$, $N_{\\mathrm{te}}=100$, 20 seeds). Training ensembles are drawn exclusively from the paramagnetic regime ($h_i \\in [0.8, 1.5]$), while test ensembles are drawn from the ferromagnetic regime ($h_i \\in [0.2, 0.7]$).",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 196,
+    "literal": "0.7",
+    "numeric_value": 0.7,
+    "type": "decimal",
+    "context": "We further evaluate model generalization under an out-of-distribution (OOD) physical distribution shift across the transverse-field Ising phase boundary ($n=8$, $N_{\\mathrm{tr}}=40$, $N_{\\mathrm{te}}=100$, 20 seeds). Training ensembles are drawn exclusively from the paramagnetic regime ($h_i \\in [0.8, 1.5]$), while test ensembles are drawn from the ferromagnetic regime ($h_i \\in [0.2, 0.7]$).",
+    "classification": "Experimental parameter"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 198,
+    "literal": "8.51\\times 10^{-4}",
+    "numeric_value": 0.000851,
+    "type": "scientific",
+    "context": "Due to the fundamental qualitative shift in ground-state entanglement structure and the accompanying shift in mean target values between phases, all evaluated models yield negative test coefficient of determination values ($R^2 < 0$), rendering $R^2$ uninformative for discriminating model performance. We therefore assess generalization using Mean Absolute Error (MAE), summarized in Table~\\ref{tab:ood}. Full fidelity kernels (FQ) achieve a mean OOD MAE of $0.0602 \\pm 0.0085$, compared to $0.1850 \\pm 0.0294$ for PQK-2nn, resulting in a mean paired difference of $\\Delta\\mathrm{MAE} = -0.1248 \\pm 0.0334$. A retrospective paired Wilcoxon signed-rank test on the OOD MAE difference yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p_{\\mathrm{Holm}}=8.51\\times 10^{-4}$ across the pre-declared three-comparison family including Train-Mean and Train-Median baselines), with FQ achieving lower MAE in 16 of 20 seeds.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 198,
+    "literal": "8.51\\times 10^{-4}",
+    "numeric_value": 0.000851,
+    "type": "scientific",
+    "context": "Due to the fundamental qualitative shift in ground-state entanglement structure and the accompanying shift in mean target values between phases, all evaluated models yield negative test coefficient of determination values ($R^2 < 0$), rendering $R^2$ uninformative for discriminating model performance. We therefore assess generalization using Mean Absolute Error (MAE), summarized in Table~\\ref{tab:ood}. Full fidelity kernels (FQ) achieve a mean OOD MAE of $0.0602 \\pm 0.0085$, compared to $0.1850 \\pm 0.0294$ for PQK-2nn, resulting in a mean paired difference of $\\Delta\\mathrm{MAE} = -0.1248 \\pm 0.0334$. A retrospective paired Wilcoxon signed-rank test on the OOD MAE difference yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p_{\\mathrm{Holm}}=8.51\\times 10^{-4}$ across the pre-declared three-comparison family including Train-Mean and Train-Median baselines), with FQ achieving lower MAE in 16 of 20 seeds.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 198,
+    "literal": "0.0602",
+    "numeric_value": 0.0602,
+    "type": "decimal",
+    "context": "Due to the fundamental qualitative shift in ground-state entanglement structure and the accompanying shift in mean target values between phases, all evaluated models yield negative test coefficient of determination values ($R^2 < 0$), rendering $R^2$ uninformative for discriminating model performance. We therefore assess generalization using Mean Absolute Error (MAE), summarized in Table~\\ref{tab:ood}. Full fidelity kernels (FQ) achieve a mean OOD MAE of $0.0602 \\pm 0.0085$, compared to $0.1850 \\pm 0.0294$ for PQK-2nn, resulting in a mean paired difference of $\\Delta\\mathrm{MAE} = -0.1248 \\pm 0.0334$. A retrospective paired Wilcoxon signed-rank test on the OOD MAE difference yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p_{\\mathrm{Holm}}=8.51\\times 10^{-4}$ across the pre-declared three-comparison family including Train-Mean and Train-Median baselines), with FQ achieving lower MAE in 16 of 20 seeds.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 198,
+    "literal": "0.0085",
+    "numeric_value": 0.0085,
+    "type": "decimal",
+    "context": "Due to the fundamental qualitative shift in ground-state entanglement structure and the accompanying shift in mean target values between phases, all evaluated models yield negative test coefficient of determination values ($R^2 < 0$), rendering $R^2$ uninformative for discriminating model performance. We therefore assess generalization using Mean Absolute Error (MAE), summarized in Table~\\ref{tab:ood}. Full fidelity kernels (FQ) achieve a mean OOD MAE of $0.0602 \\pm 0.0085$, compared to $0.1850 \\pm 0.0294$ for PQK-2nn, resulting in a mean paired difference of $\\Delta\\mathrm{MAE} = -0.1248 \\pm 0.0334$. A retrospective paired Wilcoxon signed-rank test on the OOD MAE difference yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p_{\\mathrm{Holm}}=8.51\\times 10^{-4}$ across the pre-declared three-comparison family including Train-Mean and Train-Median baselines), with FQ achieving lower MAE in 16 of 20 seeds.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 198,
+    "literal": "0.1850",
+    "numeric_value": 0.185,
+    "type": "decimal",
+    "context": "Due to the fundamental qualitative shift in ground-state entanglement structure and the accompanying shift in mean target values between phases, all evaluated models yield negative test coefficient of determination values ($R^2 < 0$), rendering $R^2$ uninformative for discriminating model performance. We therefore assess generalization using Mean Absolute Error (MAE), summarized in Table~\\ref{tab:ood}. Full fidelity kernels (FQ) achieve a mean OOD MAE of $0.0602 \\pm 0.0085$, compared to $0.1850 \\pm 0.0294$ for PQK-2nn, resulting in a mean paired difference of $\\Delta\\mathrm{MAE} = -0.1248 \\pm 0.0334$. A retrospective paired Wilcoxon signed-rank test on the OOD MAE difference yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p_{\\mathrm{Holm}}=8.51\\times 10^{-4}$ across the pre-declared three-comparison family including Train-Mean and Train-Median baselines), with FQ achieving lower MAE in 16 of 20 seeds.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 198,
+    "literal": "0.0294",
+    "numeric_value": 0.0294,
+    "type": "decimal",
+    "context": "Due to the fundamental qualitative shift in ground-state entanglement structure and the accompanying shift in mean target values between phases, all evaluated models yield negative test coefficient of determination values ($R^2 < 0$), rendering $R^2$ uninformative for discriminating model performance. We therefore assess generalization using Mean Absolute Error (MAE), summarized in Table~\\ref{tab:ood}. Full fidelity kernels (FQ) achieve a mean OOD MAE of $0.0602 \\pm 0.0085$, compared to $0.1850 \\pm 0.0294$ for PQK-2nn, resulting in a mean paired difference of $\\Delta\\mathrm{MAE} = -0.1248 \\pm 0.0334$. A retrospective paired Wilcoxon signed-rank test on the OOD MAE difference yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p_{\\mathrm{Holm}}=8.51\\times 10^{-4}$ across the pre-declared three-comparison family including Train-Mean and Train-Median baselines), with FQ achieving lower MAE in 16 of 20 seeds.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 198,
+    "literal": "-0.1248",
+    "numeric_value": -0.1248,
+    "type": "decimal",
+    "context": "Due to the fundamental qualitative shift in ground-state entanglement structure and the accompanying shift in mean target values between phases, all evaluated models yield negative test coefficient of determination values ($R^2 < 0$), rendering $R^2$ uninformative for discriminating model performance. We therefore assess generalization using Mean Absolute Error (MAE), summarized in Table~\\ref{tab:ood}. Full fidelity kernels (FQ) achieve a mean OOD MAE of $0.0602 \\pm 0.0085$, compared to $0.1850 \\pm 0.0294$ for PQK-2nn, resulting in a mean paired difference of $\\Delta\\mathrm{MAE} = -0.1248 \\pm 0.0334$. A retrospective paired Wilcoxon signed-rank test on the OOD MAE difference yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p_{\\mathrm{Holm}}=8.51\\times 10^{-4}$ across the pre-declared three-comparison family including Train-Mean and Train-Median baselines), with FQ achieving lower MAE in 16 of 20 seeds.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 198,
+    "literal": "0.0334",
+    "numeric_value": 0.0334,
+    "type": "decimal",
+    "context": "Due to the fundamental qualitative shift in ground-state entanglement structure and the accompanying shift in mean target values between phases, all evaluated models yield negative test coefficient of determination values ($R^2 < 0$), rendering $R^2$ uninformative for discriminating model performance. We therefore assess generalization using Mean Absolute Error (MAE), summarized in Table~\\ref{tab:ood}. Full fidelity kernels (FQ) achieve a mean OOD MAE of $0.0602 \\pm 0.0085$, compared to $0.1850 \\pm 0.0294$ for PQK-2nn, resulting in a mean paired difference of $\\Delta\\mathrm{MAE} = -0.1248 \\pm 0.0334$. A retrospective paired Wilcoxon signed-rank test on the OOD MAE difference yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p_{\\mathrm{Holm}}=8.51\\times 10^{-4}$ across the pre-declared three-comparison family including Train-Mean and Train-Median baselines), with FQ achieving lower MAE in 16 of 20 seeds.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 198,
+    "literal": "21.0",
+    "numeric_value": 21.0,
+    "type": "decimal",
+    "context": "Due to the fundamental qualitative shift in ground-state entanglement structure and the accompanying shift in mean target values between phases, all evaluated models yield negative test coefficient of determination values ($R^2 < 0$), rendering $R^2$ uninformative for discriminating model performance. We therefore assess generalization using Mean Absolute Error (MAE), summarized in Table~\\ref{tab:ood}. Full fidelity kernels (FQ) achieve a mean OOD MAE of $0.0602 \\pm 0.0085$, compared to $0.1850 \\pm 0.0294$ for PQK-2nn, resulting in a mean paired difference of $\\Delta\\mathrm{MAE} = -0.1248 \\pm 0.0334$. A retrospective paired Wilcoxon signed-rank test on the OOD MAE difference yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p_{\\mathrm{Holm}}=8.51\\times 10^{-4}$ across the pre-declared three-comparison family including Train-Mean and Train-Median baselines), with FQ achieving lower MAE in 16 of 20 seeds.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 200,
+    "literal": "1.91\\times 10^{-6}",
+    "numeric_value": 1.91e-06,
+    "type": "scientific",
+    "context": "To confirm that models extract genuine inductive physical signal rather than trivial constant predictions, we conducted an intercept-only baseline ablation. Comparing full FQ against the train-mean baseline confirms that FQ reduces prediction error by $-0.4014 \\pm 0.0156$ MAE across 20/20 seeds ($W=0.0, p=1.91\\times 10^{-6}$). Linear Ridge regression on two-body observables is reported for descriptive calibration ($0.1345 \\pm 0.0136$), without confirmatory hypothesis testing. Crucially, this OOD evaluation was performed on exact, noiseless statevectors; whether the observed fidelity-kernel extrapolation advantage survives finite measurement shot sampling or physical open-system decoherence channels remains an open question for future experimental work. This benchmark is classified as exploratory.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 200,
+    "literal": "-0.4014",
+    "numeric_value": -0.4014,
+    "type": "decimal",
+    "context": "To confirm that models extract genuine inductive physical signal rather than trivial constant predictions, we conducted an intercept-only baseline ablation. Comparing full FQ against the train-mean baseline confirms that FQ reduces prediction error by $-0.4014 \\pm 0.0156$ MAE across 20/20 seeds ($W=0.0, p=1.91\\times 10^{-6}$). Linear Ridge regression on two-body observables is reported for descriptive calibration ($0.1345 \\pm 0.0136$), without confirmatory hypothesis testing. Crucially, this OOD evaluation was performed on exact, noiseless statevectors; whether the observed fidelity-kernel extrapolation advantage survives finite measurement shot sampling or physical open-system decoherence channels remains an open question for future experimental work. This benchmark is classified as exploratory.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 200,
+    "literal": "0.0156",
+    "numeric_value": 0.0156,
+    "type": "decimal",
+    "context": "To confirm that models extract genuine inductive physical signal rather than trivial constant predictions, we conducted an intercept-only baseline ablation. Comparing full FQ against the train-mean baseline confirms that FQ reduces prediction error by $-0.4014 \\pm 0.0156$ MAE across 20/20 seeds ($W=0.0, p=1.91\\times 10^{-6}$). Linear Ridge regression on two-body observables is reported for descriptive calibration ($0.1345 \\pm 0.0136$), without confirmatory hypothesis testing. Crucially, this OOD evaluation was performed on exact, noiseless statevectors; whether the observed fidelity-kernel extrapolation advantage survives finite measurement shot sampling or physical open-system decoherence channels remains an open question for future experimental work. This benchmark is classified as exploratory.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 200,
+    "literal": "0.1345",
+    "numeric_value": 0.1345,
+    "type": "decimal",
+    "context": "To confirm that models extract genuine inductive physical signal rather than trivial constant predictions, we conducted an intercept-only baseline ablation. Comparing full FQ against the train-mean baseline confirms that FQ reduces prediction error by $-0.4014 \\pm 0.0156$ MAE across 20/20 seeds ($W=0.0, p=1.91\\times 10^{-6}$). Linear Ridge regression on two-body observables is reported for descriptive calibration ($0.1345 \\pm 0.0136$), without confirmatory hypothesis testing. Crucially, this OOD evaluation was performed on exact, noiseless statevectors; whether the observed fidelity-kernel extrapolation advantage survives finite measurement shot sampling or physical open-system decoherence channels remains an open question for future experimental work. This benchmark is classified as exploratory.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/main.tex",
+    "line": 200,
+    "literal": "0.0136",
+    "numeric_value": 0.0136,
+    "type": "decimal",
+    "context": "To confirm that models extract genuine inductive physical signal rather than trivial constant predictions, we conducted an intercept-only baseline ablation. Comparing full FQ against the train-mean baseline confirms that FQ reduces prediction error by $-0.4014 \\pm 0.0156$ MAE across 20/20 seeds ($W=0.0, p=1.91\\times 10^{-6}$). Linear Ridge regression on two-body observables is reported for descriptive calibration ($0.1345 \\pm 0.0136$), without confirmatory hypothesis testing. Crucially, this OOD evaluation was performed on exact, noiseless statevectors; whether the observed fidelity-kernel extrapolation advantage survives finite measurement shot sampling or physical open-system decoherence channels remains an open question for future experimental work. This benchmark is classified as exploratory.",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 13,
+    "literal": "0.8986",
+    "numeric_value": 0.8986,
+    "type": "decimal",
+    "context": "PQK-1 ($\\equiv$ RBF on $\\langle X_i\\rangle$) & 0.8986 & [0.8847, 0.9111] & 0.9529 & [0.9505, 0.9553] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 13,
+    "literal": "0.8847",
+    "numeric_value": 0.8847,
+    "type": "decimal",
+    "context": "PQK-1 ($\\equiv$ RBF on $\\langle X_i\\rangle$) & 0.8986 & [0.8847, 0.9111] & 0.9529 & [0.9505, 0.9553] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 13,
+    "literal": "0.9111",
+    "numeric_value": 0.9111,
+    "type": "decimal",
+    "context": "PQK-1 ($\\equiv$ RBF on $\\langle X_i\\rangle$) & 0.8986 & [0.8847, 0.9111] & 0.9529 & [0.9505, 0.9553] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 13,
+    "literal": "0.9529",
+    "numeric_value": 0.9529,
+    "type": "decimal",
+    "context": "PQK-1 ($\\equiv$ RBF on $\\langle X_i\\rangle$) & 0.8986 & [0.8847, 0.9111] & 0.9529 & [0.9505, 0.9553] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 13,
+    "literal": "0.9505",
+    "numeric_value": 0.9505,
+    "type": "decimal",
+    "context": "PQK-1 ($\\equiv$ RBF on $\\langle X_i\\rangle$) & 0.8986 & [0.8847, 0.9111] & 0.9529 & [0.9505, 0.9553] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 13,
+    "literal": "0.9553",
+    "numeric_value": 0.9553,
+    "type": "decimal",
+    "context": "PQK-1 ($\\equiv$ RBF on $\\langle X_i\\rangle$) & 0.8986 & [0.8847, 0.9111] & 0.9529 & [0.9505, 0.9553] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 14,
+    "literal": "0.9789",
+    "numeric_value": 0.9789,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9789 & [0.9731, 0.9833] & 0.9943 & [0.9936, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 14,
+    "literal": "0.9731",
+    "numeric_value": 0.9731,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9789 & [0.9731, 0.9833] & 0.9943 & [0.9936, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 14,
+    "literal": "0.9833",
+    "numeric_value": 0.9833,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9789 & [0.9731, 0.9833] & 0.9943 & [0.9936, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 14,
+    "literal": "0.9943",
+    "numeric_value": 0.9943,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9789 & [0.9731, 0.9833] & 0.9943 & [0.9936, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 14,
+    "literal": "0.9936",
+    "numeric_value": 0.9936,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9789 & [0.9731, 0.9833] & 0.9943 & [0.9936, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 14,
+    "literal": "0.9950",
+    "numeric_value": 0.995,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9789 & [0.9731, 0.9833] & 0.9943 & [0.9936, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 15,
+    "literal": "0.9902",
+    "numeric_value": 0.9902,
+    "type": "decimal",
+    "context": "FQ & 0.9902 & [0.9889, 0.9915] & 0.9975 & [0.9972, 0.9978] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 15,
+    "literal": "0.9889",
+    "numeric_value": 0.9889,
+    "type": "decimal",
+    "context": "FQ & 0.9902 & [0.9889, 0.9915] & 0.9975 & [0.9972, 0.9978] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 15,
+    "literal": "0.9915",
+    "numeric_value": 0.9915,
+    "type": "decimal",
+    "context": "FQ & 0.9902 & [0.9889, 0.9915] & 0.9975 & [0.9972, 0.9978] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 15,
+    "literal": "0.9975",
+    "numeric_value": 0.9975,
+    "type": "decimal",
+    "context": "FQ & 0.9902 & [0.9889, 0.9915] & 0.9975 & [0.9972, 0.9978] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 15,
+    "literal": "0.9972",
+    "numeric_value": 0.9972,
+    "type": "decimal",
+    "context": "FQ & 0.9902 & [0.9889, 0.9915] & 0.9975 & [0.9972, 0.9978] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 15,
+    "literal": "0.9978",
+    "numeric_value": 0.9978,
+    "type": "decimal",
+    "context": "FQ & 0.9902 & [0.9889, 0.9915] & 0.9975 & [0.9972, 0.9978] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 16,
+    "literal": "0.9872",
+    "numeric_value": 0.9872,
+    "type": "decimal",
+    "context": "E (raw) & 0.9872 & [0.9847, 0.9893] & 0.9987 & [0.9986, 0.9989] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 16,
+    "literal": "0.9847",
+    "numeric_value": 0.9847,
+    "type": "decimal",
+    "context": "E (raw) & 0.9872 & [0.9847, 0.9893] & 0.9987 & [0.9986, 0.9989] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 16,
+    "literal": "0.9893",
+    "numeric_value": 0.9893,
+    "type": "decimal",
+    "context": "E (raw) & 0.9872 & [0.9847, 0.9893] & 0.9987 & [0.9986, 0.9989] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 16,
+    "literal": "0.9987",
+    "numeric_value": 0.9987,
+    "type": "decimal",
+    "context": "E (raw) & 0.9872 & [0.9847, 0.9893] & 0.9987 & [0.9986, 0.9989] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 16,
+    "literal": "0.9986",
+    "numeric_value": 0.9986,
+    "type": "decimal",
+    "context": "E (raw) & 0.9872 & [0.9847, 0.9893] & 0.9987 & [0.9986, 0.9989] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 16,
+    "literal": "0.9989",
+    "numeric_value": 0.9989,
+    "type": "decimal",
+    "context": "E (raw) & 0.9872 & [0.9847, 0.9893] & 0.9987 & [0.9986, 0.9989] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 17,
+    "literal": "0.9801",
+    "numeric_value": 0.9801,
+    "type": "decimal",
+    "context": "E (std) & 0.9801 & [0.9767, 0.9833] & 0.9965 & [0.9961, 0.9969] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 17,
+    "literal": "0.9767",
+    "numeric_value": 0.9767,
+    "type": "decimal",
+    "context": "E (std) & 0.9801 & [0.9767, 0.9833] & 0.9965 & [0.9961, 0.9969] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 17,
+    "literal": "0.9833",
+    "numeric_value": 0.9833,
+    "type": "decimal",
+    "context": "E (std) & 0.9801 & [0.9767, 0.9833] & 0.9965 & [0.9961, 0.9969] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 17,
+    "literal": "0.9965",
+    "numeric_value": 0.9965,
+    "type": "decimal",
+    "context": "E (std) & 0.9801 & [0.9767, 0.9833] & 0.9965 & [0.9961, 0.9969] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 17,
+    "literal": "0.9961",
+    "numeric_value": 0.9961,
+    "type": "decimal",
+    "context": "E (std) & 0.9801 & [0.9767, 0.9833] & 0.9965 & [0.9961, 0.9969] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 17,
+    "literal": "0.9969",
+    "numeric_value": 0.9969,
+    "type": "decimal",
+    "context": "E (std) & 0.9801 & [0.9767, 0.9833] & 0.9965 & [0.9961, 0.9969] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 18,
+    "literal": "0.9786",
+    "numeric_value": 0.9786,
+    "type": "decimal",
+    "context": "E2 (raw) & 0.9786 & [0.9727, 0.9833] & 0.9942 & [0.9935, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 18,
+    "literal": "0.9727",
+    "numeric_value": 0.9727,
+    "type": "decimal",
+    "context": "E2 (raw) & 0.9786 & [0.9727, 0.9833] & 0.9942 & [0.9935, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 18,
+    "literal": "0.9833",
+    "numeric_value": 0.9833,
+    "type": "decimal",
+    "context": "E2 (raw) & 0.9786 & [0.9727, 0.9833] & 0.9942 & [0.9935, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 18,
+    "literal": "0.9942",
+    "numeric_value": 0.9942,
+    "type": "decimal",
+    "context": "E2 (raw) & 0.9786 & [0.9727, 0.9833] & 0.9942 & [0.9935, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 18,
+    "literal": "0.9935",
+    "numeric_value": 0.9935,
+    "type": "decimal",
+    "context": "E2 (raw) & 0.9786 & [0.9727, 0.9833] & 0.9942 & [0.9935, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 18,
+    "literal": "0.9950",
+    "numeric_value": 0.995,
+    "type": "decimal",
+    "context": "E2 (raw) & 0.9786 & [0.9727, 0.9833] & 0.9942 & [0.9935, 0.9950] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 19,
+    "literal": "0.9728",
+    "numeric_value": 0.9728,
+    "type": "decimal",
+    "context": "F (std) & 0.9728 & [0.9663, 0.9776] & 0.9887 & [0.9878, 0.9894] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 19,
+    "literal": "0.9663",
+    "numeric_value": 0.9663,
+    "type": "decimal",
+    "context": "F (std) & 0.9728 & [0.9663, 0.9776] & 0.9887 & [0.9878, 0.9894] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 19,
+    "literal": "0.9776",
+    "numeric_value": 0.9776,
+    "type": "decimal",
+    "context": "F (std) & 0.9728 & [0.9663, 0.9776] & 0.9887 & [0.9878, 0.9894] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 19,
+    "literal": "0.9887",
+    "numeric_value": 0.9887,
+    "type": "decimal",
+    "context": "F (std) & 0.9728 & [0.9663, 0.9776] & 0.9887 & [0.9878, 0.9894] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 19,
+    "literal": "0.9878",
+    "numeric_value": 0.9878,
+    "type": "decimal",
+    "context": "F (std) & 0.9728 & [0.9663, 0.9776] & 0.9887 & [0.9878, 0.9894] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab1_t1_r2.tex",
+    "line": 19,
+    "literal": "0.9894",
+    "numeric_value": 0.9894,
+    "type": "decimal",
+    "context": "F (std) & 0.9728 & [0.9663, 0.9776] & 0.9887 & [0.9878, 0.9894] \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 12,
+    "literal": "-0.0803",
+    "numeric_value": -0.0803,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-1 vs PQK-2nn & 40 & -0.0803 & [-0.0950, -0.0662] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 12,
+    "literal": "-0.0950",
+    "numeric_value": -0.095,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-1 vs PQK-2nn & 40 & -0.0803 & [-0.0950, -0.0662] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 12,
+    "literal": "-0.0662",
+    "numeric_value": -0.0662,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-1 vs PQK-2nn & 40 & -0.0803 & [-0.0950, -0.0662] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 12,
+    "literal": "-1.0000",
+    "numeric_value": -1.0,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-1 vs PQK-2nn & 40 & -0.0803 & [-0.0950, -0.0662] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 13,
+    "literal": "-0.0083",
+    "numeric_value": -0.0083,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-2nn vs E (raw) & 40 & -0.0083 & [-0.0132, -0.0041] & 0.0012 & -0.8381 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 13,
+    "literal": "-0.0132",
+    "numeric_value": -0.0132,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-2nn vs E (raw) & 40 & -0.0083 & [-0.0132, -0.0041] & 0.0012 & -0.8381 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 13,
+    "literal": "-0.0041",
+    "numeric_value": -0.0041,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-2nn vs E (raw) & 40 & -0.0083 & [-0.0132, -0.0041] & 0.0012 & -0.8381 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 13,
+    "literal": "0.0012",
+    "numeric_value": 0.0012,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-2nn vs E (raw) & 40 & -0.0083 & [-0.0132, -0.0041] & 0.0012 & -0.8381 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 13,
+    "literal": "-0.8381",
+    "numeric_value": -0.8381,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-2nn vs E (raw) & 40 & -0.0083 & [-0.0132, -0.0041] & 0.0012 & -0.8381 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 14,
+    "literal": "+0.0031",
+    "numeric_value": 0.0031,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & FQ vs E (raw) & 40 & +0.0031 & [+0.0015, +0.0050] & 0.0012 & +0.8286 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 14,
+    "literal": "+0.0015",
+    "numeric_value": 0.0015,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & FQ vs E (raw) & 40 & +0.0031 & [+0.0015, +0.0050] & 0.0012 & +0.8286 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 14,
+    "literal": "+0.0050",
+    "numeric_value": 0.005,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & FQ vs E (raw) & 40 & +0.0031 & [+0.0015, +0.0050] & 0.0012 & +0.8286 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 14,
+    "literal": "0.0012",
+    "numeric_value": 0.0012,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & FQ vs E (raw) & 40 & +0.0031 & [+0.0015, +0.0050] & 0.0012 & +0.8286 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 14,
+    "literal": "+0.8286",
+    "numeric_value": 0.8286,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & FQ vs E (raw) & 40 & +0.0031 & [+0.0015, +0.0050] & 0.0012 & +0.8286 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 15,
+    "literal": "-0.0414",
+    "numeric_value": -0.0414,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-1 vs PQK-2nn & 160 & -0.0414 & [-0.0437, -0.0391] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 15,
+    "literal": "-0.0437",
+    "numeric_value": -0.0437,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-1 vs PQK-2nn & 160 & -0.0414 & [-0.0437, -0.0391] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 15,
+    "literal": "-0.0391",
+    "numeric_value": -0.0391,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-1 vs PQK-2nn & 160 & -0.0414 & [-0.0437, -0.0391] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 15,
+    "literal": "-1.0000",
+    "numeric_value": -1.0,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-1 vs PQK-2nn & 160 & -0.0414 & [-0.0437, -0.0391] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 16,
+    "literal": "-0.0044",
+    "numeric_value": -0.0044,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-2nn vs E (raw) & 160 & -0.0044 & [-0.0051, -0.0038] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 16,
+    "literal": "-0.0051",
+    "numeric_value": -0.0051,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-2nn vs E (raw) & 160 & -0.0044 & [-0.0051, -0.0038] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 16,
+    "literal": "-0.0038",
+    "numeric_value": -0.0038,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-2nn vs E (raw) & 160 & -0.0044 & [-0.0051, -0.0038] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 16,
+    "literal": "-1.0000",
+    "numeric_value": -1.0,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & PQK-2nn vs E (raw) & 160 & -0.0044 & [-0.0051, -0.0038] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 17,
+    "literal": "-0.0012",
+    "numeric_value": -0.0012,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & FQ vs E (raw) & 160 & -0.0012 & [-0.0015, -0.0009] & 1.53e-05 & -0.9810 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 17,
+    "literal": "-0.0015",
+    "numeric_value": -0.0015,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & FQ vs E (raw) & 160 & -0.0012 & [-0.0015, -0.0009] & 1.53e-05 & -0.9810 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 17,
+    "literal": "-0.0009",
+    "numeric_value": -0.0009,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & FQ vs E (raw) & 160 & -0.0012 & [-0.0015, -0.0009] & 1.53e-05 & -0.9810 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 17,
+    "literal": "-0.9810",
+    "numeric_value": -0.981,
+    "type": "decimal",
+    "context": "T1 & chain & r2 & FQ vs E (raw) & 160 & -0.0012 & [-0.0015, -0.0009] & 1.53e-05 & -0.9810 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 18,
+    "literal": "-0.0544",
+    "numeric_value": -0.0544,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-1 vs PQK-2nn & 40 & -0.0544 & [-0.0719, -0.0376] & 9.54e-05 & -0.9524 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 18,
+    "literal": "-0.0719",
+    "numeric_value": -0.0719,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-1 vs PQK-2nn & 40 & -0.0544 & [-0.0719, -0.0376] & 9.54e-05 & -0.9524 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 18,
+    "literal": "-0.0376",
+    "numeric_value": -0.0376,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-1 vs PQK-2nn & 40 & -0.0544 & [-0.0719, -0.0376] & 9.54e-05 & -0.9524 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 18,
+    "literal": "-0.9524",
+    "numeric_value": -0.9524,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-1 vs PQK-2nn & 40 & -0.0544 & [-0.0719, -0.0376] & 9.54e-05 & -0.9524 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 19,
+    "literal": "-0.0019",
+    "numeric_value": -0.0019,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-2nn vs E (raw) & 40 & -0.0019 & [-0.0142, +0.0097] & 1.0000 & -0.0381 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 19,
+    "literal": "-0.0142",
+    "numeric_value": -0.0142,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-2nn vs E (raw) & 40 & -0.0019 & [-0.0142, +0.0097] & 1.0000 & -0.0381 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 19,
+    "literal": "+0.0097",
+    "numeric_value": 0.0097,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-2nn vs E (raw) & 40 & -0.0019 & [-0.0142, +0.0097] & 1.0000 & -0.0381 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 19,
+    "literal": "1.0000",
+    "numeric_value": 1.0,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-2nn vs E (raw) & 40 & -0.0019 & [-0.0142, +0.0097] & 1.0000 & -0.0381 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 19,
+    "literal": "-0.0381",
+    "numeric_value": -0.0381,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-2nn vs E (raw) & 40 & -0.0019 & [-0.0142, +0.0097] & 1.0000 & -0.0381 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 20,
+    "literal": "+0.0242",
+    "numeric_value": 0.0242,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & FQ vs E (raw) & 40 & +0.0242 & [+0.0172, +0.0308] & 8.01e-05 & +0.9619 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 20,
+    "literal": "+0.0172",
+    "numeric_value": 0.0172,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & FQ vs E (raw) & 40 & +0.0242 & [+0.0172, +0.0308] & 8.01e-05 & +0.9619 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 20,
+    "literal": "+0.0308",
+    "numeric_value": 0.0308,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & FQ vs E (raw) & 40 & +0.0242 & [+0.0172, +0.0308] & 8.01e-05 & +0.9619 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 20,
+    "literal": "+0.9619",
+    "numeric_value": 0.9619,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & FQ vs E (raw) & 40 & +0.0242 & [+0.0172, +0.0308] & 8.01e-05 & +0.9619 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 21,
+    "literal": "-0.0385",
+    "numeric_value": -0.0385,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-1 vs PQK-2nn & 160 & -0.0385 & [-0.0420, -0.0349] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 21,
+    "literal": "-0.0420",
+    "numeric_value": -0.042,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-1 vs PQK-2nn & 160 & -0.0385 & [-0.0420, -0.0349] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 21,
+    "literal": "-0.0349",
+    "numeric_value": -0.0349,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-1 vs PQK-2nn & 160 & -0.0385 & [-0.0420, -0.0349] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 21,
+    "literal": "-1.0000",
+    "numeric_value": -1.0,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-1 vs PQK-2nn & 160 & -0.0385 & [-0.0420, -0.0349] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 22,
+    "literal": "-0.0001",
+    "numeric_value": -0.0001,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-2nn vs E (raw) & 160 & -0.0001 & [-0.0004, +0.0001] & 1.0000 & -0.1905 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 22,
+    "literal": "-0.0004",
+    "numeric_value": -0.0004,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-2nn vs E (raw) & 160 & -0.0001 & [-0.0004, +0.0001] & 1.0000 & -0.1905 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 22,
+    "literal": "+0.0001",
+    "numeric_value": 0.0001,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-2nn vs E (raw) & 160 & -0.0001 & [-0.0004, +0.0001] & 1.0000 & -0.1905 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 22,
+    "literal": "1.0000",
+    "numeric_value": 1.0,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-2nn vs E (raw) & 160 & -0.0001 & [-0.0004, +0.0001] & 1.0000 & -0.1905 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 22,
+    "literal": "-0.1905",
+    "numeric_value": -0.1905,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & PQK-2nn vs E (raw) & 160 & -0.0001 & [-0.0004, +0.0001] & 1.0000 & -0.1905 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 23,
+    "literal": "+0.0000",
+    "numeric_value": 0.0,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & FQ vs E (raw) & 160 & +0.0000 & [-0.0002, +0.0003] & 1.0000 & -0.0286 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 23,
+    "literal": "-0.0002",
+    "numeric_value": -0.0002,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & FQ vs E (raw) & 160 & +0.0000 & [-0.0002, +0.0003] & 1.0000 & -0.0286 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 23,
+    "literal": "+0.0003",
+    "numeric_value": 0.0003,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & FQ vs E (raw) & 160 & +0.0000 & [-0.0002, +0.0003] & 1.0000 & -0.0286 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 23,
+    "literal": "1.0000",
+    "numeric_value": 1.0,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & FQ vs E (raw) & 160 & +0.0000 & [-0.0002, +0.0003] & 1.0000 & -0.0286 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 23,
+    "literal": "-0.0286",
+    "numeric_value": -0.0286,
+    "type": "decimal",
+    "context": "T2b & chain & r2 & FQ vs E (raw) & 160 & +0.0000 & [-0.0002, +0.0003] & 1.0000 & -0.0286 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 24,
+    "literal": "-0.2218",
+    "numeric_value": -0.2218,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-1 vs PQK-2nn & 40 & -0.2218 & [-0.2450, -0.1975] & 7.04e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 24,
+    "literal": "-0.2450",
+    "numeric_value": -0.245,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-1 vs PQK-2nn & 40 & -0.2218 & [-0.2450, -0.1975] & 7.04e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 24,
+    "literal": "-0.1975",
+    "numeric_value": -0.1975,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-1 vs PQK-2nn & 40 & -0.2218 & [-0.2450, -0.1975] & 7.04e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 24,
+    "literal": "-1.0000",
+    "numeric_value": -1.0,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-1 vs PQK-2nn & 40 & -0.2218 & [-0.2450, -0.1975] & 7.04e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 25,
+    "literal": "-0.0192",
+    "numeric_value": -0.0192,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-2nn vs E (raw) & 40 & -0.0192 & [-0.0325, -0.0070] & 0.0525 & -0.6374 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 25,
+    "literal": "-0.0325",
+    "numeric_value": -0.0325,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-2nn vs E (raw) & 40 & -0.0192 & [-0.0325, -0.0070] & 0.0525 & -0.6374 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 25,
+    "literal": "-0.0070",
+    "numeric_value": -0.007,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-2nn vs E (raw) & 40 & -0.0192 & [-0.0325, -0.0070] & 0.0525 & -0.6374 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 25,
+    "literal": "0.0525",
+    "numeric_value": 0.0525,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-2nn vs E (raw) & 40 & -0.0192 & [-0.0325, -0.0070] & 0.0525 & -0.6374 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 25,
+    "literal": "-0.6374",
+    "numeric_value": -0.6374,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-2nn vs E (raw) & 40 & -0.0192 & [-0.0325, -0.0070] & 0.0525 & -0.6374 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 26,
+    "literal": "+0.0053",
+    "numeric_value": 0.0053,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & FQ vs E (raw) & 40 & +0.0053 & [-0.0045, +0.0158] & 0.4855 & +0.2526 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 26,
+    "literal": "-0.0045",
+    "numeric_value": -0.0045,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & FQ vs E (raw) & 40 & +0.0053 & [-0.0045, +0.0158] & 0.4855 & +0.2526 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 26,
+    "literal": "+0.0158",
+    "numeric_value": 0.0158,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & FQ vs E (raw) & 40 & +0.0053 & [-0.0045, +0.0158] & 0.4855 & +0.2526 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 26,
+    "literal": "0.4855",
+    "numeric_value": 0.4855,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & FQ vs E (raw) & 40 & +0.0053 & [-0.0045, +0.0158] & 0.4855 & +0.2526 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 26,
+    "literal": "+0.2526",
+    "numeric_value": 0.2526,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & FQ vs E (raw) & 40 & +0.0053 & [-0.0045, +0.0158] & 0.4855 & +0.2526 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 27,
+    "literal": "-0.1907",
+    "numeric_value": -0.1907,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-1 vs PQK-2nn & 80 & -0.1907 & [-0.2130, -0.1695] & 7.02e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 27,
+    "literal": "-0.2130",
+    "numeric_value": -0.213,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-1 vs PQK-2nn & 80 & -0.1907 & [-0.2130, -0.1695] & 7.02e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 27,
+    "literal": "-0.1695",
+    "numeric_value": -0.1695,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-1 vs PQK-2nn & 80 & -0.1907 & [-0.2130, -0.1695] & 7.02e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 27,
+    "literal": "-1.0000",
+    "numeric_value": -1.0,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-1 vs PQK-2nn & 80 & -0.1907 & [-0.2130, -0.1695] & 7.02e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 28,
+    "literal": "-0.0127",
+    "numeric_value": -0.0127,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-2nn vs E (raw) & 80 & -0.0127 & [-0.0210, -0.0055] & 0.0186 & -0.7516 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 28,
+    "literal": "-0.0210",
+    "numeric_value": -0.021,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-2nn vs E (raw) & 80 & -0.0127 & [-0.0210, -0.0055] & 0.0186 & -0.7516 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 28,
+    "literal": "-0.0055",
+    "numeric_value": -0.0055,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-2nn vs E (raw) & 80 & -0.0127 & [-0.0210, -0.0055] & 0.0186 & -0.7516 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 28,
+    "literal": "0.0186",
+    "numeric_value": 0.0186,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-2nn vs E (raw) & 80 & -0.0127 & [-0.0210, -0.0055] & 0.0186 & -0.7516 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 28,
+    "literal": "-0.7516",
+    "numeric_value": -0.7516,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & PQK-2nn vs E (raw) & 80 & -0.0127 & [-0.0210, -0.0055] & 0.0186 & -0.7516 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 29,
+    "literal": "+0.0008",
+    "numeric_value": 0.0008,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & FQ vs E (raw) & 80 & +0.0008 & [-0.0037, +0.0053] & 0.6622 & +0.1250 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 29,
+    "literal": "-0.0037",
+    "numeric_value": -0.0037,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & FQ vs E (raw) & 80 & +0.0008 & [-0.0037, +0.0053] & 0.6622 & +0.1250 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 29,
+    "literal": "+0.0053",
+    "numeric_value": 0.0053,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & FQ vs E (raw) & 80 & +0.0008 & [-0.0037, +0.0053] & 0.6622 & +0.1250 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 29,
+    "literal": "0.6622",
+    "numeric_value": 0.6622,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & FQ vs E (raw) & 80 & +0.0008 & [-0.0037, +0.0053] & 0.6622 & +0.1250 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 29,
+    "literal": "+0.1250",
+    "numeric_value": 0.125,
+    "type": "decimal",
+    "context": "T4a & 2x4 & accuracy & FQ vs E (raw) & 80 & +0.0008 & [-0.0037, +0.0053] & 0.6622 & +0.1250 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 30,
+    "literal": "-0.1470",
+    "numeric_value": -0.147,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-1 vs PQK-2nn & 40 & -0.1470 & [-0.1740, -0.1245] & 6.96e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 30,
+    "literal": "-0.1740",
+    "numeric_value": -0.174,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-1 vs PQK-2nn & 40 & -0.1470 & [-0.1740, -0.1245] & 6.96e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 30,
+    "literal": "-0.1245",
+    "numeric_value": -0.1245,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-1 vs PQK-2nn & 40 & -0.1470 & [-0.1740, -0.1245] & 6.96e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 30,
+    "literal": "-1.0000",
+    "numeric_value": -1.0,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-1 vs PQK-2nn & 40 & -0.1470 & [-0.1740, -0.1245] & 6.96e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 31,
+    "literal": "-0.0070",
+    "numeric_value": -0.007,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-2nn vs E (raw) & 40 & -0.0070 & [-0.0278, +0.0187] & 0.4411 & -0.3789 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 31,
+    "literal": "-0.0278",
+    "numeric_value": -0.0278,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-2nn vs E (raw) & 40 & -0.0070 & [-0.0278, +0.0187] & 0.4411 & -0.3789 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 31,
+    "literal": "+0.0187",
+    "numeric_value": 0.0187,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-2nn vs E (raw) & 40 & -0.0070 & [-0.0278, +0.0187] & 0.4411 & -0.3789 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 31,
+    "literal": "0.4411",
+    "numeric_value": 0.4411,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-2nn vs E (raw) & 40 & -0.0070 & [-0.0278, +0.0187] & 0.4411 & -0.3789 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 31,
+    "literal": "-0.3789",
+    "numeric_value": -0.3789,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-2nn vs E (raw) & 40 & -0.0070 & [-0.0278, +0.0187] & 0.4411 & -0.3789 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 32,
+    "literal": "+0.0080",
+    "numeric_value": 0.008,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & FQ vs E (raw) & 40 & +0.0080 & [-0.0035, +0.0215] & 0.5852 & +0.1503 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 32,
+    "literal": "-0.0035",
+    "numeric_value": -0.0035,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & FQ vs E (raw) & 40 & +0.0080 & [-0.0035, +0.0215] & 0.5852 & +0.1503 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 32,
+    "literal": "+0.0215",
+    "numeric_value": 0.0215,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & FQ vs E (raw) & 40 & +0.0080 & [-0.0035, +0.0215] & 0.5852 & +0.1503 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 32,
+    "literal": "0.5852",
+    "numeric_value": 0.5852,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & FQ vs E (raw) & 40 & +0.0080 & [-0.0035, +0.0215] & 0.5852 & +0.1503 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 32,
+    "literal": "+0.1503",
+    "numeric_value": 0.1503,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & FQ vs E (raw) & 40 & +0.0080 & [-0.0035, +0.0215] & 0.5852 & +0.1503 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 33,
+    "literal": "-0.0725",
+    "numeric_value": -0.0725,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-1 vs PQK-2nn & 80 & -0.0725 & [-0.0962, -0.0527] & 6.98e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 33,
+    "literal": "-0.0962",
+    "numeric_value": -0.0962,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-1 vs PQK-2nn & 80 & -0.0725 & [-0.0962, -0.0527] & 6.98e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 33,
+    "literal": "-0.0527",
+    "numeric_value": -0.0527,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-1 vs PQK-2nn & 80 & -0.0725 & [-0.0962, -0.0527] & 6.98e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 33,
+    "literal": "-1.0000",
+    "numeric_value": -1.0,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-1 vs PQK-2nn & 80 & -0.0725 & [-0.0962, -0.0527] & 6.98e-04 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 34,
+    "literal": "-0.0067",
+    "numeric_value": -0.0067,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-2nn vs E (raw) & 80 & -0.0067 & [-0.0147, +0.0013] & 0.3350 & -0.4379 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 34,
+    "literal": "-0.0147",
+    "numeric_value": -0.0147,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-2nn vs E (raw) & 80 & -0.0067 & [-0.0147, +0.0013] & 0.3350 & -0.4379 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 34,
+    "literal": "+0.0013",
+    "numeric_value": 0.0013,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-2nn vs E (raw) & 80 & -0.0067 & [-0.0147, +0.0013] & 0.3350 & -0.4379 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 34,
+    "literal": "0.3350",
+    "numeric_value": 0.335,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-2nn vs E (raw) & 80 & -0.0067 & [-0.0147, +0.0013] & 0.3350 & -0.4379 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 34,
+    "literal": "-0.4379",
+    "numeric_value": -0.4379,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & PQK-2nn vs E (raw) & 80 & -0.0067 & [-0.0147, +0.0013] & 0.3350 & -0.4379 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 35,
+    "literal": "+0.0005",
+    "numeric_value": 0.0005,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & FQ vs E (raw) & 80 & +0.0005 & [-0.0055, +0.0067] & 0.9298 & -0.0234 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 35,
+    "literal": "-0.0055",
+    "numeric_value": -0.0055,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & FQ vs E (raw) & 80 & +0.0005 & [-0.0055, +0.0067] & 0.9298 & -0.0234 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 35,
+    "literal": "+0.0067",
+    "numeric_value": 0.0067,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & FQ vs E (raw) & 80 & +0.0005 & [-0.0055, +0.0067] & 0.9298 & -0.0234 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 35,
+    "literal": "0.9298",
+    "numeric_value": 0.9298,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & FQ vs E (raw) & 80 & +0.0005 & [-0.0055, +0.0067] & 0.9298 & -0.0234 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 35,
+    "literal": "-0.0234",
+    "numeric_value": -0.0234,
+    "type": "decimal",
+    "context": "T4a & 3x4 & accuracy & FQ vs E (raw) & 80 & +0.0005 & [-0.0055, +0.0067] & 0.9298 & -0.0234 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 36,
+    "literal": "-0.0775",
+    "numeric_value": -0.0775,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-1 vs PQK-2nn & 40 & -0.0775 & [-0.1634, -0.0274] & 2.17e-04 & -0.9333 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 36,
+    "literal": "-0.1634",
+    "numeric_value": -0.1634,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-1 vs PQK-2nn & 40 & -0.0775 & [-0.1634, -0.0274] & 2.17e-04 & -0.9333 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 36,
+    "literal": "-0.0274",
+    "numeric_value": -0.0274,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-1 vs PQK-2nn & 40 & -0.0775 & [-0.1634, -0.0274] & 2.17e-04 & -0.9333 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 36,
+    "literal": "-0.9333",
+    "numeric_value": -0.9333,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-1 vs PQK-2nn & 40 & -0.0775 & [-0.1634, -0.0274] & 2.17e-04 & -0.9333 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 37,
+    "literal": "-0.0076",
+    "numeric_value": -0.0076,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-2nn vs E (raw) & 40 & -0.0076 & [-0.0205, +0.0079] & 0.0592 & -0.5524 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 37,
+    "literal": "-0.0205",
+    "numeric_value": -0.0205,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-2nn vs E (raw) & 40 & -0.0076 & [-0.0205, +0.0079] & 0.0592 & -0.5524 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 37,
+    "literal": "+0.0079",
+    "numeric_value": 0.0079,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-2nn vs E (raw) & 40 & -0.0076 & [-0.0205, +0.0079] & 0.0592 & -0.5524 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 37,
+    "literal": "0.0592",
+    "numeric_value": 0.0592,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-2nn vs E (raw) & 40 & -0.0076 & [-0.0205, +0.0079] & 0.0592 & -0.5524 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 37,
+    "literal": "-0.5524",
+    "numeric_value": -0.5524,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-2nn vs E (raw) & 40 & -0.0076 & [-0.0205, +0.0079] & 0.0592 & -0.5524 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 38,
+    "literal": "-0.0320",
+    "numeric_value": -0.032,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & FQ vs E (raw) & 40 & -0.0320 & [-0.0622, -0.0053] & 0.0126 & -0.7238 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 38,
+    "literal": "-0.0622",
+    "numeric_value": -0.0622,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & FQ vs E (raw) & 40 & -0.0320 & [-0.0622, -0.0053] & 0.0126 & -0.7238 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 38,
+    "literal": "-0.0053",
+    "numeric_value": -0.0053,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & FQ vs E (raw) & 40 & -0.0320 & [-0.0622, -0.0053] & 0.0126 & -0.7238 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 38,
+    "literal": "0.0126",
+    "numeric_value": 0.0126,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & FQ vs E (raw) & 40 & -0.0320 & [-0.0622, -0.0053] & 0.0126 & -0.7238 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 38,
+    "literal": "-0.7238",
+    "numeric_value": -0.7238,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & FQ vs E (raw) & 40 & -0.0320 & [-0.0622, -0.0053] & 0.0126 & -0.7238 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 39,
+    "literal": "-0.0461",
+    "numeric_value": -0.0461,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-1 vs PQK-2nn & 80 & -0.0461 & [-0.0543, -0.0377] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 39,
+    "literal": "-0.0543",
+    "numeric_value": -0.0543,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-1 vs PQK-2nn & 80 & -0.0461 & [-0.0543, -0.0377] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 39,
+    "literal": "-0.0377",
+    "numeric_value": -0.0377,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-1 vs PQK-2nn & 80 & -0.0461 & [-0.0543, -0.0377] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 39,
+    "literal": "-1.0000",
+    "numeric_value": -1.0,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-1 vs PQK-2nn & 80 & -0.0461 & [-0.0543, -0.0377] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 40,
+    "literal": "-0.0017",
+    "numeric_value": -0.0017,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-2nn vs E (raw) & 80 & -0.0017 & [-0.0030, -0.0005] & 0.0969 & -0.5048 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 40,
+    "literal": "-0.0030",
+    "numeric_value": -0.003,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-2nn vs E (raw) & 80 & -0.0017 & [-0.0030, -0.0005] & 0.0969 & -0.5048 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 40,
+    "literal": "-0.0005",
+    "numeric_value": -0.0005,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-2nn vs E (raw) & 80 & -0.0017 & [-0.0030, -0.0005] & 0.0969 & -0.5048 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 40,
+    "literal": "0.0969",
+    "numeric_value": 0.0969,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-2nn vs E (raw) & 80 & -0.0017 & [-0.0030, -0.0005] & 0.0969 & -0.5048 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 40,
+    "literal": "-0.5048",
+    "numeric_value": -0.5048,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & PQK-2nn vs E (raw) & 80 & -0.0017 & [-0.0030, -0.0005] & 0.0969 & -0.5048 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 41,
+    "literal": "-0.0119",
+    "numeric_value": -0.0119,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & FQ vs E (raw) & 80 & -0.0119 & [-0.0161, -0.0082] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 41,
+    "literal": "-0.0161",
+    "numeric_value": -0.0161,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & FQ vs E (raw) & 80 & -0.0119 & [-0.0161, -0.0082] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 41,
+    "literal": "-0.0082",
+    "numeric_value": -0.0082,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & FQ vs E (raw) & 80 & -0.0119 & [-0.0161, -0.0082] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 41,
+    "literal": "-1.0000",
+    "numeric_value": -1.0,
+    "type": "decimal",
+    "context": "T4b & 2x4 & r2 & FQ vs E (raw) & 80 & -0.0119 & [-0.0161, -0.0082] & 1.53e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 42,
+    "literal": "-0.0233",
+    "numeric_value": -0.0233,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-1 vs PQK-2nn & 40 & -0.0233 & [-0.0409, -0.0089] & 0.0048 & -0.8105 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 42,
+    "literal": "-0.0409",
+    "numeric_value": -0.0409,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-1 vs PQK-2nn & 40 & -0.0233 & [-0.0409, -0.0089] & 0.0048 & -0.8105 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 42,
+    "literal": "-0.0089",
+    "numeric_value": -0.0089,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-1 vs PQK-2nn & 40 & -0.0233 & [-0.0409, -0.0089] & 0.0048 & -0.8105 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 42,
+    "literal": "0.0048",
+    "numeric_value": 0.0048,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-1 vs PQK-2nn & 40 & -0.0233 & [-0.0409, -0.0089] & 0.0048 & -0.8105 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 42,
+    "literal": "-0.8105",
+    "numeric_value": -0.8105,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-1 vs PQK-2nn & 40 & -0.0233 & [-0.0409, -0.0089] & 0.0048 & -0.8105 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 43,
+    "literal": "-0.0054",
+    "numeric_value": -0.0054,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 40 & -0.0054 & [-0.0172, +0.0013] & 1.0000 & -0.0737 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 43,
+    "literal": "-0.0172",
+    "numeric_value": -0.0172,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 40 & -0.0054 & [-0.0172, +0.0013] & 1.0000 & -0.0737 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 43,
+    "literal": "+0.0013",
+    "numeric_value": 0.0013,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 40 & -0.0054 & [-0.0172, +0.0013] & 1.0000 & -0.0737 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 43,
+    "literal": "1.0000",
+    "numeric_value": 1.0,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 40 & -0.0054 & [-0.0172, +0.0013] & 1.0000 & -0.0737 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 43,
+    "literal": "-0.0737",
+    "numeric_value": -0.0737,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 40 & -0.0054 & [-0.0172, +0.0013] & 1.0000 & -0.0737 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 44,
+    "literal": "-0.0002",
+    "numeric_value": -0.0002,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & FQ vs E (raw) & 40 & -0.0002 & [-0.0018, +0.0014] & 1.0000 & -0.0526 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 44,
+    "literal": "-0.0018",
+    "numeric_value": -0.0018,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & FQ vs E (raw) & 40 & -0.0002 & [-0.0018, +0.0014] & 1.0000 & -0.0526 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 44,
+    "literal": "+0.0014",
+    "numeric_value": 0.0014,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & FQ vs E (raw) & 40 & -0.0002 & [-0.0018, +0.0014] & 1.0000 & -0.0526 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 44,
+    "literal": "1.0000",
+    "numeric_value": 1.0,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & FQ vs E (raw) & 40 & -0.0002 & [-0.0018, +0.0014] & 1.0000 & -0.0526 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 44,
+    "literal": "-0.0526",
+    "numeric_value": -0.0526,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & FQ vs E (raw) & 40 & -0.0002 & [-0.0018, +0.0014] & 1.0000 & -0.0526 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 45,
+    "literal": "-0.0107",
+    "numeric_value": -0.0107,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-1 vs PQK-2nn & 80 & -0.0107 & [-0.0148, -0.0072] & 3.05e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 45,
+    "literal": "-0.0148",
+    "numeric_value": -0.0148,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-1 vs PQK-2nn & 80 & -0.0107 & [-0.0148, -0.0072] & 3.05e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 45,
+    "literal": "-0.0072",
+    "numeric_value": -0.0072,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-1 vs PQK-2nn & 80 & -0.0107 & [-0.0148, -0.0072] & 3.05e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 45,
+    "literal": "-1.0000",
+    "numeric_value": -1.0,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-1 vs PQK-2nn & 80 & -0.0107 & [-0.0148, -0.0072] & 3.05e-05 & -1.0000 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 46,
+    "literal": "+0.0001",
+    "numeric_value": 0.0001,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 80 & +0.0001 & [-0.0004, +0.0005] & 1.0000 & +0.1789 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 46,
+    "literal": "-0.0004",
+    "numeric_value": -0.0004,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 80 & +0.0001 & [-0.0004, +0.0005] & 1.0000 & +0.1789 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 46,
+    "literal": "+0.0005",
+    "numeric_value": 0.0005,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 80 & +0.0001 & [-0.0004, +0.0005] & 1.0000 & +0.1789 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 46,
+    "literal": "1.0000",
+    "numeric_value": 1.0,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 80 & +0.0001 & [-0.0004, +0.0005] & 1.0000 & +0.1789 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 46,
+    "literal": "+0.1789",
+    "numeric_value": 0.1789,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & PQK-2nn vs E (raw) & 80 & +0.0001 & [-0.0004, +0.0005] & 1.0000 & +0.1789 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 47,
+    "literal": "+0.0003",
+    "numeric_value": 0.0003,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & FQ vs E (raw) & 80 & +0.0003 & [-0.0000, +0.0007] & 1.0000 & +0.0632 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 47,
+    "literal": "-0.0000",
+    "numeric_value": -0.0,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & FQ vs E (raw) & 80 & +0.0003 & [-0.0000, +0.0007] & 1.0000 & +0.0632 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 47,
+    "literal": "+0.0007",
+    "numeric_value": 0.0007,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & FQ vs E (raw) & 80 & +0.0003 & [-0.0000, +0.0007] & 1.0000 & +0.0632 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 47,
+    "literal": "1.0000",
+    "numeric_value": 1.0,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & FQ vs E (raw) & 80 & +0.0003 & [-0.0000, +0.0007] & 1.0000 & +0.0632 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab2_confirmatory_stats.tex",
+    "line": 47,
+    "literal": "+0.0632",
+    "numeric_value": 0.0632,
+    "type": "decimal",
+    "context": "T4b & 3x4 & r2 & FQ vs E (raw) & 80 & +0.0003 & [-0.0000, +0.0007] & 1.0000 & +0.0632 \\\\",
+    "classification": "Other / UNRESOLVED"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 14,
+    "literal": "0.4637",
+    "numeric_value": 0.4637,
+    "type": "decimal",
+    "context": "10,000 & 13 & 0 & 0.4637 & $\\pm 0.0284$ & \\multicolumn{2}{c}{\\textit{Excluded under minimum-shot policy}} & \\textit{N/A} & Excluded under minimum-shot policy ($S_{\\mathrm{swap}} < 10$) \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 14,
+    "literal": "0.0284",
+    "numeric_value": 0.0284,
+    "type": "decimal",
+    "context": "10,000 & 13 & 0 & 0.4637 & $\\pm 0.0284$ & \\multicolumn{2}{c}{\\textit{Excluded under minimum-shot policy}} & \\textit{N/A} & Excluded under minimum-shot policy ($S_{\\mathrm{swap}} < 10$) \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 15,
+    "literal": "0.7289",
+    "numeric_value": 0.7289,
+    "type": "decimal",
+    "context": "30,000 & 41 & 0 & 0.7289 & $\\pm 0.0133$ & \\multicolumn{2}{c}{\\textit{Excluded under minimum-shot policy}} & \\textit{N/A} & Excluded under minimum-shot policy ($S_{\\mathrm{swap}} < 10$) \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 15,
+    "literal": "0.0133",
+    "numeric_value": 0.0133,
+    "type": "decimal",
+    "context": "30,000 & 41 & 0 & 0.7289 & $\\pm 0.0133$ & \\multicolumn{2}{c}{\\textit{Excluded under minimum-shot policy}} & \\textit{N/A} & Excluded under minimum-shot policy ($S_{\\mathrm{swap}} < 10$) \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 16,
+    "literal": "0.8814",
+    "numeric_value": 0.8814,
+    "type": "decimal",
+    "context": "100,000 & 138 & 11 & 0.8814 & $\\pm 0.0088$ & 0.0932 & $\\pm 0.0534$ & -0.7882 $\\pm 0.0560$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 16,
+    "literal": "0.0088",
+    "numeric_value": 0.0088,
+    "type": "decimal",
+    "context": "100,000 & 138 & 11 & 0.8814 & $\\pm 0.0088$ & 0.0932 & $\\pm 0.0534$ & -0.7882 $\\pm 0.0560$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 16,
+    "literal": "0.0932",
+    "numeric_value": 0.0932,
+    "type": "decimal",
+    "context": "100,000 & 138 & 11 & 0.8814 & $\\pm 0.0088$ & 0.0932 & $\\pm 0.0534$ & -0.7882 $\\pm 0.0560$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 16,
+    "literal": "0.0534",
+    "numeric_value": 0.0534,
+    "type": "decimal",
+    "context": "100,000 & 138 & 11 & 0.8814 & $\\pm 0.0088$ & 0.0932 & $\\pm 0.0534$ & -0.7882 $\\pm 0.0560$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 16,
+    "literal": "-0.7882",
+    "numeric_value": -0.7882,
+    "type": "decimal",
+    "context": "100,000 & 138 & 11 & 0.8814 & $\\pm 0.0088$ & 0.0932 & $\\pm 0.0534$ & -0.7882 $\\pm 0.0560$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 16,
+    "literal": "0.0560",
+    "numeric_value": 0.056,
+    "type": "decimal",
+    "context": "100,000 & 138 & 11 & 0.8814 & $\\pm 0.0088$ & 0.0932 & $\\pm 0.0534$ & -0.7882 $\\pm 0.0560$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 17,
+    "literal": "0.9380",
+    "numeric_value": 0.938,
+    "type": "decimal",
+    "context": "300,000 & 416 & 34 & 0.9380 & $\\pm 0.0034$ & 0.6459 & $\\pm 0.0164$ & -0.2921 $\\pm 0.0171$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 17,
+    "literal": "0.0034",
+    "numeric_value": 0.0034,
+    "type": "decimal",
+    "context": "300,000 & 416 & 34 & 0.9380 & $\\pm 0.0034$ & 0.6459 & $\\pm 0.0164$ & -0.2921 $\\pm 0.0171$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 17,
+    "literal": "0.6459",
+    "numeric_value": 0.6459,
+    "type": "decimal",
+    "context": "300,000 & 416 & 34 & 0.9380 & $\\pm 0.0034$ & 0.6459 & $\\pm 0.0164$ & -0.2921 $\\pm 0.0171$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 17,
+    "literal": "0.0164",
+    "numeric_value": 0.0164,
+    "type": "decimal",
+    "context": "300,000 & 416 & 34 & 0.9380 & $\\pm 0.0034$ & 0.6459 & $\\pm 0.0164$ & -0.2921 $\\pm 0.0171$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 17,
+    "literal": "-0.2921",
+    "numeric_value": -0.2921,
+    "type": "decimal",
+    "context": "300,000 & 416 & 34 & 0.9380 & $\\pm 0.0034$ & 0.6459 & $\\pm 0.0164$ & -0.2921 $\\pm 0.0171$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 17,
+    "literal": "0.0171",
+    "numeric_value": 0.0171,
+    "type": "decimal",
+    "context": "300,000 & 416 & 34 & 0.9380 & $\\pm 0.0034$ & 0.6459 & $\\pm 0.0164$ & -0.2921 $\\pm 0.0171$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 18,
+    "literal": "0.9575",
+    "numeric_value": 0.9575,
+    "type": "decimal",
+    "context": "1,000,000 & 1388 & 113 & 0.9575 & $\\pm 0.0026$ & 0.8288 & $\\pm 0.0067$ & -0.1287 $\\pm 0.0067$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 18,
+    "literal": "0.0026",
+    "numeric_value": 0.0026,
+    "type": "decimal",
+    "context": "1,000,000 & 1388 & 113 & 0.9575 & $\\pm 0.0026$ & 0.8288 & $\\pm 0.0067$ & -0.1287 $\\pm 0.0067$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 18,
+    "literal": "0.8288",
+    "numeric_value": 0.8288,
+    "type": "decimal",
+    "context": "1,000,000 & 1388 & 113 & 0.9575 & $\\pm 0.0026$ & 0.8288 & $\\pm 0.0067$ & -0.1287 $\\pm 0.0067$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 18,
+    "literal": "0.0067",
+    "numeric_value": 0.0067,
+    "type": "decimal",
+    "context": "1,000,000 & 1388 & 113 & 0.9575 & $\\pm 0.0026$ & 0.8288 & $\\pm 0.0067$ & -0.1287 $\\pm 0.0067$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 18,
+    "literal": "-0.1287",
+    "numeric_value": -0.1287,
+    "type": "decimal",
+    "context": "1,000,000 & 1388 & 113 & 0.9575 & $\\pm 0.0026$ & 0.8288 & $\\pm 0.0067$ & -0.1287 $\\pm 0.0067$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 19,
+    "literal": "0.9703",
+    "numeric_value": 0.9703,
+    "type": "decimal",
+    "context": "3,000,000 & 4166 & 341 & 0.9703 & $\\pm 0.0027$ & 0.8777 & $\\pm 0.0074$ & -0.0926 $\\pm 0.0073$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 19,
+    "literal": "0.0027",
+    "numeric_value": 0.0027,
+    "type": "decimal",
+    "context": "3,000,000 & 4166 & 341 & 0.9703 & $\\pm 0.0027$ & 0.8777 & $\\pm 0.0074$ & -0.0926 $\\pm 0.0073$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 19,
+    "literal": "0.8777",
+    "numeric_value": 0.8777,
+    "type": "decimal",
+    "context": "3,000,000 & 4166 & 341 & 0.9703 & $\\pm 0.0027$ & 0.8777 & $\\pm 0.0074$ & -0.0926 $\\pm 0.0073$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 19,
+    "literal": "0.0074",
+    "numeric_value": 0.0074,
+    "type": "decimal",
+    "context": "3,000,000 & 4166 & 341 & 0.9703 & $\\pm 0.0027$ & 0.8777 & $\\pm 0.0074$ & -0.0926 $\\pm 0.0073$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 19,
+    "literal": "-0.0926",
+    "numeric_value": -0.0926,
+    "type": "decimal",
+    "context": "3,000,000 & 4166 & 341 & 0.9703 & $\\pm 0.0027$ & 0.8777 & $\\pm 0.0074$ & -0.0926 $\\pm 0.0073$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 19,
+    "literal": "0.0073",
+    "numeric_value": 0.0073,
+    "type": "decimal",
+    "context": "3,000,000 & 4166 & 341 & 0.9703 & $\\pm 0.0027$ & 0.8777 & $\\pm 0.0074$ & -0.0926 $\\pm 0.0073$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 20,
+    "literal": "0.9753",
+    "numeric_value": 0.9753,
+    "type": "decimal",
+    "context": "10,000,000 & 13888 & 1138 & 0.9753 & $\\pm 0.0024$ & 0.8828 & $\\pm 0.0130$ & -0.0924 $\\pm 0.0126$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 20,
+    "literal": "0.0024",
+    "numeric_value": 0.0024,
+    "type": "decimal",
+    "context": "10,000,000 & 13888 & 1138 & 0.9753 & $\\pm 0.0024$ & 0.8828 & $\\pm 0.0130$ & -0.0924 $\\pm 0.0126$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 20,
+    "literal": "0.8828",
+    "numeric_value": 0.8828,
+    "type": "decimal",
+    "context": "10,000,000 & 13888 & 1138 & 0.9753 & $\\pm 0.0024$ & 0.8828 & $\\pm 0.0130$ & -0.0924 $\\pm 0.0126$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 20,
+    "literal": "0.0130",
+    "numeric_value": 0.013,
+    "type": "decimal",
+    "context": "10,000,000 & 13888 & 1138 & 0.9753 & $\\pm 0.0024$ & 0.8828 & $\\pm 0.0130$ & -0.0924 $\\pm 0.0126$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 20,
+    "literal": "-0.0924",
+    "numeric_value": -0.0924,
+    "type": "decimal",
+    "context": "10,000,000 & 13888 & 1138 & 0.9753 & $\\pm 0.0024$ & 0.8828 & $\\pm 0.0130$ & -0.0924 $\\pm 0.0126$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_equal_budget.tex",
+    "line": 20,
+    "literal": "0.0126",
+    "numeric_value": 0.0126,
+    "type": "decimal",
+    "context": "10,000,000 & 13888 & 1138 & 0.9753 & $\\pm 0.0024$ & 0.8828 & $\\pm 0.0130$ & -0.0924 $\\pm 0.0126$ & PQK-2nn Higher Observed Performance \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 13,
+    "literal": "0.9977",
+    "numeric_value": 0.9977,
+    "type": "decimal",
+    "context": "FQ & 0.9977 $\\pm$ 0.0002 & 0.0051 $\\pm$ 0.0002 & -21.01 $\\pm$ 7.40 & 0.0602 $\\pm$ 0.0085 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 13,
+    "literal": "0.0002",
+    "numeric_value": 0.0002,
+    "type": "decimal",
+    "context": "FQ & 0.9977 $\\pm$ 0.0002 & 0.0051 $\\pm$ 0.0002 & -21.01 $\\pm$ 7.40 & 0.0602 $\\pm$ 0.0085 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 13,
+    "literal": "0.0051",
+    "numeric_value": 0.0051,
+    "type": "decimal",
+    "context": "FQ & 0.9977 $\\pm$ 0.0002 & 0.0051 $\\pm$ 0.0002 & -21.01 $\\pm$ 7.40 & 0.0602 $\\pm$ 0.0085 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 13,
+    "literal": "-21.01",
+    "numeric_value": -21.01,
+    "type": "decimal",
+    "context": "FQ & 0.9977 $\\pm$ 0.0002 & 0.0051 $\\pm$ 0.0002 & -21.01 $\\pm$ 7.40 & 0.0602 $\\pm$ 0.0085 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 13,
+    "literal": "7.40",
+    "numeric_value": 7.4,
+    "type": "decimal",
+    "context": "FQ & 0.9977 $\\pm$ 0.0002 & 0.0051 $\\pm$ 0.0002 & -21.01 $\\pm$ 7.40 & 0.0602 $\\pm$ 0.0085 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 13,
+    "literal": "0.0602",
+    "numeric_value": 0.0602,
+    "type": "decimal",
+    "context": "FQ & 0.9977 $\\pm$ 0.0002 & 0.0051 $\\pm$ 0.0002 & -21.01 $\\pm$ 7.40 & 0.0602 $\\pm$ 0.0085 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 13,
+    "literal": "0.0085",
+    "numeric_value": 0.0085,
+    "type": "decimal",
+    "context": "FQ & 0.9977 $\\pm$ 0.0002 & 0.0051 $\\pm$ 0.0002 & -21.01 $\\pm$ 7.40 & 0.0602 $\\pm$ 0.0085 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 14,
+    "literal": "0.9141",
+    "numeric_value": 0.9141,
+    "type": "decimal",
+    "context": "PQK-1 & 0.9141 $\\pm$ 0.0056 & 0.0331 $\\pm$ 0.0010 & -973.38 $\\pm$ 343.99 & 0.3789 $\\pm$ 0.0623 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 14,
+    "literal": "0.0056",
+    "numeric_value": 0.0056,
+    "type": "decimal",
+    "context": "PQK-1 & 0.9141 $\\pm$ 0.0056 & 0.0331 $\\pm$ 0.0010 & -973.38 $\\pm$ 343.99 & 0.3789 $\\pm$ 0.0623 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 14,
+    "literal": "0.0331",
+    "numeric_value": 0.0331,
+    "type": "decimal",
+    "context": "PQK-1 & 0.9141 $\\pm$ 0.0056 & 0.0331 $\\pm$ 0.0010 & -973.38 $\\pm$ 343.99 & 0.3789 $\\pm$ 0.0623 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 14,
+    "literal": "0.0010",
+    "numeric_value": 0.001,
+    "type": "decimal",
+    "context": "PQK-1 & 0.9141 $\\pm$ 0.0056 & 0.0331 $\\pm$ 0.0010 & -973.38 $\\pm$ 343.99 & 0.3789 $\\pm$ 0.0623 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 14,
+    "literal": "-973.38",
+    "numeric_value": -973.38,
+    "type": "decimal",
+    "context": "PQK-1 & 0.9141 $\\pm$ 0.0056 & 0.0331 $\\pm$ 0.0010 & -973.38 $\\pm$ 343.99 & 0.3789 $\\pm$ 0.0623 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 14,
+    "literal": "343.99",
+    "numeric_value": 343.99,
+    "type": "decimal",
+    "context": "PQK-1 & 0.9141 $\\pm$ 0.0056 & 0.0331 $\\pm$ 0.0010 & -973.38 $\\pm$ 343.99 & 0.3789 $\\pm$ 0.0623 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 14,
+    "literal": "0.3789",
+    "numeric_value": 0.3789,
+    "type": "decimal",
+    "context": "PQK-1 & 0.9141 $\\pm$ 0.0056 & 0.0331 $\\pm$ 0.0010 & -973.38 $\\pm$ 343.99 & 0.3789 $\\pm$ 0.0623 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 14,
+    "literal": "0.0623",
+    "numeric_value": 0.0623,
+    "type": "decimal",
+    "context": "PQK-1 & 0.9141 $\\pm$ 0.0056 & 0.0331 $\\pm$ 0.0010 & -973.38 $\\pm$ 343.99 & 0.3789 $\\pm$ 0.0623 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 15,
+    "literal": "0.9943",
+    "numeric_value": 0.9943,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 15,
+    "literal": "0.0007",
+    "numeric_value": 0.0007,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 15,
+    "literal": "0.0078",
+    "numeric_value": 0.0078,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 15,
+    "literal": "0.0004",
+    "numeric_value": 0.0004,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 15,
+    "literal": "-202.06",
+    "numeric_value": -202.06,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 15,
+    "literal": "68.92",
+    "numeric_value": 68.92,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 15,
+    "literal": "0.1850",
+    "numeric_value": 0.185,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 15,
+    "literal": "0.0294",
+    "numeric_value": 0.0294,
+    "type": "decimal",
+    "context": "PQK-2nn & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 16,
+    "literal": "0.9943",
+    "numeric_value": 0.9943,
+    "type": "decimal",
+    "context": "E2 (4n) & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 16,
+    "literal": "0.0007",
+    "numeric_value": 0.0007,
+    "type": "decimal",
+    "context": "E2 (4n) & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 16,
+    "literal": "0.0078",
+    "numeric_value": 0.0078,
+    "type": "decimal",
+    "context": "E2 (4n) & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 16,
+    "literal": "0.0004",
+    "numeric_value": 0.0004,
+    "type": "decimal",
+    "context": "E2 (4n) & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 16,
+    "literal": "-202.06",
+    "numeric_value": -202.06,
+    "type": "decimal",
+    "context": "E2 (4n) & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 16,
+    "literal": "68.92",
+    "numeric_value": 68.92,
+    "type": "decimal",
+    "context": "E2 (4n) & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 16,
+    "literal": "0.1850",
+    "numeric_value": 0.185,
+    "type": "decimal",
+    "context": "E2 (4n) & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 16,
+    "literal": "0.0294",
+    "numeric_value": 0.0294,
+    "type": "decimal",
+    "context": "E2 (4n) & 0.9943 $\\pm$ 0.0007 & 0.0078 $\\pm$ 0.0004 & -202.06 $\\pm$ 68.92 & 0.1850 $\\pm$ 0.0294 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 17,
+    "literal": "0.9928",
+    "numeric_value": 0.9928,
+    "type": "decimal",
+    "context": "Linear Ridge & 0.9928 $\\pm$ 0.0007 & 0.0090 $\\pm$ 0.0004 & -95.66 $\\pm$ 19.74 & 0.1345 $\\pm$ 0.0136 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 17,
+    "literal": "0.0007",
+    "numeric_value": 0.0007,
+    "type": "decimal",
+    "context": "Linear Ridge & 0.9928 $\\pm$ 0.0007 & 0.0090 $\\pm$ 0.0004 & -95.66 $\\pm$ 19.74 & 0.1345 $\\pm$ 0.0136 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 17,
+    "literal": "0.0090",
+    "numeric_value": 0.009,
+    "type": "decimal",
+    "context": "Linear Ridge & 0.9928 $\\pm$ 0.0007 & 0.0090 $\\pm$ 0.0004 & -95.66 $\\pm$ 19.74 & 0.1345 $\\pm$ 0.0136 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 17,
+    "literal": "0.0004",
+    "numeric_value": 0.0004,
+    "type": "decimal",
+    "context": "Linear Ridge & 0.9928 $\\pm$ 0.0007 & 0.0090 $\\pm$ 0.0004 & -95.66 $\\pm$ 19.74 & 0.1345 $\\pm$ 0.0136 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 17,
+    "literal": "-95.66",
+    "numeric_value": -95.66,
+    "type": "decimal",
+    "context": "Linear Ridge & 0.9928 $\\pm$ 0.0007 & 0.0090 $\\pm$ 0.0004 & -95.66 $\\pm$ 19.74 & 0.1345 $\\pm$ 0.0136 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 17,
+    "literal": "19.74",
+    "numeric_value": 19.74,
+    "type": "decimal",
+    "context": "Linear Ridge & 0.9928 $\\pm$ 0.0007 & 0.0090 $\\pm$ 0.0004 & -95.66 $\\pm$ 19.74 & 0.1345 $\\pm$ 0.0136 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 17,
+    "literal": "0.1345",
+    "numeric_value": 0.1345,
+    "type": "decimal",
+    "context": "Linear Ridge & 0.9928 $\\pm$ 0.0007 & 0.0090 $\\pm$ 0.0004 & -95.66 $\\pm$ 19.74 & 0.1345 $\\pm$ 0.0136 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 17,
+    "literal": "0.0136",
+    "numeric_value": 0.0136,
+    "type": "decimal",
+    "context": "Linear Ridge & 0.9928 $\\pm$ 0.0007 & 0.0090 $\\pm$ 0.0004 & -95.66 $\\pm$ 19.74 & 0.1345 $\\pm$ 0.0136 \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 19,
+    "literal": "+181.05",
+    "numeric_value": 181.05,
+    "type": "decimal",
+    "context": "\\textbf{Paired Diff (FQ $-$ PQK-2nn)} & --- & --- & $+181.05 \\pm 69.81$ & $-0.1248 \\pm 0.0334$ \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 19,
+    "literal": "69.81",
+    "numeric_value": 69.81,
+    "type": "decimal",
+    "context": "\\textbf{Paired Diff (FQ $-$ PQK-2nn)} & --- & --- & $+181.05 \\pm 69.81$ & $-0.1248 \\pm 0.0334$ \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 19,
+    "literal": "-0.1248",
+    "numeric_value": -0.1248,
+    "type": "decimal",
+    "context": "\\textbf{Paired Diff (FQ $-$ PQK-2nn)} & --- & --- & $+181.05 \\pm 69.81$ & $-0.1248 \\pm 0.0334$ \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 19,
+    "literal": "0.0334",
+    "numeric_value": 0.0334,
+    "type": "decimal",
+    "context": "\\textbf{Paired Diff (FQ $-$ PQK-2nn)} & --- & --- & $+181.05 \\pm 69.81$ & $-0.1248 \\pm 0.0334$ \\\\",
+    "classification": "Empirical metric / uncertainty"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 24,
+    "literal": "8.51\\times 10^{-4}",
+    "numeric_value": 0.000851,
+    "type": "scientific",
+    "context": "{\\raggedright \\footnotesize \\textbf{Notes:} Evaluated under higher-field to lower-field distribution shift (In-distribution $h_i \\in [0.8, 1.5]$ paramagnetic; Out-of-distribution $h_i \\in [0.2, 0.7]$ ferromagnetic) on $n=8$ TFIM ground states across 20 independent seeds. Uncertainty values denote sample standard error $\\mathrm{SE} = \\mathrm{SD}/\\sqrt{20}$. Sign convention: $\\Delta\\mathrm{MAE} = \\mathrm{MAE}(\\mathrm{FQ}) - \\mathrm{MAE}(\\mathrm{comparator})$. Retrospective paired Wilcoxon signed-rank test on OOD MAE for FQ vs PQK-2nn yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p=8.51\\times 10^{-4}$ within the pre-declared 3-comparison family including Train-Mean and Train-Median). Linear Ridge is reported for descriptive calibration only (no hypothesis testing). Prospective protocol timing not established from inspected records (classified as Exploratory).\\par}",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 24,
+    "literal": "8.51\\times 10^{-4}",
+    "numeric_value": 0.000851,
+    "type": "scientific",
+    "context": "{\\raggedright \\footnotesize \\textbf{Notes:} Evaluated under higher-field to lower-field distribution shift (In-distribution $h_i \\in [0.8, 1.5]$ paramagnetic; Out-of-distribution $h_i \\in [0.2, 0.7]$ ferromagnetic) on $n=8$ TFIM ground states across 20 independent seeds. Uncertainty values denote sample standard error $\\mathrm{SE} = \\mathrm{SD}/\\sqrt{20}$. Sign convention: $\\Delta\\mathrm{MAE} = \\mathrm{MAE}(\\mathrm{FQ}) - \\mathrm{MAE}(\\mathrm{comparator})$. Retrospective paired Wilcoxon signed-rank test on OOD MAE for FQ vs PQK-2nn yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p=8.51\\times 10^{-4}$ within the pre-declared 3-comparison family including Train-Mean and Train-Median). Linear Ridge is reported for descriptive calibration only (no hypothesis testing). Prospective protocol timing not established from inspected records (classified as Exploratory).\\par}",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 24,
+    "literal": "0.8",
+    "numeric_value": 0.8,
+    "type": "decimal",
+    "context": "{\\raggedright \\footnotesize \\textbf{Notes:} Evaluated under higher-field to lower-field distribution shift (In-distribution $h_i \\in [0.8, 1.5]$ paramagnetic; Out-of-distribution $h_i \\in [0.2, 0.7]$ ferromagnetic) on $n=8$ TFIM ground states across 20 independent seeds. Uncertainty values denote sample standard error $\\mathrm{SE} = \\mathrm{SD}/\\sqrt{20}$. Sign convention: $\\Delta\\mathrm{MAE} = \\mathrm{MAE}(\\mathrm{FQ}) - \\mathrm{MAE}(\\mathrm{comparator})$. Retrospective paired Wilcoxon signed-rank test on OOD MAE for FQ vs PQK-2nn yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p=8.51\\times 10^{-4}$ within the pre-declared 3-comparison family including Train-Mean and Train-Median). Linear Ridge is reported for descriptive calibration only (no hypothesis testing). Prospective protocol timing not established from inspected records (classified as Exploratory).\\par}",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 24,
+    "literal": "1.5",
+    "numeric_value": 1.5,
+    "type": "decimal",
+    "context": "{\\raggedright \\footnotesize \\textbf{Notes:} Evaluated under higher-field to lower-field distribution shift (In-distribution $h_i \\in [0.8, 1.5]$ paramagnetic; Out-of-distribution $h_i \\in [0.2, 0.7]$ ferromagnetic) on $n=8$ TFIM ground states across 20 independent seeds. Uncertainty values denote sample standard error $\\mathrm{SE} = \\mathrm{SD}/\\sqrt{20}$. Sign convention: $\\Delta\\mathrm{MAE} = \\mathrm{MAE}(\\mathrm{FQ}) - \\mathrm{MAE}(\\mathrm{comparator})$. Retrospective paired Wilcoxon signed-rank test on OOD MAE for FQ vs PQK-2nn yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p=8.51\\times 10^{-4}$ within the pre-declared 3-comparison family including Train-Mean and Train-Median). Linear Ridge is reported for descriptive calibration only (no hypothesis testing). Prospective protocol timing not established from inspected records (classified as Exploratory).\\par}",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 24,
+    "literal": "0.2",
+    "numeric_value": 0.2,
+    "type": "decimal",
+    "context": "{\\raggedright \\footnotesize \\textbf{Notes:} Evaluated under higher-field to lower-field distribution shift (In-distribution $h_i \\in [0.8, 1.5]$ paramagnetic; Out-of-distribution $h_i \\in [0.2, 0.7]$ ferromagnetic) on $n=8$ TFIM ground states across 20 independent seeds. Uncertainty values denote sample standard error $\\mathrm{SE} = \\mathrm{SD}/\\sqrt{20}$. Sign convention: $\\Delta\\mathrm{MAE} = \\mathrm{MAE}(\\mathrm{FQ}) - \\mathrm{MAE}(\\mathrm{comparator})$. Retrospective paired Wilcoxon signed-rank test on OOD MAE for FQ vs PQK-2nn yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p=8.51\\times 10^{-4}$ within the pre-declared 3-comparison family including Train-Mean and Train-Median). Linear Ridge is reported for descriptive calibration only (no hypothesis testing). Prospective protocol timing not established from inspected records (classified as Exploratory).\\par}",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 24,
+    "literal": "0.7",
+    "numeric_value": 0.7,
+    "type": "decimal",
+    "context": "{\\raggedright \\footnotesize \\textbf{Notes:} Evaluated under higher-field to lower-field distribution shift (In-distribution $h_i \\in [0.8, 1.5]$ paramagnetic; Out-of-distribution $h_i \\in [0.2, 0.7]$ ferromagnetic) on $n=8$ TFIM ground states across 20 independent seeds. Uncertainty values denote sample standard error $\\mathrm{SE} = \\mathrm{SD}/\\sqrt{20}$. Sign convention: $\\Delta\\mathrm{MAE} = \\mathrm{MAE}(\\mathrm{FQ}) - \\mathrm{MAE}(\\mathrm{comparator})$. Retrospective paired Wilcoxon signed-rank test on OOD MAE for FQ vs PQK-2nn yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p=8.51\\times 10^{-4}$ within the pre-declared 3-comparison family including Train-Mean and Train-Median). Linear Ridge is reported for descriptive calibration only (no hypothesis testing). Prospective protocol timing not established from inspected records (classified as Exploratory).\\par}",
+    "classification": "Statistical p-value"
+  },
+  {
+    "file": "paper/tables/tab_ood.tex",
+    "line": 24,
+    "literal": "21.0",
+    "numeric_value": 21.0,
+    "type": "decimal",
+    "context": "{\\raggedright \\footnotesize \\textbf{Notes:} Evaluated under higher-field to lower-field distribution shift (In-distribution $h_i \\in [0.8, 1.5]$ paramagnetic; Out-of-distribution $h_i \\in [0.2, 0.7]$ ferromagnetic) on $n=8$ TFIM ground states across 20 independent seeds. Uncertainty values denote sample standard error $\\mathrm{SE} = \\mathrm{SD}/\\sqrt{20}$. Sign convention: $\\Delta\\mathrm{MAE} = \\mathrm{MAE}(\\mathrm{FQ}) - \\mathrm{MAE}(\\mathrm{comparator})$. Retrospective paired Wilcoxon signed-rank test on OOD MAE for FQ vs PQK-2nn yields $W=21.0$, raw $p=8.51\\times 10^{-4}$ (Holm-adjusted $p=8.51\\times 10^{-4}$ within the pre-declared 3-comparison family including Train-Mean and Train-Median). Linear Ridge is reported for descriptive calibration only (no hypothesis testing). Prospective protocol timing not established from inspected records (classified as Exploratory).\\par}",
+    "classification": "Statistical p-value"
+  }
+]

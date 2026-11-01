@@ -1,0 +1,25 @@
+\begin{table*}[!t]
+\caption{Stage 3 Controlled Out-of-Distribution Generalization ($N_{\mathrm{tr}}=40$, $N_{\mathrm{te}}=100$, 20 seeds) [Exploratory: \texttt{results/stage3/t6\_ood\_shift.csv}, 100 rows]}
+\label{tab:ood}
+\centering
+\begingroup
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Model Arm} & \textbf{In-Dist} $R^2$ & \textbf{In-Dist MAE} & \textbf{OOD} $R^2$ & \textbf{OOD MAE} \\
+ & (Mean $\pm$ SE) & (Mean $\pm$ SE) & (Mean $\pm$ SE) & (Mean $\pm$ SE) \\
+\midrule
+FQ & 0.9977 $\pm$ 0.0002 & 0.0051 $\pm$ 0.0002 & -21.01 $\pm$ 7.40 & 0.0602 $\pm$ 0.0085 \\
+PQK-1 & 0.9141 $\pm$ 0.0056 & 0.0331 $\pm$ 0.0010 & -973.38 $\pm$ 343.99 & 0.3789 $\pm$ 0.0623 \\
+PQK-2nn & 0.9943 $\pm$ 0.0007 & 0.0078 $\pm$ 0.0004 & -202.06 $\pm$ 68.92 & 0.1850 $\pm$ 0.0294 \\
+E2 (4n) & 0.9943 $\pm$ 0.0007 & 0.0078 $\pm$ 0.0004 & -202.06 $\pm$ 68.92 & 0.1850 $\pm$ 0.0294 \\
+Linear Ridge & 0.9928 $\pm$ 0.0007 & 0.0090 $\pm$ 0.0004 & -95.66 $\pm$ 19.74 & 0.1345 $\pm$ 0.0136 \\
+\midrule
+\textbf{Paired Diff (FQ $-$ PQK-2nn)} & --- & --- & $+181.05 \pm 69.81$ & $-0.1248 \pm 0.0334$ \\
+\bottomrule
+\end{tabular}
+\endgroup
+\vspace{1ex}
+{\raggedright \footnotesize \textbf{Notes:} Evaluated under a higher-field to lower-field distribution shift (in-distribution $h_i \in [0.8, 1.5]$; out-of-distribution $h_i \in [0.2, 0.7]$ with coupling $J=1.0$) on $n=8$ TFIM ground states across 20 independent seeds. Uncertainty values denote sample standard error $\mathrm{SE} = s/\sqrt{20}$ across independent seeds. Sign convention: $\Delta\mathrm{MAE} = \mathrm{MAE}(\mathrm{FQ}) - \mathrm{MAE}(\mathrm{comparator})$. Retrospective paired Wilcoxon signed-rank test on OOD MAE for FQ vs PQK-2nn yields $W=21.0$, raw $p=8.51\times 10^{-4}$ (Holm-adjusted $p=8.51\times 10^{-4}$ within the retrospective 3-comparison family including Train-Mean and Train-Median). Linear Ridge is reported for descriptive calibration only (no hypothesis testing). Prospective protocol timing not established from inspected records (classified as exploratory).\par}
+\end{table*}
